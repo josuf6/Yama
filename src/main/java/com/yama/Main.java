@@ -1,5 +1,6 @@
 package com.yama;
 
+import com.yama.controllers.ui.JardueraKargatuKud;
 import com.yama.controllers.ui.MainKud;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,7 @@ public class Main extends Application {
     private static Scene scene;
 
     private MainKud mainKud;
+    private JardueraKargatuKud jardueraKargatuKud;
 
     public int lehioAktibo  ;
 
@@ -62,10 +64,13 @@ public class Main extends Application {
 
         //kudeatzaileak hasieratu
         mainKud = new MainKud(this);
+        jardueraKargatuKud = new JardueraKargatuKud(this);
 
         Callback<Class<?>, Object> controllerFactory = type -> {
             if (type == MainKud.class) {
                 return mainKud;
+            } else if (type == JardueraKargatuKud.class) {
+                return jardueraKargatuKud;
             } else {
                 try {
                     return type.newInstance();

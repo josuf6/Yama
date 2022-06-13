@@ -5,41 +5,42 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="600.0" maxWidth="1000.0" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.MainKud">
    <children>
-      <AnchorPane fx:id="pane_barra" prefHeight="46.0" prefWidth="200.0" style="-fx-background-color: #0A6400;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <AnchorPane fx:id="pane_menu" layoutX="6.0" layoutY="7.0" onMouseEntered="#onEnter" onMouseExited="#onExit" prefHeight="32.0" prefWidth="32.0" style="-fx-background-color: #0A6400; -fx-background-radius: 5.0;">
+      <AnchorPane fx:id="pane_barra" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #0A6400;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <AnchorPane fx:id="pane_menu" layoutX="9.0" layoutY="5.0" onMouseEntered="#onEnter" onMouseExited="#onExit" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: #0A6400; -fx-background-radius: 5.0;">
          <children>
-            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../irudiak/menu.png" />
                </image>
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="pane_itxi" layoutX="962.0" layoutY="7.0" prefHeight="32.0" prefWidth="32.0" style="-fx-background-color: #0A6400; -fx-background-radius: 5.0;">
+      <AnchorPane fx:id="pane_itxi" layoutY="8.0" prefHeight="24.0" prefWidth="24.0" style="-fx-background-color: #0A6400; -fx-background-radius: 5.0;" AnchorPane.rightAnchor="10.0">
          <children>
-            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="18.0" fitWidth="188.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../irudiak/itxi.png" />
                </image>
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="pane_minimizatu" layoutX="920.0" layoutY="7.0" prefHeight="32.0" prefWidth="32.0" style="-fx-background-color: #0A6400; -fx-background-radius: 5.0;">
+      <AnchorPane fx:id="pane_minimizatu" layoutY="8.0" prefHeight="24.0" prefWidth="24.0" style="-fx-background-color: #0A6400; -fx-background-radius: 5.0;" AnchorPane.rightAnchor="44.0">
          <children>
-            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../irudiak/minimizatu.png" />
                </image>
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="pane_beltza" layoutY="46.0" prefHeight="553.0" prefWidth="1000.0" style="-fx-background-color: #000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <AnchorPane fx:id="pane_menuZerr" prefHeight="553.0" prefWidth="178.0" style="-fx-background-color: White;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="40.0">
+      <AnchorPane fx:id="pane_beltza" layoutY="46.0" style="-fx-background-color: #000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0" />
+      <AnchorPane fx:id="pane_menuIzenak" prefHeight="553.0" prefWidth="178.0" style="-fx-background-color: White;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="40.0">
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
@@ -58,13 +59,13 @@
             </VBox>
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="553.0" prefWidth="44.0" style="-fx-background-color: White;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+      <AnchorPane fx:id="pane_menuIkonoak" prefWidth="48.0" style="-fx-background-color: White;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="40.0">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="44.0">
+            <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <AnchorPane fx:id="pane_jarduera" onMouseClicked="#onClick" onMouseEntered="#onEnter" onMouseExited="#onExit" prefHeight="60.0" prefWidth="44.0">
+                  <AnchorPane fx:id="pane_jarduera" onMouseClicked="#onClick" onMouseEntered="#onEnter" onMouseExited="#onExit" prefHeight="60.0" prefWidth="48.0">
                      <children>
-                        <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="2.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="4.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../irudiak/kargatu.png" />
                            </image>
@@ -75,5 +76,11 @@
             </VBox>
          </children>
       </AnchorPane>
+      <StackPane prefWidth="952.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+         <children>
+            <AnchorPane fx:id="pane_JardueraKargatu">
+               <fx:include fx:id="JardueraKargatu" source="JardueraKargatu.fxml" />
+            </AnchorPane>
+         </children></StackPane>
    </children>
 </AnchorPane>

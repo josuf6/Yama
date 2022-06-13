@@ -24,7 +24,7 @@ public class MainKud implements Initializable {
     private Label lbl_jarduera;
 
     @FXML
-    private AnchorPane pane_barra, pane_beltza, pane_itxi, pane_jarduera, pane_menu, pane_menuZerr, pane_minimizatu;
+    private AnchorPane pane_barra, pane_beltza, pane_itxi, pane_jarduera, pane_JardueraKargatu, pane_menu, pane_menuIzenak, pane_menuIkonoak, pane_minimizatu;
 
     public MainKud(Main main) {
         mainApp = main;
@@ -89,7 +89,7 @@ public class MainKud implements Initializable {
         fadeTransition.setToValue(0);
         fadeTransition.play();
 
-        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.1), pane_menuZerr);
+        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.1), pane_menuIzenak);
         translateTransition.setByX(-175);
         translateTransition.play();
 
@@ -129,6 +129,7 @@ public class MainKud implements Initializable {
 
         //aplikazioa irekitzean "Jarduera kargatu" pantaila bistaratzeko
         erakutsiJardueraKargatu();
+        ordenaEgokitu();
     }
 
     @FXML
@@ -137,12 +138,19 @@ public class MainKud implements Initializable {
         //klikatutako elementua aukeratutakoa ez bada horrekin erlazionatutako leihoa erakutsi
         if (mainApp.lehioAktibo != 1 && (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera)) {
             erakutsiJardueraKargatu();
+            ordenaEgokitu();
         }
 
         if (mainApp.menuIrekita) { //alboko menua itxi irekita badago
             pane_menu.setStyle("-fx-background-color: rgb(10,100,0); -fx-background-radius: 5.0");
             menuItxi();
         }
+    }
+
+    private void ordenaEgokitu() { //leihoaren elementuen ordena egokitzeko
+        pane_beltza.toFront();
+        pane_menuIzenak.toFront();
+        pane_menuIkonoak.toFront();
     }
 
     private void erakutsiJardueraKargatu() {
@@ -152,9 +160,8 @@ public class MainKud implements Initializable {
 
         elementuakZuriz();
 
-        //TODO dagokion pantaila kargatu
-        //TODO dagokion pantaila kargatu
-        //TODO dagokion pantaila kargatu
+        pane_JardueraKargatu.toFront();
+        pane_JardueraKargatu.requestFocus();
     }
 
     private void elementuakZuriz() { //alboko menuan zuriz jarri aukeratuak izan ez diren elementuak
@@ -190,7 +197,7 @@ public class MainKud implements Initializable {
             fadeTransition2.setToValue(0.3);
             fadeTransition2.play();
 
-            TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(0.1), pane_menuZerr);
+            TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(0.1), pane_menuIzenak);
             translateTransition2.setByX(+175);
             translateTransition2.play();
 
@@ -214,7 +221,7 @@ public class MainKud implements Initializable {
                 pane_beltza.setVisible(false);
             });
 
-            TranslateTransition translateTransition3 = new TranslateTransition(Duration.seconds(0.1), pane_menuZerr);
+            TranslateTransition translateTransition3 = new TranslateTransition(Duration.seconds(0.1), pane_menuIzenak);
             translateTransition3.setByX(-175);
             translateTransition3.play();
 
