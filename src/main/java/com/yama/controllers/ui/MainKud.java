@@ -90,7 +90,7 @@ public class MainKud implements Initializable {
         fadeTransition.play();
 
         TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.1), pane_menuIzenak);
-        translateTransition.setByX(-175);
+        translateTransition.setByX(-180);
         translateTransition.play();
 
         mainApp.menuIrekita = false;
@@ -120,7 +120,7 @@ public class MainKud implements Initializable {
         });
 
 
-        //alboko menua irekita dagoenean, pane_beltza sakatzean menua ixteko
+        //alboko menua irekita dagoenean, pane_beltza (ilundutako leihoaren eremua) sakatzean menua ixteko
         pane_beltza.setOnMouseClicked(event -> {
             pane_menu.setStyle("-fx-background-color: rgb(10,100,0); -fx-background-radius: 5.0");
             menuItxi();
@@ -198,7 +198,7 @@ public class MainKud implements Initializable {
             fadeTransition2.play();
 
             TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(0.1), pane_menuIzenak);
-            translateTransition2.setByX(+175);
+            translateTransition2.setByX(+180);
             translateTransition2.play();
 
             translateTransition2.setOnFinished(event -> {
@@ -222,7 +222,7 @@ public class MainKud implements Initializable {
             });
 
             TranslateTransition translateTransition3 = new TranslateTransition(Duration.seconds(0.1), pane_menuIzenak);
-            translateTransition3.setByX(-175);
+            translateTransition3.setByX(-180);
             translateTransition3.play();
 
             translateTransition3.setOnFinished(event -> {

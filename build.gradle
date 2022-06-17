@@ -38,8 +38,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 
-    // https://mvnrepository.com/artifact/com.jfoenix/jfoenix
-    implementation group: 'com.jfoenix', name: 'jfoenix', version: '9.0.1'
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation("com.google.guava:guava:31.1-jre")
 }
 
 test {
