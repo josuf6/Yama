@@ -2,8 +2,8 @@ module com.yama {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.desktop;
-    //requires com.google.guava;
     requires com.google.common;
+    requires org.json;
 
 
     opens com.yama to javafx.fxml;

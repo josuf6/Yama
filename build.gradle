@@ -10,6 +10,9 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://jcenter.bintray.com/"
+    }
 }
 
 ext {
@@ -40,6 +43,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation("com.google.guava:guava:31.1-jre")
+
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation 'org.json:json:20220320'
 }
 
 test {
