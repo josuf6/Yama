@@ -8,6 +8,8 @@ module com.yama {
 
     opens com.yama to javafx.fxml;
     exports com.yama;
+    exports com.yama.models;
     exports com.yama.controllers.ui;
     opens com.yama.controllers.ui to javafx.fxml;
+    opens com.yama.models to javafx.fxml;
 }

@@ -1,5 +1,6 @@
 package com.yama.controllers;
 
+import com.yama.models.JardueraModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -26,8 +27,8 @@ public class GPXKud {
 
     private GPXKud() {}
 
-    public ArrayList<JSONObject> kudeatuGPX(File fitx) {
-        ArrayList<JSONObject> jarduerak = new ArrayList<>();
+    public ArrayList<JardueraModel> kudeatuGPX(File fitx) {
+        ArrayList<JardueraModel> jarduerak = new ArrayList<>();
 
         try {
             File fitxGPX = new File(fitx.getAbsolutePath());
@@ -44,8 +45,8 @@ public class GPXKud {
 
                 //Track hutsak filtratzeko
                 if (track.getNodeType() == Node.ELEMENT_NODE && track.hasChildNodes()) {
-                    JSONObject jardueraJSON = kudeatuTrack((Element) track);
-                    jarduerak.add(jardueraJSON);
+                    JardueraModel jarduera = kudeatuTrack((Element) track);
+                    jarduerak.add(jarduera);
                 }
             }
         } catch (IOException | ParserConfigurationException | SAXException e) {
@@ -55,21 +56,21 @@ public class GPXKud {
         return jarduerak;
     }
 
-    private JSONObject kudeatuTrack(Element track) {
-        JSONObject jardueraJSON = new JSONObject();
+    private JardueraModel kudeatuTrack(Element track) {
 
         //Jardueraren izena lortu eta gorde
         String jardIzena = track.getElementsByTagName("name").item(0).getTextContent();
-        jardueraJSON.put("name", jardIzena);
 
         //Jarduera mota lortu eta gorde
         String jardMota = track.getElementsByTagName("type").item(0).getTextContent();
-        jardueraJSON.put("type", jardMota);
 
         JSONArray pointsJSONArray = new JSONArray();
 
         //Jardueraren segmentuak lortu eta kudeatu
         NodeList segmentuak = track.getElementsByTagName("trkseg");
+
+        String jardHasiData = null;
+        String jardBukData = null;
 
         //Jardueraren segmentuak aztertu
         for (int i = 0; i < segmentuak.getLength(); i++) {
@@ -81,7 +82,7 @@ public class GPXKud {
 
                 //Jardueraren puntuen informazioa lortu eta gorde
                 for (int j = 0; j < wayPoints.getLength(); j++) {
-                    Element point = (Element) wayPoints.item(i);
+                    Element point = (Element) wayPoints.item(j);
 
                     if (point.getNodeType() == Node.ELEMENT_NODE) {
                         JSONObject pointJSON = new JSONObject();
@@ -89,32 +90,60 @@ public class GPXKud {
                         //Puntuaren latitudea eta longitudea lortu
                         String lat = point.getAttribute("lat");
                         String lon = point.getAttribute("lon");
+                        if (!lat.isBlank() && !lon.isBlank()) {
+                            pointJSON.put("latitude", lat);
+                            pointJSON.put("longitude", lon);
+                        }
 
                         //Puntuaren elebazioa lortu
-                        String ele = point.getElementsByTagName("ele").item(0).getTextContent();
+                        NodeList eleNodes = point.getElementsByTagName("ele");
+                        if (eleNodes.getLength() > 0) {
+                            String ele = eleNodes.item(0).getTextContent();
+                            pointJSON.put("elevation", ele);
+                        }
 
                         //Puntuaren denbora (data eta ordua) lortu
-                        String time = point.getElementsByTagName("time").item(0).getTextContent();
+                        NodeList timeNodes = point.getElementsByTagName("time");
+                        if (timeNodes.getLength() > 0) {
+                            String time = timeNodes.item(0).getTextContent();
+                            pointJSON.put("time", time);
+
+                            //Jardueraren data aurkitzen den lehenengo data izango da
+                            if (jardHasiData == null) {
+                                jardHasiData = time;
+                            }
+
+                            jardBukData = time;
+                        }
 
                         //Puntuaren "extensions" nodoa aztertu bestelako atributuak lortzeko
                         Node extensions = point.getElementsByTagName("extensions").item(0);
-                        NodeList extsNodoak = extensions.getChildNodes();
+                        if (extensions != null) {
+                            NodeList extsNodoak = extensions.getChildNodes();
 
-                        //Puntuaren bihotz-maiztasuna, tenperatura, kadentzia eta potentzia lortu
-                        String hr = getInfo(extsNodoak, new String[]{"hr", "heartrate"});
-                        String temp = getInfo(extsNodoak, new String[]{"temp"});
-                        String cad = getInfo(extsNodoak, new String[]{"cad"});
-                        String power = getInfo(extsNodoak, new String[]{"pow"});
+                            //Puntuaren bihotz-maiztasuna, tenperatura, kadentzia eta potentzia lortu (existitzekotan)
+                            if (extsNodoak.getLength() > 0) {
+                                String hr = getInfo(extsNodoak, new String[]{"hr", "heartrate"});
+                                if (hr != null) {
+                                    pointJSON.put("heartrate", hr);
+                                }
 
-                        //Puntuaren informazioa JSON objektu batean gorde
-                        pointJSON.put("latitude", lat);
-                        pointJSON.put("longitude", lon);
-                        pointJSON.put("elevation", ele);
-                        pointJSON.put("time", time);
-                        pointJSON.put("heartrate", hr);
-                        pointJSON.put("temperature", temp);
-                        pointJSON.put("cadence", cad);
-                        pointJSON.put("power", power);
+                                String temp = getInfo(extsNodoak, new String[]{"temp"});
+                                if (temp != null) {
+                                    pointJSON.put("temperature", temp);
+                                }
+
+                                String cad = getInfo(extsNodoak, new String[]{"cad"});
+                                if (hr != null) {
+                                    pointJSON.put("cadence", cad);
+                                }
+
+                                String power = getInfo(extsNodoak, new String[]{"pow", "watt"});
+                                if (hr != null) {
+                                    pointJSON.put("power", power);
+                                }
+                            }
+                        }
 
                         //Puntuaren informazioa jardueraren puntuen JSON zerrendan gorde
                         pointsJSONArray.put(pointJSON);
@@ -123,10 +152,7 @@ public class GPXKud {
             }
         }
 
-        //Puntuen JSON zerrenda jardueraren JSON objektuan gorde
-        jardueraJSON.put("waypoints", pointsJSONArray);
-
-        return jardueraJSON;
+        return new JardueraModel(jardIzena, jardMota, jardHasiData, jardBukData, pointsJSONArray);
     }
 
     private String getInfo(NodeList nodoak, String[] pTags) {

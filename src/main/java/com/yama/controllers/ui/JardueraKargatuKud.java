@@ -2,12 +2,19 @@ package com.yama.controllers.ui;
 
 import com.yama.Main;
 import com.yama.controllers.GPXKud;
+import com.yama.models.JardueraModel;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.net.URL;
@@ -18,10 +25,29 @@ public class JardueraKargatuKud implements Initializable {
 
     private Main mainApp;
 
-    private ArrayList<JSONObject> jarduerak;
+    private ArrayList<JardueraModel> jardZerr;
+    private ObservableList<JardueraModel> jardZerrObs;
+
+    @FXML
+    private AnchorPane panela;
 
     @FXML
     private Button btn_kargatu;
+
+    @FXML
+    private TableView<JardueraModel> tbJard;
+
+    @FXML
+    private TableColumn<JardueraModel, String> name;
+
+    @FXML
+    private TableColumn<JardueraModel, String> time;
+
+    @FXML
+    private TableColumn<JardueraModel, String> type;
+
+    @FXML
+    private TableColumn<JardueraModel, String> distance;
 
     public JardueraKargatuKud(Main main) {
         mainApp = main;
@@ -29,12 +55,34 @@ public class JardueraKargatuKud implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        jarduerak = new ArrayList<>();
+        jardZerr = new ArrayList<>();
+
+        tbJard.setEditable(false);
+        name.setResizable(false);
+        name.setReorderable(false);
+        time.setResizable(false);
+        time.setReorderable(false);
+        type.setResizable(false);
+        type.setReorderable(false);
+        distance.setResizable(false);
+        distance.setReorderable(false);
+
+        name.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        time.setCellValueFactory(new PropertyValueFactory<>("Time"));
+        type.setCellValueFactory(new PropertyValueFactory<>("Type"));
+        distance.setCellValueFactory(new PropertyValueFactory<>("Distance"));
+
+        Platform.runLater(() -> panela.requestFocus());
     }
 
     @FXML
     void onClick(MouseEvent event) {
         aukeratuFitxategia();
+    }
+
+    @FXML
+    void onClickTaula(MouseEvent event) {
+        tbJard.requestFocus();
     }
 
     private void aukeratuFitxategia() { //kargatu nahi den jardueraren fitxategia aukeratzeko
@@ -54,20 +102,24 @@ public class JardueraKargatuKud implements Initializable {
             String ext = com.google.common.io.Files.getFileExtension(fitxategia.getName());
 
             if (ext.equals("gpx")) { //fitxategia gpx motakoa bada
-                ArrayList<JSONObject> jardueraBerriak = GPXKud.getGPXKud().kudeatuGPX(fitxategia);
+                ArrayList<JardueraModel> jardueraBerriak = GPXKud.getGPXKud().kudeatuGPX(fitxategia);
 
                 //hau hobeto pentsatu (zerbait estandarragoa egin)
                 if (!jardueraBerriak.isEmpty()) {
                     jardueraBerriak.forEach(jardueraBerria -> {
-                        if (!jardueraBerria.isEmpty()) {
-                            jarduerak.add(jardueraBerria);
-                            //TODO eguneratu pantaila edo dena delakoa
-                        }
+                        System.out.println(jardueraBerria);
+                        jardZerr.add(jardueraBerria);
+                        jardueraTaulaEguneratu();
                     });
                 } else {
                     //TODO
                 }
             }
         }
+    }
+
+    private void jardueraTaulaEguneratu() {
+        jardZerrObs = FXCollections.observableArrayList(jardZerr);
+        tbJard.setItems(jardZerrObs);
     }
 }
