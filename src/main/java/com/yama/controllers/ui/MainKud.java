@@ -34,35 +34,21 @@ public class MainKud implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         //"X" ikurra sakatzean aplikazioa ixteko
-        pane_itxi.setOnMouseClicked(event -> {
-            System.exit(0);
-        });
+        pane_itxi.setOnMouseClicked(event -> System.exit(0));
 
-        pane_itxi.setOnMouseEntered(event -> {
-            pane_itxi.setStyle("-fx-background-color: rgb(200,0,0); -fx-background-radius: 5.0");
-        });
+        pane_itxi.setOnMouseEntered(event -> pane_itxi.setStyle("-fx-background-color: rgb(200,0,0); -fx-background-radius: 5.0"));
 
-        pane_itxi.setOnMouseExited(event -> {
-            pane_itxi.setStyle("-fx-background-color: rgb(10,100,0); -fx-background-radius: 5.0");
-        });
+        pane_itxi.setOnMouseExited(event -> pane_itxi.setStyle("-fx-background-color: rgb(10,100,0); -fx-background-radius: 5.0"));
 
 
         //"-" ikurra sakatzean aplikazioa minimizatzeko
-        pane_minimizatu.setOnMousePressed(event -> {
-            pane_minimizatu.setStyle("-fx-background-color: rgb(10,100,0); -fx-background-radius: 5.0");
-        });
+        pane_minimizatu.setOnMousePressed(event -> pane_minimizatu.setStyle("-fx-background-color: rgb(10,100,0); -fx-background-radius: 5.0"));
 
-        pane_minimizatu.setOnMouseClicked(event -> {
-            Main.getStage().setIconified(true);
-        });
+        pane_minimizatu.setOnMouseClicked(event -> Main.getStage().setIconified(true));
 
-        pane_minimizatu.setOnMouseEntered(event -> {
-            pane_minimizatu.setStyle("-fx-background-color: rgb(13,130,0); -fx-background-radius: 5.0");
-        });
+        pane_minimizatu.setOnMouseEntered(event -> pane_minimizatu.setStyle("-fx-background-color: rgb(13,130,0); -fx-background-radius: 5.0"));
 
-        pane_minimizatu.setOnMouseExited(event -> {
-            pane_minimizatu.setStyle("-fx-background-color: rgb(10,100,0); -fx-background-radius: 5.0");
-        });
+        pane_minimizatu.setOnMouseExited(event -> pane_minimizatu.setStyle("-fx-background-color: rgb(10,100,0); -fx-background-radius: 5.0"));
 
 
         //Leihoa mugitu ahal izateko
@@ -217,9 +203,7 @@ public class MainKud implements Initializable {
             fadeTransition3.setToValue(0);
             fadeTransition3.play();
 
-            fadeTransition3.setOnFinished(event -> {
-                pane_beltza.setVisible(false);
-            });
+            fadeTransition3.setOnFinished(event -> pane_beltza.setVisible(false));
 
             TranslateTransition translateTransition3 = new TranslateTransition(Duration.seconds(0.1), pane_menuIzenak);
             translateTransition3.setByX(-180);

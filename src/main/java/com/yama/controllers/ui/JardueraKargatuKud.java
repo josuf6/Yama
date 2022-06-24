@@ -47,6 +47,9 @@ public class JardueraKargatuKud implements Initializable {
     private TableColumn<JardueraModel, String> type;
 
     @FXML
+    private TableColumn<JardueraModel, String> duration;
+
+    @FXML
     private TableColumn<JardueraModel, String> distance;
 
     public JardueraKargatuKud(Main main) {
@@ -64,12 +67,15 @@ public class JardueraKargatuKud implements Initializable {
         time.setReorderable(false);
         type.setResizable(false);
         type.setReorderable(false);
+        duration.setResizable(false);
+        duration.setReorderable(false);
         distance.setResizable(false);
         distance.setReorderable(false);
 
         name.setCellValueFactory(new PropertyValueFactory<>("Name"));
         time.setCellValueFactory(new PropertyValueFactory<>("Time"));
         type.setCellValueFactory(new PropertyValueFactory<>("Type"));
+        duration.setCellValueFactory(new PropertyValueFactory<>("Duration"));
         distance.setCellValueFactory(new PropertyValueFactory<>("Distance"));
 
         Platform.runLater(() -> panela.requestFocus());
