@@ -49,6 +49,9 @@ public class JardueraModel {
     }
 
     public String getName() {
+        if (name.isBlank()) {
+            return  "?";
+        }
         return name;
     }
 
@@ -63,7 +66,6 @@ public class JardueraModel {
                 return formatuPantailan.format(data);
             } catch (ParseException ignored) {}
         }
-
         return "?";
     }
 
@@ -73,7 +75,6 @@ public class JardueraModel {
         }
 
         long iraupenLong = Long.parseLong(duration);
-        System.out.println(iraupenLong);
 
         long seg = iraupenLong;
         if (seg < 60) {
@@ -126,9 +127,9 @@ public class JardueraModel {
             return "Txirrindularitza";
         } else if (Arrays.stream(new String[]{"run"}).anyMatch(pType::contains)) {
             return "Korrika";
+        } else if (Arrays.stream(new String[]{"walk"}).anyMatch(pType::contains)) {
+            return "Ibilaldia";
         }
-        //TODO Kalkulatu jarduera mota "pType"-ren balioaren arabera
-
         return "";
     }
 

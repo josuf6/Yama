@@ -1,7 +1,8 @@
 package com.yama.controllers.ui;
 
 import com.yama.Main;
-import com.yama.controllers.GPXKud;
+import com.yama.controllers.files.GPXKud;
+import com.yama.controllers.files.TCXKud;
 import com.yama.models.JardueraModel;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -97,7 +98,8 @@ public class JardueraKargatuKud implements Initializable {
 
         //baimendutako fitxategi motak murrizteko filtroak
         fc.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("GPX", "*.gpx")
+                new FileChooser.ExtensionFilter("GPX", "*.gpx"),
+                new FileChooser.ExtensionFilter("TCX", "*.tcx")
         );
 
         //leiho bat ireki fitxategi bat aukeratzeko
@@ -110,15 +112,24 @@ public class JardueraKargatuKud implements Initializable {
             if (ext.equals("gpx")) { //fitxategia gpx motakoa bada
                 ArrayList<JardueraModel> jardueraBerriak = GPXKud.getGPXKud().kudeatuGPX(fitxategia);
 
-                //hau hobeto pentsatu (zerbait estandarragoa egin)
                 if (!jardueraBerriak.isEmpty()) {
                     jardueraBerriak.forEach(jardueraBerria -> {
-                        System.out.println(jardueraBerria);
                         jardZerr.add(jardueraBerria);
                         jardueraTaulaEguneratu();
                     });
                 } else {
-                    //TODO
+                    //TODO Errore pantaila bat
+                }
+            } else if (ext.equals("tcx")) {//fitxategia tcx motakoa bada
+                ArrayList<JardueraModel> jardueraBerriak = TCXKud.getTCXKud().kudeatuTCX(fitxategia);
+
+                if (!jardueraBerriak.isEmpty()) {
+                    jardueraBerriak.forEach(jardueraBerria -> {
+                        jardZerr.add(jardueraBerria);
+                        jardueraTaulaEguneratu();
+                    });
+                } else {
+                    //TODO Errore pantaila bat
                 }
             }
         }

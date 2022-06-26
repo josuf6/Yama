@@ -1,4 +1,4 @@
-package com.yama.controllers;
+package com.yama.controllers.files;
 
 import com.yama.models.JardueraModel;
 import org.w3c.dom.Document;
@@ -45,7 +45,10 @@ public class GPXKud {
                 //Track hutsak filtratzeko
                 if (track.getNodeType() == Node.ELEMENT_NODE && track.hasChildNodes()) {
                     JardueraModel jarduera = kudeatuTrack((Element) track);
-                    jarduerak.add(jarduera);
+
+                    if (jarduera != null) {
+                        jarduerak.add(jarduera);
+                    }
                 }
             }
         } catch (IOException | ParserConfigurationException | SAXException e) {
@@ -61,7 +64,7 @@ public class GPXKud {
         String jardIzena = track.getElementsByTagName("name").item(0).getTextContent();
 
         //Jarduera mota lortu eta gorde
-        String jardMota = track.getElementsByTagName("type").item(0).getTextContent();
+        String jardMota = track.getElementsByTagName("type").item(0).getTextContent().toLowerCase();
 
         //Jardueraren segmentuak lortu eta kudeatu
         NodeList segmentuak = track.getElementsByTagName("trkseg");
@@ -91,29 +94,22 @@ public class GPXKud {
                     Element point = (Element) wayPoints.item(j);
 
                     if (point.getNodeType() == Node.ELEMENT_NODE) {
+                        String lat, lon, ele, hr, temp, cad, power;
+                        String time = "";
 
-                        //Puntuaren latitudea eta longitudea lortu
-                        String lat = point.getAttribute("lat");
-                        String lon = point.getAttribute("lon");
-                        if (!lat.isBlank() && !lon.isBlank()) {
-                            coordZerr.add(new Double[]{Double.valueOf(lat), Double.valueOf(lon)});
-                        } else {
-                            coordZerr.add(null);
-                        }
-
-                        //Puntuaren elebazioa lortu
-                        NodeList eleNodes = point.getElementsByTagName("ele");
-                        if (eleNodes.getLength() > 0) {
-                            String ele = eleNodes.item(0).getTextContent();
-                            eleZerr.add(Double.valueOf(ele));
-                        } else {
-                            eleZerr.add(null);
-                        }
+                        //Puntuaren koordenatuak lortu
+                        lat = point.getAttribute("lat");
+                        lon = point.getAttribute("lon");
 
                         //Puntuaren denbora (data eta ordua) lortu
                         NodeList timeNodes = point.getElementsByTagName("time");
                         if (timeNodes.getLength() > 0) {
-                            String time = timeNodes.item(0).getTextContent();
+                            time = timeNodes.item(0).getTextContent();
+                        }
+
+                        //Informazio geografikorik ez badago ez gorde puntuaren informazioa
+                        if (!lat.isBlank() && !lon.isBlank() && !time.isBlank()) {
+                            coordZerr.add(new Double[]{Double.valueOf(lat), Double.valueOf(lon)});
                             timeZerr.add(time);
 
                             //Jardueraren data aurkitzen den lehenengo data izango da
@@ -121,67 +117,79 @@ public class GPXKud {
                                 jardHasiData = time;
                             }
 
+                            //Jardueraren bukaera data Puntu bakoitzarekin eguneratu
                             jardBukData = time;
-                        } else {
-                            timeZerr.add(null);
-                        }
 
-                        //Puntuaren "extensions" nodoa aztertu bestelako atributuak lortzeko
-                        Node extensions = point.getElementsByTagName("extensions").item(0);
-                        if (extensions != null) {
-                            NodeList extsNodoak = extensions.getChildNodes();
-
-                            //Puntuaren bihotz-maiztasuna, tenperatura, kadentzia eta potentzia lortu (existitzekotan)
-                            if (extsNodoak.getLength() > 0) {
-                                String hr = getInfo(extsNodoak, new String[]{"hr", "heartrate"});
-                                if (hr != null) {
-                                    hrZerr.add(Integer.valueOf(hr));
-                                } else {
-                                    hrZerr.add(null);
-                                }
-
-                                String temp = getInfo(extsNodoak, new String[]{"temp"});
-                                if (temp != null) {
-                                    tempZerr.add(Double.valueOf(temp));
-                                } else {
-                                    tempZerr.add(null);
-                                }
-
-                                String cad = getInfo(extsNodoak, new String[]{"cad"});
-                                if (cad != null) {
-                                    cadZerr.add(Integer.valueOf(cad));
-                                } else {
-                                    cadZerr.add(null);
-                                }
-
-                                String power = getInfo(extsNodoak, new String[]{"pow", "watt"});
-                                if (power != null) {
-                                    pwZerr.add(Integer.valueOf(power));
-                                } else {
-                                    pwZerr.add(null);
-                                }
+                            //Puntuaren elebazioa lortu
+                            NodeList eleNodes = point.getElementsByTagName("ele");
+                            if (eleNodes.getLength() > 0) {
+                                ele = eleNodes.item(0).getTextContent();
+                                eleZerr.add(Double.valueOf(ele));
+                            } else {
+                                eleZerr.add(null);
                             }
-                        } else {
-                            hrZerr.add(null);
-                            tempZerr.add(null);
-                            cadZerr.add(null);
-                            pwZerr.add(null);
+
+                            //Puntuaren "extensions" nodoa aztertu bestelako atributuak lortzeko
+                            Node extensions = point.getElementsByTagName("extensions").item(0);
+                            if (extensions != null) {
+                                NodeList extsNodoak = extensions.getChildNodes();
+
+                                //Puntuaren bihotz-maiztasuna, tenperatura, kadentzia eta potentzia lortu (existitzekotan)
+                                if (extsNodoak.getLength() > 0) {
+                                    hr = getInfo(extsNodoak, new String[]{"hr", "heartrate"});
+                                    if (hr != null) {
+                                        hrZerr.add(Integer.valueOf(hr));
+                                    } else {
+                                        hrZerr.add(null);
+                                    }
+
+                                    temp = getInfo(extsNodoak, new String[]{"temp"});
+                                    if (temp != null) {
+                                        tempZerr.add(Double.valueOf(temp));
+                                    } else {
+                                        tempZerr.add(null);
+                                    }
+
+                                    cad = getInfo(extsNodoak, new String[]{"cad"});
+                                    if (cad != null) {
+                                        cadZerr.add(Integer.valueOf(cad));
+                                    } else {
+                                        cadZerr.add(null);
+                                    }
+
+                                    power = getInfo(extsNodoak, new String[]{"pw", "pow", "watt"});
+                                    if (power != null) {
+                                        pwZerr.add(Integer.valueOf(power));
+                                    } else {
+                                        pwZerr.add(null);
+                                    }
+                                }
+                            } else {
+                                hrZerr.add(null);
+                                tempZerr.add(null);
+                                cadZerr.add(null);
+                                pwZerr.add(null);
+                            }
                         }
                     }
                 }
             }
         }
 
-        //Jarduera batean informazio mota baten baliorik ez bada aurkitzen zerrenda "null" bezala gorde
-        if (coordZerr.stream().allMatch(Objects::isNull)) coordZerr = null;
-        if (eleZerr.stream().allMatch(Objects::isNull)) eleZerr = null;
-        if (timeZerr.stream().allMatch(Objects::isNull)) timeZerr = null;
-        if (hrZerr.stream().allMatch(Objects::isNull)) hrZerr = null;
-        if (tempZerr.stream().allMatch(Objects::isNull)) tempZerr = null;
-        if (cadZerr.stream().allMatch(Objects::isNull)) cadZerr = null;
-        if (pwZerr.stream().allMatch(Objects::isNull)) pwZerr = null;
+        if (!coordZerr.stream().allMatch(Objects::isNull) && !timeZerr.stream().allMatch(Objects::isNull)) {
+            if (coordZerr.size() > 1 && coordZerr.size() == timeZerr.size()) {
 
-        return new JardueraModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr, cadZerr, pwZerr);
+                //Jarduera batean informazio mota baten baliorik ez bada aurkitzen zerrenda "null" bezala gorde
+                if (eleZerr.stream().allMatch(Objects::isNull)) eleZerr = null;
+                if (hrZerr.stream().allMatch(Objects::isNull)) hrZerr = null;
+                if (tempZerr.stream().allMatch(Objects::isNull)) tempZerr = null;
+                if (cadZerr.stream().allMatch(Objects::isNull)) cadZerr = null;
+                if (pwZerr.stream().allMatch(Objects::isNull)) pwZerr = null;
+
+                return new JardueraModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr, cadZerr, pwZerr);
+            }
+        }
+        return null;
     }
 
     private String getInfo(NodeList nodoak, String[] pTags) {
