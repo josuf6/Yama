@@ -12,9 +12,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class TCXKud {
 
@@ -116,11 +116,12 @@ public class TCXKud {
                             //Puntuaren denbora (data eta ordua) lortu
                             NodeList timeNodes = point.getElementsByTagName("Time");
                             if (timeNodes.getLength() > 0) {
-                                time = timeNodes.item(0).getTextContent();
+                                time = getTime(timeNodes.item(0).getTextContent());
                             }
 
                             //Koordenatuen eta denboraren ez badago ez gorde puntuaren informazioa
-                            if (!lat.isBlank() && !lon.isBlank() && !time.isBlank()) {
+                            if (!lat.isBlank() && !lon.isBlank() && !Double.isNaN(Double.parseDouble(lat)) &&
+                                    !Double.isNaN(Double.parseDouble(lon)) && !time.isBlank()) {
                                 coordZerr.add(new Double[]{Double.valueOf(lat), Double.valueOf(lon)});
                                 timeZerr.add(time);
 
@@ -135,8 +136,13 @@ public class TCXKud {
                                 //Puntuaren elebazioa lortu
                                 NodeList eleNodes = point.getElementsByTagName("AltitudeMeters");
                                 if (eleNodes.getLength() > 0) {
-                                    ele = eleNodes.item(0).getTextContent();
-                                    eleZerr.add(Double.valueOf(ele));
+                                    try {
+                                        ele = eleNodes.item(0).getTextContent();
+                                        double eleDouble = Double.parseDouble(ele);
+                                        eleZerr.add(eleDouble);
+                                    } catch (NumberFormatException e) {
+                                        eleZerr.add(null);
+                                    }
                                 } else {
                                     eleZerr.add(null);
                                 }
@@ -146,16 +152,22 @@ public class TCXKud {
                                 if (hrElem != null) {
                                     NodeList hrNodes = hrElem.getElementsByTagName("Value");
                                     if (hrNodes.getLength() > 0) {
-                                        hr = hrNodes.item(0).getTextContent();
-                                        hrZerr.add(Integer.valueOf(hr));
+                                        try {
+                                            hr = hrNodes.item(0).getTextContent();
+                                            int hrInt = Integer.parseInt(hr);
+                                            hrZerr.add(hrInt);
+                                        } catch (NumberFormatException ignored) {}
                                     }
                                 }
 
                                 //Puntuaren kadentzia lortu (aurkitzen ez bada "Extensions" nodoan bilatzen da)
                                 NodeList cadElem = point.getElementsByTagName("Cadence");
                                 if (cadElem.getLength() > 0) {
-                                    cad = cadElem.item(0).getTextContent();
-                                    cadZerr.add(Integer.valueOf(cad));
+                                    try {
+                                        cad = cadElem.item(0).getTextContent();
+                                        int cadInt = Integer.parseInt(cad);
+                                        cadZerr.add(cadInt);
+                                    } catch (NumberFormatException ignored) {}
                                 }
 
                                 //Puntuaren "Extensions" nodoa aztertu bestelako atributuak lortzeko
@@ -168,7 +180,12 @@ public class TCXKud {
                                         if (hr == null) { //lehenik aurkitu ez bada
                                             hr = getInfo(extsNodoak, new String[]{"hr", "heartrate"});
                                             if (hr != null) {
-                                                hrZerr.add(Integer.valueOf(hr));
+                                                try {
+                                                    int hrInt = Integer.parseInt(hr);
+                                                    hrZerr.add(hrInt);
+                                                } catch (NumberFormatException e) {
+                                                    hrZerr.add(null);
+                                                }
                                             } else {
                                                 hrZerr.add(null);
                                             }
@@ -176,7 +193,12 @@ public class TCXKud {
 
                                         temp = getInfo(extsNodoak, new String[]{"temp"});
                                         if (temp != null) {
-                                            tempZerr.add(Double.valueOf(temp));
+                                            try {
+                                                double tempDouble = Double.parseDouble(temp);
+                                                tempZerr.add(tempDouble);
+                                            } catch (NumberFormatException e) {
+                                                tempZerr.add(null);
+                                            }
                                         } else {
                                             tempZerr.add(null);
                                         }
@@ -184,7 +206,12 @@ public class TCXKud {
                                         if (cad == null) { //lehenik aurkitu ez bada
                                             cad = getInfo(extsNodoak, new String[]{"cad"});
                                             if (cad != null) {
-                                                cadZerr.add(Integer.valueOf(cad));
+                                                try {
+                                                    int cadInt = Integer.parseInt(cad);
+                                                    cadZerr.add(cadInt);
+                                                } catch (NumberFormatException e) {
+                                                    cadZerr.add(null);
+                                                }
                                             } else {
                                                 cadZerr.add(null);
                                             }
@@ -192,7 +219,12 @@ public class TCXKud {
 
                                         power = getInfo(extsNodoak, new String[]{"watts", "Watts"});
                                         if (power != null) {
-                                            pwZerr.add(Integer.valueOf(power));
+                                            try {
+                                                int powerInt = Integer.parseInt(power);
+                                                pwZerr.add(powerInt);
+                                            } catch (NumberFormatException e) {
+                                                pwZerr.add(null);
+                                            }
                                         } else {
                                             pwZerr.add(null);
                                         }
@@ -224,6 +256,20 @@ public class TCXKud {
             }
         }
         return null;
+    }
+
+    private String getTime(String pTime) {
+        String[] dataFormatuak = new String[]{"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss'Z'"};
+        for (String formatu : dataFormatuak) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat(formatu);
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+                Date data = sdf.parse(pTime);
+                SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                return sdfTime.format(data);
+            } catch (ParseException ignored) {}
+        }
+        return "";
     }
 
     private String getInfo(NodeList nodoak, String[] pTags) {

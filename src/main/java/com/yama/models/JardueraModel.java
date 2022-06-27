@@ -40,12 +40,9 @@ public class JardueraModel {
         tempList = pTempList;
         cadList = pCadList;
         pwList = pPwList;
-
-        String[] dataFormatuak = new String[]{"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss'Z'"};
-        duration = kalkulatuIraupena(dataFormatuak);
-
+        duration = kalkulatuIraupena();
         distance = kalkulatuDistantzia();
-        movingTime = kalkulatuDenbMugimenduan(dataFormatuak);
+        movingTime = kalkulatuDenbMugimenduan();
     }
 
     public String getName() {
@@ -56,17 +53,15 @@ public class JardueraModel {
     }
 
     public String getTime() { //Jardueraren data pantailatzerakoan honek izango duen formatua
-        String[] dataFormatuak = new String[]{"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss'Z'"};
-        for (String formatu : dataFormatuak) {
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat(formatu);
-                sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-                Date data = sdf.parse(time);
-                SimpleDateFormat formatuPantailan = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-                return formatuPantailan.format(data);
-            } catch (ParseException ignored) {}
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            Date data = sdf.parse(time);
+            SimpleDateFormat formatuPantailan = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            return formatuPantailan.format(data);
+        } catch (ParseException e) {
+            return "?";
         }
-        return "?";
     }
 
     public String getDuration() { //Jardueraren iraupena pantailatzerakoan honek izango duen formatua
@@ -133,22 +128,22 @@ public class JardueraModel {
         return "";
     }
 
-    private String kalkulatuIraupena(String[] dataFormatuak) { //Jardueraren iraupena kalkulatu koordenatuak erabiliz
-        for (String formatu : dataFormatuak) {
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat(formatu);
-                Date hasiData = sdf.parse(time);
-                Date bukData = sdf.parse(endTime);
-                long iraupMilis = bukData.getTime() - hasiData.getTime();
+    private String kalkulatuIraupena() { //Jardueraren iraupena kalkulatu koordenatuak erabiliz
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date hasiData = sdf.parse(time);
+            Date bukData = sdf.parse(endTime);
+            System.out.println(hasiData);
+            System.out.println(bukData);
+            long iraupMilis = bukData.getTime() - hasiData.getTime();
 
-                return String.valueOf(iraupMilis / 1000);
-            } catch (ParseException ignored) {}
-        }
+            return String.valueOf(iraupMilis / 1000);
+        } catch (ParseException ignored) {}
 
         return  "";
     }
 
-    private String kalkulatuDenbMugimenduan(String[] dataFormatuak) {
+    private String kalkulatuDenbMugimenduan() {
         //TODO kalkulatu hau abiaduraren arabera
 
         return "";

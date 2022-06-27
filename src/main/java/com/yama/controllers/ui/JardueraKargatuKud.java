@@ -9,9 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -109,7 +107,10 @@ public class JardueraKargatuKud implements Initializable {
         if (fitxategia != null && fitxategia.exists() && fitxategia.isFile()) {
             fitxategiaAztertu(fitxategia);
         } else {
-            //TODO Errore pantaila bat
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Ezin izan da fitxategia irakurri.", ButtonType.CLOSE);
+            alert.setTitle("Yama");
+            alert.setHeaderText("Errorea fitxategia irakurtzen.");
+            alert.showAndWait();
         }
     }
 
@@ -128,7 +129,10 @@ public class JardueraKargatuKud implements Initializable {
                             jardueraTaulaEguneratu();
                         });
                     } else {
-                        //TODO Errore pantaila bat
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Ezin izan da jarduerarik lortu fitxategitik.", ButtonType.CLOSE);
+                        alert.setTitle("Yama");
+                        alert.setHeaderText("Errorea fitxategia aztertzen.");
+                        alert.showAndWait();
                     }
                     aktibatuFuntzionalitateak();
                 });
@@ -146,7 +150,10 @@ public class JardueraKargatuKud implements Initializable {
                             jardueraTaulaEguneratu();
                         });
                     } else {
-                        //TODO Errore pantaila bat
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Ezin izan da jarduerarik lortu fitxategitik.", ButtonType.CLOSE);
+                        alert.setTitle("Yama");
+                        alert.setHeaderText("Errorea fitxategia aztertzen.");
+                        alert.showAndWait();
                     }
                     aktibatuFuntzionalitateak();
                 });

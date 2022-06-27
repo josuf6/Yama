@@ -12,9 +12,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class GPXKud {
 
@@ -61,10 +61,18 @@ public class GPXKud {
     private JardueraModel kudeatuTrack(Element track) {
 
         //Jardueraren izena lortu eta gorde
-        String jardIzena = track.getElementsByTagName("name").item(0).getTextContent();
+        String jardIzena = "";
+        NodeList izenaNodes = track.getElementsByTagName("name");
+        if (izenaNodes.getLength() > 0) {
+            jardIzena = izenaNodes.item(0).getTextContent();
+        }
 
         //Jarduera mota lortu eta gorde
-        String jardMota = track.getElementsByTagName("type").item(0).getTextContent().toLowerCase();
+        String jardMota = "";
+        NodeList motaNodes = track.getElementsByTagName("type");
+        if (motaNodes.getLength() > 0) {
+            jardMota = motaNodes.item(0).getTextContent().toLowerCase();
+        }
 
         //Jardueraren segmentuak lortu eta kudeatu
         NodeList segmentuak = track.getElementsByTagName("trkseg");
@@ -104,11 +112,12 @@ public class GPXKud {
                         //Puntuaren denbora (data eta ordua) lortu
                         NodeList timeNodes = point.getElementsByTagName("time");
                         if (timeNodes.getLength() > 0) {
-                            time = timeNodes.item(0).getTextContent();
+                            time = getTime(timeNodes.item(0).getTextContent());
                         }
 
                         //Informazio geografikorik ez badago ez gorde puntuaren informazioa
-                        if (!lat.isBlank() && !lon.isBlank() && !time.isBlank()) {
+                        if (!lat.isBlank() && !lon.isBlank() && !Double.isNaN(Double.parseDouble(lat)) &&
+                                !Double.isNaN(Double.parseDouble(lon)) && !time.isBlank()) {
                             coordZerr.add(new Double[]{Double.valueOf(lat), Double.valueOf(lon)});
                             timeZerr.add(time);
 
@@ -123,8 +132,13 @@ public class GPXKud {
                             //Puntuaren elebazioa lortu
                             NodeList eleNodes = point.getElementsByTagName("ele");
                             if (eleNodes.getLength() > 0) {
-                                ele = eleNodes.item(0).getTextContent();
-                                eleZerr.add(Double.valueOf(ele));
+                                try {
+                                    ele = eleNodes.item(0).getTextContent();
+                                    double eleDouble = Double.parseDouble(ele);
+                                    eleZerr.add(eleDouble);
+                                } catch (NumberFormatException e) {
+                                    eleZerr.add(null);
+                                }
                             } else {
                                 eleZerr.add(null);
                             }
@@ -138,28 +152,48 @@ public class GPXKud {
                                 if (extsNodoak.getLength() > 0) {
                                     hr = getInfo(extsNodoak, new String[]{"hr", "heartrate"});
                                     if (hr != null) {
-                                        hrZerr.add(Integer.valueOf(hr));
+                                        try {
+                                            int hrInt = Integer.parseInt(hr);
+                                            hrZerr.add(hrInt);
+                                        } catch (NumberFormatException e) {
+                                            hrZerr.add(null);
+                                        }
                                     } else {
                                         hrZerr.add(null);
                                     }
 
                                     temp = getInfo(extsNodoak, new String[]{"temp"});
                                     if (temp != null) {
-                                        tempZerr.add(Double.valueOf(temp));
+                                        try {
+                                            double tempDouble = Double.parseDouble(temp);
+                                            tempZerr.add(tempDouble);
+                                        } catch (NumberFormatException e) {
+                                            tempZerr.add(null);
+                                        }
                                     } else {
                                         tempZerr.add(null);
                                     }
 
                                     cad = getInfo(extsNodoak, new String[]{"cad"});
                                     if (cad != null) {
-                                        cadZerr.add(Integer.valueOf(cad));
+                                        try {
+                                            int cadInt = Integer.parseInt(cad);
+                                            cadZerr.add(cadInt);
+                                        } catch (NumberFormatException e) {
+                                            cadZerr.add(null);
+                                        }
                                     } else {
                                         cadZerr.add(null);
                                     }
 
                                     power = getInfo(extsNodoak, new String[]{"pw", "pow", "watt"});
                                     if (power != null) {
-                                        pwZerr.add(Integer.valueOf(power));
+                                        try {
+                                            int powerInt = Integer.parseInt(power);
+                                            pwZerr.add(powerInt);
+                                        } catch (NumberFormatException e) {
+                                            pwZerr.add(null);
+                                        }
                                     } else {
                                         pwZerr.add(null);
                                     }
@@ -190,6 +224,20 @@ public class GPXKud {
             }
         }
         return null;
+    }
+
+    private String getTime(String pTime) {
+        String[] dataFormatuak = new String[]{"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss'Z'"};
+        for (String formatu : dataFormatuak) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat(formatu);
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+                Date data = sdf.parse(pTime);
+                SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                return sdfTime.format(data);
+            } catch (ParseException ignored) {}
+        }
+        return "";
     }
 
     private String getInfo(NodeList nodoak, String[] pTags) {
