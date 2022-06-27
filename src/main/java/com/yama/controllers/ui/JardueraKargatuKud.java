@@ -92,51 +92,89 @@ public class JardueraKargatuKud implements Initializable {
         tbJard.requestFocus();
     }
 
-    private void aukeratuFitxategia() { //kargatu nahi den jardueraren fitxategia aukeratzeko
+    private void aukeratuFitxategia() { //Kargatu nahi den jardueraren fitxategia aukeratzeko
         FileChooser fc = new FileChooser();
         fc.setTitle("Aukeratu fitxategi bat");
 
-        //baimendutako fitxategi motak murrizteko filtroak
+        //Baimendutako fitxategi motak murrizteko filtroak
         fc.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("GPX", "*.gpx"),
                 new FileChooser.ExtensionFilter("TCX", "*.tcx")
         );
 
-        //leiho bat ireki fitxategi bat aukeratzeko
+        //Leiho bat ireki fitxategi bat aukeratzeko
         File fitxategia = fc.showOpenDialog(Main.getStage());
 
-        //aukeratutako fitxategia kudeatu
+        //Aukeratutako fitxategia kudeatu
         if (fitxategia != null && fitxategia.exists() && fitxategia.isFile()) {
-            String ext = com.google.common.io.Files.getFileExtension(fitxategia.getName());
+            fitxategiaAztertu(fitxategia);
+        } else {
+            //TODO Errore pantaila bat
+        }
+    }
 
-            if (ext.equals("gpx")) { //fitxategia gpx motakoa bada
+    private void fitxategiaAztertu(File fitxategia) {
+        String ext = com.google.common.io.Files.getFileExtension(fitxategia.getName());
+
+        if (ext.equals("gpx")) { //Fitxategia gpx motakoa bada
+            Thread haria = new Thread(() -> {
+                desaktibatuFuntzionalitateak();
                 ArrayList<JardueraModel> jardueraBerriak = GPXKud.getGPXKud().kudeatuGPX(fitxategia);
 
-                if (!jardueraBerriak.isEmpty()) {
-                    jardueraBerriak.forEach(jardueraBerria -> {
-                        jardZerr.add(jardueraBerria);
-                        jardueraTaulaEguneratu();
-                    });
-                } else {
-                    //TODO Errore pantaila bat
-                }
-            } else if (ext.equals("tcx")) {//fitxategia tcx motakoa bada
+                Platform.runLater(() -> {
+                    if (!jardueraBerriak.isEmpty()) {
+                        jardueraBerriak.forEach(jardueraBerria -> {
+                            jardZerr.add(jardueraBerria);
+                            jardueraTaulaEguneratu();
+                        });
+                    } else {
+                        //TODO Errore pantaila bat
+                    }
+                    aktibatuFuntzionalitateak();
+                });
+            });
+            haria.start();
+        } else if (ext.equals("tcx")) {//Fitxategia tcx motakoa bada
+            Thread haria = new Thread(() -> {
+                desaktibatuFuntzionalitateak();
                 ArrayList<JardueraModel> jardueraBerriak = TCXKud.getTCXKud().kudeatuTCX(fitxategia);
 
-                if (!jardueraBerriak.isEmpty()) {
-                    jardueraBerriak.forEach(jardueraBerria -> {
-                        jardZerr.add(jardueraBerria);
-                        jardueraTaulaEguneratu();
-                    });
-                } else {
-                    //TODO Errore pantaila bat
-                }
-            }
+                Platform.runLater(() -> {
+                    if (!jardueraBerriak.isEmpty()) {
+                        jardueraBerriak.forEach(jardueraBerria -> {
+                            jardZerr.add(jardueraBerria);
+                            jardueraTaulaEguneratu();
+                        });
+                    } else {
+                        //TODO Errore pantaila bat
+                    }
+                    aktibatuFuntzionalitateak();
+                });
+            });
+            haria.start();
         }
     }
 
     private void jardueraTaulaEguneratu() {
         jardZerrObs = FXCollections.observableArrayList(jardZerr);
         tbJard.setItems(jardZerrObs);
+    }
+
+    private void aktibatuFuntzionalitateak() {
+        aktibatuJardKar();
+        //TODO mainApp erabiliz beste pantailen funtzionalitateak aktibatu beharrezkoa bada
+    }
+
+    public void aktibatuJardKar() {
+        btn_kargatu.setDisable(false);
+    }
+
+    private void desaktibatuFuntzionalitateak() {
+        desaktibatuJardKar();
+        //TODO mainApp erabiliz beste pantailen funtzionalitateak desaktibatu beharrezkoa bada
+    }
+
+    public void desaktibatuJardKar() {
+        btn_kargatu.setDisable(true);
     }
 }

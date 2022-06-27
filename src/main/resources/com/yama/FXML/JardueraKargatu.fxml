@@ -7,13 +7,13 @@
 
 <AnchorPane fx:id="panela" prefHeight="560.0" prefWidth="952.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.JardueraKargatuKud">
    <children>
-      <TableView fx:id="tbJard" layoutX="42.0" layoutY="53.0" onMouseClicked="#onClickTaula" prefHeight="421.0" prefWidth="867.0">
+      <TableView fx:id="tbJard" layoutX="26.0" layoutY="38.0" onMouseClicked="#onClickTaula" prefHeight="450.0" prefWidth="900.0">
         <columns>
-          <TableColumn fx:id="name" prefWidth="265.5999946594238" text="Izena" />
-          <TableColumn fx:id="time" minWidth="0.0" prefWidth="176.80001831054688" text="Data" />
-            <TableColumn fx:id="type" prefWidth="181.5999755859375" text="Mota" />
-            <TableColumn fx:id="duration" prefWidth="133.5999755859375" text="Iraupena" />
-            <TableColumn fx:id="distance" prefWidth="114.4000244140625" text="Distantzia" />
+          <TableColumn fx:id="name" prefWidth="299.0" text="Izena" />
+          <TableColumn fx:id="time" minWidth="0.0" prefWidth="199.0" text="Data" />
+            <TableColumn fx:id="type" prefWidth="200.0" text="Mota" />
+            <TableColumn fx:id="duration" prefWidth="100.0" text="Iraupena" />
+            <TableColumn fx:id="distance" prefWidth="100.0" text="Distantzia" />
         </columns>
       </TableView>
       <Button fx:id="btn_kargatu" layoutX="447.0" layoutY="508.0" mnemonicParsing="false" onMouseClicked="#onClick" text="Kargatu" />
