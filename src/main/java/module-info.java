@@ -4,6 +4,7 @@ module com.yama {
     requires java.desktop;
     requires com.google.common;
     requires org.json;
+    requires FitCSVTool;
 
 
     opens com.yama to javafx.fxml;

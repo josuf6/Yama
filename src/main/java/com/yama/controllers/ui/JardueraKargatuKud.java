@@ -1,6 +1,7 @@
 package com.yama.controllers.ui;
 
 import com.yama.Main;
+import com.yama.controllers.files.FIT.FITKud;
 import com.yama.controllers.files.GPXKud;
 import com.yama.controllers.files.TCXKud;
 import com.yama.models.JardueraModel;
@@ -96,8 +97,7 @@ public class JardueraKargatuKud implements Initializable {
 
         //Baimendutako fitxategi motak murrizteko filtroak
         fc.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("GPX", "*.gpx"),
-                new FileChooser.ExtensionFilter("TCX", "*.tcx")
+                new FileChooser.ExtensionFilter("Kirol jarduera", "*.gpx", "*.tcx", "*.fit")
         );
 
         //Leiho bat ireki fitxategi bat aukeratzeko
@@ -106,11 +106,6 @@ public class JardueraKargatuKud implements Initializable {
         //Aukeratutako fitxategia kudeatu
         if (fitxategia != null && fitxategia.exists() && fitxategia.isFile()) {
             fitxategiaAztertu(fitxategia);
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Ezin izan da fitxategia irakurri.", ButtonType.CLOSE);
-            alert.setTitle("Yama");
-            alert.setHeaderText("Errorea fitxategia irakurtzen.");
-            alert.showAndWait();
         }
     }
 
@@ -138,7 +133,7 @@ public class JardueraKargatuKud implements Initializable {
                 });
             });
             haria.start();
-        } else if (ext.equals("tcx")) {//Fitxategia tcx motakoa bada
+        } else if (ext.equals("tcx")) { //Fitxategia tcx motakoa bada
             Thread haria = new Thread(() -> {
                 desaktibatuFuntzionalitateak();
                 ArrayList<JardueraModel> jardueraBerriak = TCXKud.getTCXKud().kudeatuTCX(fitxategia);
@@ -149,6 +144,25 @@ public class JardueraKargatuKud implements Initializable {
                             jardZerr.add(jardueraBerria);
                             jardueraTaulaEguneratu();
                         });
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Ezin izan da jarduerarik lortu fitxategitik.", ButtonType.CLOSE);
+                        alert.setTitle("Yama");
+                        alert.setHeaderText("Errorea fitxategia aztertzen.");
+                        alert.showAndWait();
+                    }
+                    aktibatuFuntzionalitateak();
+                });
+            });
+            haria.start();
+        } else if (ext.equals("fit")) { //Fitxategia FIT motakoa bada
+            Thread haria = new Thread(() -> {
+                desaktibatuFuntzionalitateak();
+                JardueraModel jardueraBerria = FITKud.getFITKud().kudeatuFIT(fitxategia);
+
+                Platform.runLater(() -> {
+                    if (jardueraBerria != null) {
+                        jardZerr.add(jardueraBerria);
+                        jardueraTaulaEguneratu();
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Ezin izan da jarduerarik lortu fitxategitik.", ButtonType.CLOSE);
                         alert.setTitle("Yama");

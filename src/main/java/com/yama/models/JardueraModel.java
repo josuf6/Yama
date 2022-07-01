@@ -30,7 +30,7 @@ public class JardueraModel {
                          ArrayList<Double> pEleList, ArrayList<String> pTimeList, ArrayList<Integer> pHrList,
                          ArrayList<Double> pTempList, ArrayList<Integer> pCadList, ArrayList<Integer> pPwList) {
         name = pName;
-        type = kalkulatuJardMota(pType);
+        type = pType;
         time = pTime;
         endTime = pEndTime;
         coordList = pCoordList;
@@ -117,24 +117,11 @@ public class JardueraModel {
         return km + "," + m + "km";
     }
 
-    private String kalkulatuJardMota(String pType) { //Jardueraren mota estandarizatu
-        if (Arrays.stream(new String[]{"bik", "cycl"}).anyMatch(pType::contains)) {
-            return "Txirrindularitza";
-        } else if (Arrays.stream(new String[]{"run"}).anyMatch(pType::contains)) {
-            return "Korrika";
-        } else if (Arrays.stream(new String[]{"walk"}).anyMatch(pType::contains)) {
-            return "Ibilaldia";
-        }
-        return "";
-    }
-
     private String kalkulatuIraupena() { //Jardueraren iraupena kalkulatu koordenatuak erabiliz
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Date hasiData = sdf.parse(time);
             Date bukData = sdf.parse(endTime);
-            System.out.println(hasiData);
-            System.out.println(bukData);
             long iraupMilis = bukData.getTime() - hasiData.getTime();
 
             return String.valueOf(iraupMilis / 1000);

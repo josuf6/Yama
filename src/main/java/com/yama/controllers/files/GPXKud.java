@@ -72,6 +72,16 @@ public class GPXKud {
         NodeList motaNodes = track.getElementsByTagName("type");
         if (motaNodes.getLength() > 0) {
             jardMota = motaNodes.item(0).getTextContent().toLowerCase();
+
+            if (Arrays.stream(new String[]{"bik", "cycl"}).anyMatch(jardMota::contains)) {
+                jardMota =  "Txirrindularitza";
+            } else if (Arrays.stream(new String[]{"run"}).anyMatch(jardMota::contains)) {
+                jardMota =  "Korrika";
+            } else if (Arrays.stream(new String[]{"walk", "hik"}).anyMatch(jardMota::contains)) {
+                jardMota =  "Ibilaritza";
+            } else {
+                jardMota = "";
+            }
         }
 
         //Jardueraren segmentuak lortu eta kudeatu
@@ -115,7 +125,7 @@ public class GPXKud {
                             time = getTime(timeNodes.item(0).getTextContent());
                         }
 
-                        //Informazio geografikorik ez badago ez gorde puntuaren informazioa
+                        //Koordenatuen eta denboraren informaziorik ez badago ez gorde puntuaren informazioa
                         if (!lat.isBlank() && !lon.isBlank() && !Double.isNaN(Double.parseDouble(lat)) &&
                                 !Double.isNaN(Double.parseDouble(lon)) && !time.isBlank()) {
                             coordZerr.add(new Double[]{Double.valueOf(lat), Double.valueOf(lon)});
@@ -126,7 +136,7 @@ public class GPXKud {
                                 jardHasiData = time;
                             }
 
-                            //Jardueraren bukaera data Puntu bakoitzarekin eguneratu
+                            //Jardueraren bukaera data puntu bakoitzarekin eguneratu
                             jardBukData = time;
 
                             //Puntuaren elebazioa lortu

@@ -69,6 +69,16 @@ public class TCXKud {
         //Jarduera mota lortu eta gorde
         String jardMota = activity.getAttribute("Sport").toLowerCase();
 
+        if (Arrays.stream(new String[]{"bik", "cycl"}).anyMatch(jardMota::contains)) {
+            jardMota =  "Txirrindularitza";
+        } else if (Arrays.stream(new String[]{"run"}).anyMatch(jardMota::contains)) {
+            jardMota =  "Korrika";
+        } else if (Arrays.stream(new String[]{"walk", "hik"}).anyMatch(jardMota::contains)) {
+            jardMota =  "Ibilaritza";
+        } else {
+            jardMota = "";
+        }
+
         //Jardueraren lap-ak lortu eta kudeatu
         NodeList laps = activity.getElementsByTagName("Lap");
 
@@ -119,7 +129,7 @@ public class TCXKud {
                                 time = getTime(timeNodes.item(0).getTextContent());
                             }
 
-                            //Koordenatuen eta denboraren ez badago ez gorde puntuaren informazioa
+                            //Koordenatuen eta denboraren informaziorik ez badago ez gorde puntuaren informazioa
                             if (!lat.isBlank() && !lon.isBlank() && !Double.isNaN(Double.parseDouble(lat)) &&
                                     !Double.isNaN(Double.parseDouble(lon)) && !time.isBlank()) {
                                 coordZerr.add(new Double[]{Double.valueOf(lat), Double.valueOf(lon)});
@@ -130,7 +140,7 @@ public class TCXKud {
                                     jardHasiData = time;
                                 }
 
-                                //Jardueraren bukaera data Puntu bakoitzarekin eguneratu
+                                //Jardueraren bukaera data puntu bakoitzarekin eguneratu
                                 jardBukData = time;
 
                                 //Puntuaren elebazioa lortu
