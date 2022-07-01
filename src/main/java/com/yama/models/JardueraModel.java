@@ -1,62 +1,76 @@
 package com.yama.models;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class JardueraModel {
 
-    private String name;
-    private String type;
-    private String time;
-    private String endTime;
-    private int distance;
-    private String duration;
-    private String movingTime;
-    private ArrayList<Double[]> coordList;
-    private ArrayList<Double> eleList;
-    private ArrayList<String> timeList;
-    private ArrayList<Integer> hrList;
-    private ArrayList<Double> tempList;
-    private ArrayList<Integer> cadList;
-    private ArrayList<Integer> pwList;
+    protected String izena;
+    protected String mota;
+    protected String hasiData;
+    protected String bukData;
+    protected int distantzia;
+    protected String iraupena;
+    protected String denbMugi;
+    protected double bbAbiadura;
+    protected double abiaduraMax;
+    protected int altueraMax;
+    protected int bbBM;
+    protected int BMMax;
+    protected String bbKad;
+    protected String kadMax;
+    protected double bbtenp;
+    protected double tenpMax;
+    protected ArrayList<Double[]> koordZerr;
+    protected ArrayList<Double> altZerr;
+    protected ArrayList<String> dataZerr;
+    protected ArrayList<Integer> BMZerr;
+    protected ArrayList<Double> tenpZerr;
 
-    public JardueraModel(String pName, String pType, String pTime, String pEndTime, ArrayList<Double[]> pCoordList,
-                         ArrayList<Double> pEleList, ArrayList<String> pTimeList, ArrayList<Integer> pHrList,
-                         ArrayList<Double> pTempList, ArrayList<Integer> pCadList, ArrayList<Integer> pPwList) {
-        name = pName;
-        type = pType;
-        time = pTime;
-        endTime = pEndTime;
-        coordList = pCoordList;
-        eleList = pEleList;
-        timeList = pTimeList;
-        hrList = pHrList;
-        tempList = pTempList;
-        cadList = pCadList;
-        pwList = pPwList;
-        duration = kalkulatuIraupena();
-        distance = kalkulatuDistantzia();
-        movingTime = kalkulatuDenbMugimenduan();
+    public JardueraModel(String pIzena, String pMota, String pHasiData, String pBukData, ArrayList<Double[]> pKoordZerr,
+                         ArrayList<Double> pAltZerr, ArrayList<String> pDataZerr, ArrayList<Integer> pBMZerr,
+                         ArrayList<Double> pTenpZerr) {
+        izena = pIzena;
+        mota = pMota;
+        hasiData = pHasiData;
+        bukData = pBukData;
+        iraupena = kalkulatuIraupena(pHasiData, pBukData);
+        denbMugi = kalkulatuDenbMugimenduan();
+
+        //TODO metodo bakarrean egin guztia, puntua aldi bakar batean zeharkatzeko
+        distantzia = kalkulatuDistantzia(pKoordZerr, pAltZerr);
+        //kudeatuAbiadura();
+        //kudeatuAltuera();
+        //kudeatuBM();
+        //kudeatuTenp();
+
+        koordZerr = pKoordZerr;
+        altZerr = pAltZerr;
+        dataZerr = pDataZerr;
+        BMZerr = pBMZerr;
+        tenpZerr = pTenpZerr;
     }
 
-    public String getName() {
-        if (name.isBlank()) {
+    public String getIzena() {
+        if (izena.isBlank()) {
             return  "?";
         }
-        return name;
+        return izena;
     }
 
-    public String getTime() { //Jardueraren data pantailatzerakoan honek izango duen formatua
+    public String getHasiData() { //Jardueraren data pantailatzerakoan honek izango duen formatua
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-            Date data = sdf.parse(time);
+            Date data = sdf.parse(hasiData);
             SimpleDateFormat formatuPantailan = new SimpleDateFormat("yyyy/MM/dd HH:mm");
             return formatuPantailan.format(data);
         } catch (ParseException e) {
@@ -64,12 +78,12 @@ public class JardueraModel {
         }
     }
 
-    public String getDuration() { //Jardueraren iraupena pantailatzerakoan honek izango duen formatua
-        if (duration.isBlank()) {
+    public String getIraupena() { //Jardueraren iraupena pantailatzerakoan honek izango duen formatua
+        if (iraupena.isBlank()) {
             return  "?";
         }
 
-        long iraupenLong = Long.parseLong(duration);
+        long iraupenLong = Long.parseLong(iraupena);
 
         long seg = iraupenLong;
         if (seg < 60) {
@@ -97,31 +111,31 @@ public class JardueraModel {
         return egu + "d " + ord + "h " + min + "m " + seg + "s";
     }
 
-    public String getType() { //Jardueraren mota pantailatzerakoan honek izango duen formatua
-        if (type.isBlank()) {
+    public String getMota() { //Jardueraren mota pantailatzerakoan honek izango duen formatua
+        if (mota.isBlank()) {
             return  "?";
         }
-        return type;
+        return mota;
     }
 
-    public String getDistance() { //Jardueraren distantzia pantailatzerakoan honek izango duen formatua
-        if (distance < 1000) {
-            return distance + "m";
+    public String getDistantzia() { //Jardueraren distantzia pantailatzerakoan honek izango duen formatua
+        if (distantzia < 1000) {
+            return distantzia + "m";
         }
 
-        int m = distance % 1000;
+        int m = distantzia % 1000;
         if (m >= 100) {
             m = m / 10;
         }
-        int km = distance / 1000;
+        int km = distantzia / 1000;
         return km + "," + m + "km";
     }
 
-    private String kalkulatuIraupena() { //Jardueraren iraupena kalkulatu koordenatuak erabiliz
+    private String kalkulatuIraupena(String pHasiData, String pBukData) { //Jardueraren iraupena kalkulatu koordenatuak erabiliz
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Date hasiData = sdf.parse(time);
-            Date bukData = sdf.parse(endTime);
+            Date hasiData = sdf.parse(pHasiData);
+            Date bukData = sdf.parse(pBukData);
             long iraupMilis = bukData.getTime() - hasiData.getTime();
 
             return String.valueOf(iraupMilis / 1000);
@@ -136,18 +150,25 @@ public class JardueraModel {
         return "";
     }
 
-    private int kalkulatuDistantzia() { //Jardueraren distantzia kalkulatu koordenatuak erabiliz
+    private String kudeatuAbiadura() {
+        //TODO kalkulatu hau koordenatuen eta elebazioaren arabera
+
+        return "";
+    }
+
+    //Jardueraren distantzia kalkulatu koordenatuak erabiliz
+    private int kalkulatuDistantzia(ArrayList<Double[]> pCoordList, ArrayList<Double> pEleList) {
         double distantzia = 0;
 
-        if (coordList != null && coordList.size() > 1) { //Jardueran 2 puntu edo gehiago badaude
+        if (pCoordList != null && pCoordList.size() > 1) { //Jardueran 2 puntu edo gehiago badaude
             Double[] azkenekoPuntua = null;
 
             //Begizta honetan jardueraren distantzia totala kalkulatzen da puntuen arteko distantzien batura eginez.
             //Puntuen arteko distantziak kalkulatzeko, latitude eta longitude ezagunak dituzten azkeneko 2 puntuak
             //hartzen dira kontuan.
-            for (int a = 0, b = 1; b < coordList.size(); a++, b++) { //Jardueraren puntu guztiak zeharkatu
-                Double[] puntuA = coordList.get(a);
-                Double[] puntuB = coordList.get(b);
+            for (int a = 0, b = 1; b < pCoordList.size(); a++, b++) { //Jardueraren puntu guztiak zeharkatu
+                Double[] puntuA = pCoordList.get(a);
+                Double[] puntuB = pCoordList.get(b);
                 String puntBEle = null;
                 String azkPuntEle = null;
 
@@ -155,15 +176,15 @@ public class JardueraModel {
                 if (puntuA != null)  {
                     azkenekoPuntua = puntuA;
 
-                    if (eleList != null && eleList.get(a) != null) {
-                        azkPuntEle = String.valueOf(eleList.get(a));
+                    if (pEleList != null && pEleList.get(a) != null) {
+                        azkPuntEle = String.valueOf(pEleList.get(a));
                     }
                 }
 
                 //Latitude eta longitude ezagunak baditu, "puntuB" aztertu
                 if (puntuB != null) {
-                    if (eleList != null && eleList.get(b) != null) {
-                        puntBEle = String.valueOf(eleList.get(b));
+                    if (pEleList != null && pEleList.get(b) != null) {
+                        puntBEle = String.valueOf(pEleList.get(b));
                     }
 
                     if (azkenekoPuntua != null) { //Distantzia kalkulatu aztertutako punturen bat existitzen bada

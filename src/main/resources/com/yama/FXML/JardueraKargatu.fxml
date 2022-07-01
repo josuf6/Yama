@@ -9,11 +9,11 @@
    <children>
       <TableView fx:id="tbJard" layoutX="26.0" layoutY="38.0" onMouseClicked="#onClickTaula" prefHeight="450.0" prefWidth="900.0">
         <columns>
-          <TableColumn fx:id="name" prefWidth="299.0" text="Izena" />
-          <TableColumn fx:id="time" minWidth="0.0" prefWidth="199.0" text="Data" />
-            <TableColumn fx:id="type" prefWidth="200.0" text="Mota" />
-            <TableColumn fx:id="duration" prefWidth="100.0" text="Iraupena" />
-            <TableColumn fx:id="distance" prefWidth="100.0" text="Distantzia" />
+          <TableColumn fx:id="izena" prefWidth="299.0" text="Izena" />
+          <TableColumn fx:id="hasiData" minWidth="0.0" prefWidth="199.0" text="Data" />
+            <TableColumn fx:id="mota" prefWidth="200.0" text="Mota" />
+            <TableColumn fx:id="iraupena" prefWidth="100.0" text="Iraupena" />
+            <TableColumn fx:id="distantzia" prefWidth="100.0" text="Distantzia" />
         </columns>
       </TableView>
       <Button fx:id="btn_kargatu" layoutX="447.0" layoutY="508.0" mnemonicParsing="false" onMouseClicked="#onClick" text="Kargatu" />

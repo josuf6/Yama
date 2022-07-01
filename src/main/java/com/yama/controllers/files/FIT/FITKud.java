@@ -1,7 +1,10 @@
 package com.yama.controllers.files.FIT;
 
 import com.google.common.io.Files;
+import com.yama.models.IbilJardModel;
 import com.yama.models.JardueraModel;
+import com.yama.models.KorrJardModel;
+import com.yama.models.TxirrJardModel;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -227,7 +230,15 @@ public class FITKud {
                         if (cadZerr.stream().allMatch(Objects::isNull)) cadZerr = null;
                         if (pwZerr.stream().allMatch(Objects::isNull)) pwZerr = null;
 
-                        return new JardueraModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr, cadZerr, pwZerr);
+                        if (jardMota.equals("Txirrindularitza")) {
+                            return new TxirrJardModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr, cadZerr, pwZerr);
+                        } else if (jardMota.equals("Korrika")) {
+                            return new KorrJardModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
+                        } else if (jardMota.equals("Ibilaritza")) {
+                            return new IbilJardModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
+                        } else {
+                            return new JardueraModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
+                        }
                     }
                 }
             }

@@ -38,19 +38,19 @@ public class JardueraKargatuKud implements Initializable {
     private TableView<JardueraModel> tbJard;
 
     @FXML
-    private TableColumn<JardueraModel, String> name;
+    private TableColumn<JardueraModel, String> izena;
 
     @FXML
-    private TableColumn<JardueraModel, String> time;
+    private TableColumn<JardueraModel, String> hasiData;
 
     @FXML
-    private TableColumn<JardueraModel, String> type;
+    private TableColumn<JardueraModel, String> mota;
 
     @FXML
-    private TableColumn<JardueraModel, String> duration;
+    private TableColumn<JardueraModel, String> iraupena;
 
     @FXML
-    private TableColumn<JardueraModel, String> distance;
+    private TableColumn<JardueraModel, String> distantzia;
 
     public JardueraKargatuKud(Main main) {
         mainApp = main;
@@ -61,22 +61,22 @@ public class JardueraKargatuKud implements Initializable {
         jardZerr = new ArrayList<>();
 
         tbJard.setEditable(false);
-        name.setResizable(false);
-        name.setReorderable(false);
-        time.setResizable(false);
-        time.setReorderable(false);
-        type.setResizable(false);
-        type.setReorderable(false);
-        duration.setResizable(false);
-        duration.setReorderable(false);
-        distance.setResizable(false);
-        distance.setReorderable(false);
+        izena.setResizable(false);
+        izena.setReorderable(false);
+        hasiData.setResizable(false);
+        hasiData.setReorderable(false);
+        mota.setResizable(false);
+        mota.setReorderable(false);
+        iraupena.setResizable(false);
+        iraupena.setReorderable(false);
+        distantzia.setResizable(false);
+        distantzia.setReorderable(false);
 
-        name.setCellValueFactory(new PropertyValueFactory<>("Name"));
-        time.setCellValueFactory(new PropertyValueFactory<>("Time"));
-        type.setCellValueFactory(new PropertyValueFactory<>("Type"));
-        duration.setCellValueFactory(new PropertyValueFactory<>("Duration"));
-        distance.setCellValueFactory(new PropertyValueFactory<>("Distance"));
+        izena.setCellValueFactory(new PropertyValueFactory<>("izena"));
+        hasiData.setCellValueFactory(new PropertyValueFactory<>("hasiData"));
+        mota.setCellValueFactory(new PropertyValueFactory<>("mota"));
+        iraupena.setCellValueFactory(new PropertyValueFactory<>("iraupena"));
+        distantzia.setCellValueFactory(new PropertyValueFactory<>("distantzia"));
 
         Platform.runLater(() -> panela.requestFocus());
     }
