@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class TxirrJardModel extends JardueraModel {
 
+    //TODO aldapen portzentaiak kontuan izan
     private String bbKad;
     private String kadMax;
     private String bbPot;
@@ -11,10 +12,10 @@ public class TxirrJardModel extends JardueraModel {
     private ArrayList<Integer> kadZerr;
     private ArrayList<Integer> potZerr;
 
-    public TxirrJardModel(String pIzena, String pMota, String pHasiData, String pBukData, ArrayList<Double[]> pKoordZerr,
-                          ArrayList<Double> pAltZerr, ArrayList<String> pDataZerr, ArrayList<Integer> pBMZerr,
+    public TxirrJardModel(String pIzena, String pMota, ArrayList<Double[]> pKoordZerr, ArrayList<Double> pAltZerr,
+                          ArrayList<String> pDataZerr, ArrayList<Integer> pBMZerr,
                           ArrayList<Double> pTenpZerr, ArrayList<Integer> pKadZerr, ArrayList<Integer> pPotZerr) {
-        super(pIzena, pMota, pHasiData, pBukData, pKoordZerr, pAltZerr, pDataZerr, pBMZerr, pTenpZerr);
+        super(pIzena, pMota, pKoordZerr, pAltZerr, pDataZerr, pBMZerr, pTenpZerr);
 
         kadZerr = pKadZerr;
         potZerr = pPotZerr;

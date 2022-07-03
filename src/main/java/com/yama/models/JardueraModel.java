@@ -8,6 +8,7 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -16,47 +17,259 @@ public class JardueraModel {
     protected String izena;
     protected String mota;
     protected String hasiData;
-    protected String bukData;
-    protected int distantzia;
-    protected String iraupena;
-    protected String denbMugi;
-    protected double bbAbiadura;
-    protected double abiaduraMax;
-    protected int altueraMax;
-    protected int bbBM;
-    protected int BMMax;
-    protected String bbKad;
-    protected String kadMax;
-    protected double bbtenp;
-    protected double tenpMax;
-    protected ArrayList<Double[]> koordZerr;
-    protected ArrayList<Double> altZerr;
+    protected int distantzia = 0; //m-tan
+    protected long iraupena = 0; //s-tan
+    protected long denbMugi = 0; //s-tan
+    protected double bbAbiadura = 0; //km/h-tan
+    protected double abiaduraMax = 0; //km/h-tan
+    protected String altueraMin = ""; //m-tan
+    protected String altueraMax = ""; //m-tan
+    protected String igoeraTot = ""; //m-tan
+    protected String jaitsieraTot = ""; //m-tan
+    protected String bbBihotzMaiz = ""; //bpm-tan
+    protected String bihotzMaizMax = ""; //bpm-tan
+    protected String bbtenp = ""; //Cº-tan
+    protected String tenpMin = ""; //Cº-tan
+    protected String tenpMax = ""; //Cº-tan
+    protected ArrayList<Double[]> koordZerr; //[0] latitudea eta [1] longitudea
+    protected ArrayList<Double> distZerr; //m-tan
+    protected ArrayList<Long> denbMugiZerr; //s-tan
+    protected ArrayList<Double> altZerr; //m-tan
+    protected ArrayList<Double> abiZerr; //km/h-tan
     protected ArrayList<String> dataZerr;
-    protected ArrayList<Integer> BMZerr;
-    protected ArrayList<Double> tenpZerr;
+    protected ArrayList<Integer> bihotzMaizZerr; //bpm-tan
+    protected ArrayList<Double> tenpZerr; //Cº-tan
 
-    public JardueraModel(String pIzena, String pMota, String pHasiData, String pBukData, ArrayList<Double[]> pKoordZerr,
-                         ArrayList<Double> pAltZerr, ArrayList<String> pDataZerr, ArrayList<Integer> pBMZerr,
-                         ArrayList<Double> pTenpZerr) {
+    public JardueraModel(String pIzena, String pMota, ArrayList<Double[]> pKoordZerr, ArrayList<Double> pAltZerr,
+                         ArrayList<String> pDataZerr, ArrayList<Integer> pBihotzMaizZerr, ArrayList<Double> pTenpZerr) {
         izena = pIzena;
         mota = pMota;
-        hasiData = pHasiData;
-        bukData = pBukData;
-        iraupena = kalkulatuIraupena(pHasiData, pBukData);
-        denbMugi = kalkulatuDenbMugimenduan();
-
-        //TODO metodo bakarrean egin guztia, puntua aldi bakar batean zeharkatzeko
-        distantzia = kalkulatuDistantzia(pKoordZerr, pAltZerr);
-        //kudeatuAbiadura();
-        //kudeatuAltuera();
-        //kudeatuBM();
-        //kudeatuTenp();
 
         koordZerr = pKoordZerr;
+        distZerr = new ArrayList<>();
+        denbMugiZerr = new ArrayList<>();
         altZerr = pAltZerr;
+        abiZerr = new ArrayList<>();
         dataZerr = pDataZerr;
-        BMZerr = pBMZerr;
+        bihotzMaizZerr = pBihotzMaizZerr;
         tenpZerr = pTenpZerr;
+
+        kudeatuJarduera();
+    }
+
+    private void kudeatuJarduera() {
+        String bukData = "";
+        double distDouble = 0;
+        String pAzkenAlt = "";
+        int pBihotzMaizBatura = 0, pBihotzMaizKop = 0;
+        double pTenpBatura = 0; int pTenpKop = 0;
+        int koordErrepKop = 0;
+
+        for (int i = 0; i < koordZerr.size(); i++) {
+
+            //Jardueraren data aurkitzen den lehenengo data izango da
+            if (hasiData == null) {
+                hasiData = dataZerr.get(i);
+            }
+
+            //Jardueraren bukaera data puntu bakoitzarekin eguneratu
+            bukData = dataZerr.get(i);
+
+            //Abiadura eta iraupena kudeatu
+            if (i > 0) {
+                double lat1 = koordZerr.get(i - 1)[0];
+                double lon1 = koordZerr.get(i - 1)[1];
+                double lat2 = koordZerr.get(i)[0];
+                double lon2 = koordZerr.get(i)[1];
+                double ele1 = 0.0;
+                double ele2 = 0.0;
+
+                if (altZerr != null && altZerr.get(i - 1) != null && altZerr.get(i) != null) {
+                    ele1 = altZerr.get(i - 1);
+                    ele2 = altZerr.get(i);
+                }
+
+                BigDecimal bdLat1 = BigDecimal.valueOf(lat1);
+                double lat1Bir = bdLat1.setScale(8, RoundingMode.HALF_UP).doubleValue();
+                BigDecimal bdLon1 = BigDecimal.valueOf(lon1);
+                double lon1Bir = bdLon1.setScale(8, RoundingMode.HALF_UP).doubleValue();
+                BigDecimal bdLat2 = BigDecimal.valueOf(lat2);
+                double lat2Bir = bdLat2.setScale(8, RoundingMode.HALF_UP).doubleValue();
+                BigDecimal bdLon2 = BigDecimal.valueOf(lon2);
+                double lon2Bir = bdLon2.setScale(8, RoundingMode.HALF_UP).doubleValue();
+
+                //Aurreko 2 puntuak berdinak diren ala ez egiaztatu
+                boolean koordErrep = lat1Bir == lat2Bir && lon1Bir == lon2Bir; //TODO koordenatuen errepikapena altuera kontuan izan gabe kudeatu behar da ere (altuera berriak kalkulatzea falta da)
+                if (koordErrep) { //Berdinak badira jarraian dauden errepikatutako puntuen kopurua handitu
+                    koordErrepKop++;
+                }
+
+                //Azkeneko 2 puntuak berdinak ez badira
+                if (!koordErrep) {
+                    double puntuDistantzia = distantzia(lat1, lat2, lon1, lon2, ele1, ele2);
+
+                    //Errepikatutako puntuak egon badira, baina aurrekoak bezalakoa ez den puntu bat aurkitzen bada
+                    if (koordErrepKop > 0) {
+
+                        //Desberdinak diren azkeneko 2 puntuen arteko abiadura kalkulatu
+                        double puntuIraupena;
+                        if (i - koordErrepKop - 2 > 0) {
+                            puntuIraupena = iraupena(dataZerr.get(i - koordErrepKop - 2), dataZerr.get(i));
+                        } else {
+                            puntuIraupena = iraupena(dataZerr.get(0), dataZerr.get(i));
+                        }
+                        double abiaduraMS = puntuDistantzia / puntuIraupena; //abiadura m/s-tan
+                        double abiaduraKMH = abiaduraMS * 3.6; //m/s-tik km/h-ra pasatzeko
+
+                        //Abiadura maximoa kudeatu
+                        if (abiaduraKMH > abiaduraMax) {
+                            abiaduraMax = abiaduraKMH;
+                        }
+
+                        Double[] koordDifer = {lat2 - lat1, lon2 - lon1}; //Azkeneko 2 koordenatuen arteko diferentzia
+
+                        //Errepikatutako puntuak zeharkatu eta kudeatu
+                        for (int j = koordErrepKop; j >= 0; j--) {
+                            abiZerr.add(abiaduraKMH);
+
+                            //Denborarekiko ponderazio indizea kalkulatu
+                            double azpiPuntIraup = iraupena(dataZerr.get(i - j - 1), dataZerr.get(i - j));
+                            double pondInd = azpiPuntIraup / puntuIraupena; //Ponderazio indizea
+
+                            //Denbora mugimenduan kudeatu
+                            if (abiaduraKMH > 0.5) {
+                                denbMugi += azpiPuntIraup;
+                            }
+                            denbMugiZerr.add(denbMugi);
+
+                            //Puntuaren distantzia kalkulatu denborarekiko ponderatuz
+                            double puntuDistPond = puntuDistantzia * pondInd;
+                            distZerr.add(distZerr.get(i - j - 1) + puntuDistPond);
+                            distDouble += puntuDistPond;
+
+                            //Koordenatuak eguneratu denborarekiko ponderatuz
+                            double latBerriDif = koordDifer[0] * pondInd;
+                            double lonBerriDif = koordDifer[1] * pondInd;
+                            Double[] aurrekoarenKoord = koordZerr.get(i - j - 1);
+                            Double[] koordEguneratuak = {aurrekoarenKoord[0] + latBerriDif, aurrekoarenKoord[1] + lonBerriDif};
+                            koordZerr.set(i - j, koordEguneratuak);
+                        }
+                        koordErrepKop = 0;
+                    } else { //Errepikatutako puntuak egon ez badira
+                        distZerr.add(distZerr.get(i - 1) + puntuDistantzia); //Distantzia kalkulatu eta gorde
+
+                        //Azkeneko 2 puntuen arteko abiadura kalkulatu
+                        double puntuIraupena = iraupena(dataZerr.get(i - 1), dataZerr.get(i));
+                        double abiaduraMS = puntuDistantzia / puntuIraupena; //abiadura m/s-tan
+                        double abiaduraKMH = abiaduraMS * 3.6; //m/s-tik km/h-ra pasatzeko
+                        abiZerr.add(abiaduraKMH);
+
+                        //Abiadura maximoa kudeatu
+                        if (abiaduraKMH > abiaduraMax) {
+                            abiaduraMax = abiaduraKMH;
+                        }
+
+                        //Denbora mugimenduan kudeatu
+                        if (abiaduraKMH > 0.5) {
+                            denbMugi += puntuIraupena;
+                        }
+                        denbMugiZerr.add(denbMugi);
+
+                        distDouble += puntuDistantzia;
+                    }
+                } else if (i + 1 == koordZerr.size()) {
+                    double azkenDist = distZerr.get(i - koordErrepKop);
+                    for (int j = koordErrepKop; j > 0; j--) {
+                        distZerr.add(azkenDist);
+                        abiZerr.add(0.0);
+
+                        koordErrepKop = 0;
+                    }
+                }
+            } else {
+                distZerr.add(0.0);
+                denbMugiZerr.add(0L);
+                abiZerr.add(0.0);
+            }
+
+            //Altuera kudeatu
+            if (altZerr != null && altZerr.get(i) != null) {
+
+                //Altuera minimoa kudeatu
+                if (altueraMin.isBlank()) {
+                    altueraMin = String.valueOf(altZerr.get(i));
+                } else if (altZerr.get(i) < Double.parseDouble(altueraMin)) {
+                    altueraMin = String.valueOf(altZerr.get(i));
+                }
+
+                //Altuera maximoa kudeatu
+                if (altueraMax.isBlank()) {
+                    altueraMax = String.valueOf(altZerr.get(i));
+                } else if (altZerr.get(i) > Double.parseDouble(altueraMax)) {
+                    altueraMax = String.valueOf(altZerr.get(i));
+                }
+
+                //Igoera eta jaitsiera kudeatu
+                if (pAzkenAlt.isBlank()) {
+                    pAzkenAlt = String.valueOf(altZerr.get(i));
+                } else {
+                    if (altZerr.get(i) > Double.parseDouble(pAzkenAlt)) {
+                        if (igoeraTot.isBlank()) {
+                            igoeraTot = String.valueOf(altZerr.get(i) - Double.parseDouble(pAzkenAlt));
+                        } else {
+                            igoeraTot = String.valueOf(Double.parseDouble(igoeraTot) + (altZerr.get(i) - Double.parseDouble(pAzkenAlt)));
+                        }
+                    } else if (altZerr.get(i) < Double.parseDouble(pAzkenAlt)) {
+                        if (jaitsieraTot.isBlank()) {
+                            jaitsieraTot = String.valueOf(Double.parseDouble(pAzkenAlt) - altZerr.get(i));
+                        } else {
+                            jaitsieraTot = String.valueOf(Double.parseDouble(jaitsieraTot) + (Double.parseDouble(pAzkenAlt) - altZerr.get(i)));
+                        }
+                    }
+                    pAzkenAlt = String.valueOf(altZerr.get(i));
+                }
+            }
+
+            //Bihotz-maiztasuna kudeatu
+            if (bihotzMaizZerr != null && bihotzMaizZerr.get(i) != null) {
+                if (bihotzMaizMax.isBlank()) {
+                    bihotzMaizMax = String.valueOf(bihotzMaizZerr.get(i));
+                } else if (bihotzMaizZerr.get(i) > Double.parseDouble(bihotzMaizMax)) {
+                    bihotzMaizMax = String.valueOf(bihotzMaizZerr.get(i));
+                }
+
+                pBihotzMaizBatura = pBihotzMaizBatura + bihotzMaizZerr.get(i);
+                pBihotzMaizKop++;
+                bbBihotzMaiz = String.valueOf(pBihotzMaizBatura / pBihotzMaizKop);
+            }
+
+            //Tenperatura kudeatu
+            if (tenpZerr != null && tenpZerr.get(i) != null) {
+                if (tenpMin.isBlank()) {
+                    tenpMin = String.valueOf(tenpZerr.get(i));
+                } else if (tenpZerr.get(i) < Double.parseDouble(tenpMin)) {
+                    tenpMin = String.valueOf(tenpZerr.get(i));
+                }
+
+                if (tenpMax.isBlank()) {
+                    tenpMax = String.valueOf(tenpZerr.get(i));
+                } else if (tenpZerr.get(i) > Double.parseDouble(tenpMax)) {
+                    tenpMax = String.valueOf(tenpZerr.get(i));
+                }
+
+                pTenpBatura = pTenpBatura + tenpZerr.get(i);
+                pTenpKop++;
+                bbtenp = String.valueOf(pTenpBatura / pTenpKop);
+            }
+        }
+        iraupena = iraupena(hasiData, bukData);
+
+        BigDecimal bd = BigDecimal.valueOf(distDouble);
+        bd = bd.setScale(0, RoundingMode.HALF_UP);
+        distantzia = bd.intValue();
+
+        double bbAbiMS = distDouble / denbMugi;
+        bbAbiadura = bbAbiMS * 3.6;
     }
 
     public String getIzena() {
@@ -79,34 +292,38 @@ public class JardueraModel {
     }
 
     public String getIraupena() { //Jardueraren iraupena pantailatzerakoan honek izango duen formatua
-        if (iraupena.isBlank()) {
-            return  "?";
-        }
+        return formateatuIraupena(iraupena);
+    }
 
-        long iraupenLong = Long.parseLong(iraupena);
+    public String getDenbMugi() { //Jardueraren denbora mugimenduan pantailatzerakoan honek izango duen formatua
+        return formateatuIraupena(denbMugi);
+    }
 
-        long seg = iraupenLong;
+    private String formateatuIraupena(long pDenbora) {
+        long denbora = pDenbora;
+
+        long seg = denbora;
         if (seg < 60) {
             return seg + "s";
         }
         seg = seg % 60;
-        iraupenLong = iraupenLong - seg;
+        denbora = denbora - seg;
 
-        long min = iraupenLong / 60;
+        long min = denbora / 60;
         if (min < 60) {
             return min + "m " + seg + "s";
         }
         min = min % 60;
-        iraupenLong = iraupenLong - (min * 60);
+        denbora = denbora - (min * 60);
 
-        long ord = iraupenLong / (60 * 60);
+        long ord = denbora / (60 * 60);
         if (ord < 24) {
             return ord + "h " + min + "m " + seg + "s";
         }
         ord = ord % 24;
-        iraupenLong = iraupenLong - (ord * 60 * 60);
+        denbora = denbora - (ord * 60 * 60);
 
-        long egu = iraupenLong / (60 * 60 * 24);
+        long egu = denbora / (60 * 60 * 24);
 
         return egu + "d " + ord + "h " + min + "m " + seg + "s";
     }
@@ -131,17 +348,19 @@ public class JardueraModel {
         return km + "," + m + "km";
     }
 
-    private String kalkulatuIraupena(String pHasiData, String pBukData) { //Jardueraren iraupena kalkulatu koordenatuak erabiliz
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Date hasiData = sdf.parse(pHasiData);
-            Date bukData = sdf.parse(pBukData);
-            long iraupMilis = bukData.getTime() - hasiData.getTime();
+    private long iraupena(String pHasiData, String pBukData) { //Jardueraren iraupena kalkulatu koordenatuak erabiliz
+        if (pHasiData != null && pBukData != null && !pHasiData.isBlank() && !pBukData.isBlank()) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date hasiData = sdf.parse(pHasiData);
+                Date bukData = sdf.parse(pBukData);
+                long iraupMilis = bukData.getTime() - hasiData.getTime();
 
-            return String.valueOf(iraupMilis / 1000);
-        } catch (ParseException ignored) {}
+                return iraupMilis / 1000;
+            } catch (ParseException ignored) {}
+        }
 
-        return  "";
+        return 0;
     }
 
     private String kalkulatuDenbMugimenduan() {
@@ -154,67 +373,6 @@ public class JardueraModel {
         //TODO kalkulatu hau koordenatuen eta elebazioaren arabera
 
         return "";
-    }
-
-    //Jardueraren distantzia kalkulatu koordenatuak erabiliz
-    private int kalkulatuDistantzia(ArrayList<Double[]> pCoordList, ArrayList<Double> pEleList) {
-        double distantzia = 0;
-
-        if (pCoordList != null && pCoordList.size() > 1) { //Jardueran 2 puntu edo gehiago badaude
-            Double[] azkenekoPuntua = null;
-
-            //Begizta honetan jardueraren distantzia totala kalkulatzen da puntuen arteko distantzien batura eginez.
-            //Puntuen arteko distantziak kalkulatzeko, latitude eta longitude ezagunak dituzten azkeneko 2 puntuak
-            //hartzen dira kontuan.
-            for (int a = 0, b = 1; b < pCoordList.size(); a++, b++) { //Jardueraren puntu guztiak zeharkatu
-                Double[] puntuA = pCoordList.get(a);
-                Double[] puntuB = pCoordList.get(b);
-                String puntBEle = null;
-                String azkPuntEle = null;
-
-                //Latitude eta longitude ezagunak baditu, "puntuA" gorde aztertutako azkeneko puntu bezala
-                if (puntuA != null)  {
-                    azkenekoPuntua = puntuA;
-
-                    if (pEleList != null && pEleList.get(a) != null) {
-                        azkPuntEle = String.valueOf(pEleList.get(a));
-                    }
-                }
-
-                //Latitude eta longitude ezagunak baditu, "puntuB" aztertu
-                if (puntuB != null) {
-                    if (pEleList != null && pEleList.get(b) != null) {
-                        puntBEle = String.valueOf(pEleList.get(b));
-                    }
-
-                    if (azkenekoPuntua != null) { //Distantzia kalkulatu aztertutako punturen bat existitzen bada
-                        double lat1 = azkenekoPuntua[0];
-                        double lon1 = azkenekoPuntua[1];
-                        double lat2 = puntuB[0];
-                        double lon2 = puntuB[1];
-
-                        double ele1 = 0.0;
-                        double ele2 = 0.0;
-
-                        //Elebazioa erabili distantzia kalkulatzeko bi puntuek elebazio ezaguna badute
-                        if (puntBEle != null && azkPuntEle != null) {
-                            ele1 = Double.parseDouble(azkPuntEle);
-                            ele2 = Double.parseDouble(puntBEle);
-                        }
-
-                        distantzia += distantzia(lat1, lat2, lon1, lon2, ele1, ele2);
-                    }
-
-                    //"puntuB" gorde aztertutako azkeneko puntua bezala
-                    azkenekoPuntua = puntuB;
-                }
-            }
-        }
-
-        BigDecimal bd = BigDecimal.valueOf(distantzia);
-        bd = bd.setScale(0, RoundingMode.HALF_UP);
-
-        return bd.intValue();
     }
 
     //https://stackoverflow.com/a/16794680

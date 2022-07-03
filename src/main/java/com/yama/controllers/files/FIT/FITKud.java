@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,8 +74,6 @@ public class FITKud {
 
                 String jardIzena = ""; //FIT Activity ez da jardueraren izenik gordetzen
                 String jardMota = "";
-                String jardHasiData = "";
-                String jardBukData = "";
 
                 //Jardueraren puntu bakoitzean aztertuko diren informaziorako zerrendak
                 ArrayList<Double[]> coordZerr = new ArrayList<>();
@@ -162,18 +162,18 @@ public class FITKud {
                         //Koordenatuen eta denboraren informaziorik ez badago ez gorde puntuaren informazioa
                         if (!lat.isBlank() && !lon.isBlank() && !Double.isNaN(Double.parseDouble(lat)) &&
                                 !Double.isNaN(Double.parseDouble(lon)) && !time.isBlank()) {
-                            coordZerr.add(new Double[]{Double.valueOf(lat), Double.valueOf(lon)});
+
+                            //Koordenatuak eta data gorde
+                            double latDouble = Double.parseDouble(lat);
+                            BigDecimal bdLat = BigDecimal.valueOf(latDouble);
+                            bdLat = bdLat.setScale(8, RoundingMode.HALF_UP);
+
+                            double lonDouble = Double.parseDouble(lon);
+                            BigDecimal bdLon = BigDecimal.valueOf(lonDouble);
+                            bdLon = bdLon.setScale(8, RoundingMode.HALF_UP);
+
+                            coordZerr.add(new Double[]{bdLat.doubleValue(), bdLon.doubleValue()});
                             timeZerr.add(time);
-
-                            //Jardueraren data aurkitzen den lehenengo data izango da
-                            if (jardHasiData.isBlank() && !time.equals("")) {
-                                jardHasiData = time;
-                            }
-
-                            //Jardueraren bukaera data puntu bakoitzarekin eguneratu
-                            if (!time.equals("")) {
-                                jardBukData = time;
-                            }
 
                             //Puntuaren elebazioa gorde
                             try {
@@ -231,13 +231,13 @@ public class FITKud {
                         if (pwZerr.stream().allMatch(Objects::isNull)) pwZerr = null;
 
                         if (jardMota.equals("Txirrindularitza")) {
-                            return new TxirrJardModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr, cadZerr, pwZerr);
+                            return new TxirrJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr, cadZerr, pwZerr);
                         } else if (jardMota.equals("Korrika")) {
-                            return new KorrJardModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
+                            return new KorrJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
                         } else if (jardMota.equals("Ibilaritza")) {
-                            return new IbilJardModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
+                            return new IbilJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
                         } else {
-                            return new JardueraModel(jardIzena, jardMota, jardHasiData, jardBukData, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
+                            return new JardueraModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
                         }
                     }
                 }
