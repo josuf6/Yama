@@ -23,6 +23,14 @@ public class TxirrJardModel extends JardueraModel {
         kudeatuPotentzia();
     }
 
+    @Override
+    public String getIzena() {
+        if (izena.isBlank()) {
+            return  "Txirrindularitza jarduera";
+        }
+        return izena;
+    }
+
     private void kudeatuKadentzia() { //Batez besteko kadentzia eta kadentzia maximoak kalkulatu
         ArrayList<Integer> pKadZerr = kadZerr;
         if (pKadZerr != null) {

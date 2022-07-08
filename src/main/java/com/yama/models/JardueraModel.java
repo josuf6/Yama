@@ -28,7 +28,7 @@ public class JardueraModel {
     protected String jaitsieraTot = ""; //m-tan
     protected String bbBihotzMaiz = ""; //bpm-tan
     protected String bihotzMaizMax = ""; //bpm-tan
-    protected String bbtenp = ""; //Cº-tan
+    protected String bbTenp = ""; //Cº-tan
     protected String tenpMin = ""; //Cº-tan
     protected String tenpMax = ""; //Cº-tan
     protected ArrayList<Double[]> koordZerr; //[0] latitudea eta [1] longitudea
@@ -84,11 +84,6 @@ public class JardueraModel {
                 double ele1 = 0.0;
                 double ele2 = 0.0;
 
-                if (altZerr != null && altZerr.get(i - 1) != null && altZerr.get(i) != null) {
-                    ele1 = altZerr.get(i - 1);
-                    ele2 = altZerr.get(i);
-                }
-
                 BigDecimal bdLat1 = BigDecimal.valueOf(lat1);
                 double lat1Bir = bdLat1.setScale(8, RoundingMode.HALF_UP).doubleValue();
                 BigDecimal bdLon1 = BigDecimal.valueOf(lon1);
@@ -106,6 +101,11 @@ public class JardueraModel {
 
                 //Azkeneko 2 puntuak berdinak ez badira
                 if (!koordErrep) {
+                    if (altZerr != null && altZerr.get(i - 1) != null && altZerr.get(i) != null) {
+                        ele1 = altZerr.get(i - 1);
+                        ele2 = altZerr.get(i);
+                    }
+
                     double puntuDistantzia = distantzia(lat1, lat2, lon1, lon2, ele1, ele2);
 
                     //Errepikatutako puntuak egon badira, baina aurrekoak bezalakoa ez den puntu bat aurkitzen bada
@@ -118,12 +118,27 @@ public class JardueraModel {
                         } else {
                             puntuIraupena = iraupena(dataZerr.get(0), dataZerr.get(i));
                         }
-                        double abiaduraMS = puntuDistantzia / puntuIraupena; //abiadura m/s-tan
+                        double abiaduraMS = 0;
+                        if (puntuIraupena > 0) {
+                            abiaduraMS = puntuDistantzia / puntuIraupena; //abiadura m/s-tan
+                        }
                         double abiaduraKMH = abiaduraMS * 3.6; //m/s-tik km/h-ra pasatzeko
+
+                        /*if (i - koordErrepKop > 1) {
+                            abiaduraKMH = (abiaduraKMH + abiZerr.get(i - koordErrepKop - 1)) / 2;
+
+                            //TODO abiadura maximoa kudeatu
+                        }*/
 
                         //Abiadura maximoa kudeatu
                         if (abiaduraKMH > abiaduraMax) {
                             abiaduraMax = abiaduraKMH;
+                            if (i > 1) {
+                                System.out.println(Arrays.toString(koordZerr.get(i - 1)));
+                            }
+                            System.out.println(Arrays.toString(koordZerr.get(i)));
+                            System.out.println(abiaduraMax);
+                            System.out.println();
                         }
 
                         Double[] koordDifer = {lat2 - lat1, lon2 - lon1}; //Azkeneko 2 koordenatuen arteko diferentzia
@@ -160,13 +175,24 @@ public class JardueraModel {
 
                         //Azkeneko 2 puntuen arteko abiadura kalkulatu
                         double puntuIraupena = iraupena(dataZerr.get(i - 1), dataZerr.get(i));
-                        double abiaduraMS = puntuDistantzia / puntuIraupena; //abiadura m/s-tan
+                        double abiaduraMS = 0;
+                        if (puntuIraupena > 0) {
+                            abiaduraMS = puntuDistantzia / puntuIraupena; //abiadura m/s-tan
+                        }
                         double abiaduraKMH = abiaduraMS * 3.6; //m/s-tik km/h-ra pasatzeko
                         abiZerr.add(abiaduraKMH);
 
                         //Abiadura maximoa kudeatu
                         if (abiaduraKMH > abiaduraMax) {
                             abiaduraMax = abiaduraKMH;
+                            if (i > 1) {
+                                System.out.println(Arrays.toString(koordZerr.get(i - 1)));
+                            }
+                            System.out.println(Arrays.toString(koordZerr.get(i)));
+                            System.out.println(distantzia(lat1, lat2, lon1, lon2, ele1, ele2));
+                            System.out.println(iraupena(dataZerr.get(i - 1), dataZerr.get(i)));
+                            System.out.println(abiaduraMax);
+                            System.out.println();
                         }
 
                         //Denbora mugimenduan kudeatu
@@ -259,7 +285,7 @@ public class JardueraModel {
 
                 pTenpBatura = pTenpBatura + tenpZerr.get(i);
                 pTenpKop++;
-                bbtenp = String.valueOf(pTenpBatura / pTenpKop);
+                bbTenp = String.valueOf(pTenpBatura / pTenpKop);
             }
         }
         iraupena = iraupena(hasiData, bukData);
@@ -274,7 +300,7 @@ public class JardueraModel {
 
     public String getIzena() {
         if (izena.isBlank()) {
-            return  "?";
+            return  "Kirol jarduera";
         }
         return izena;
     }
@@ -330,7 +356,7 @@ public class JardueraModel {
 
     public String getMota() { //Jardueraren mota pantailatzerakoan honek izango duen formatua
         if (mota.isBlank()) {
-            return  "?";
+            return  "Zehaztu gabeko kirola";
         }
         return mota;
     }

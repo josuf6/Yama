@@ -5,7 +5,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="panela" prefHeight="560.0" prefWidth="952.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.JardueraKargatuKud">
+<AnchorPane fx:id="panela" prefHeight="560.0" prefWidth="952.0" style="-fx-background-color: inherit;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.JardueraKargatuKud">
    <children>
       <TableView fx:id="tbJard" layoutX="26.0" layoutY="38.0" onMouseClicked="#onClickTaula" prefHeight="450.0" prefWidth="900.0">
         <columns>
@@ -16,6 +16,7 @@
             <TableColumn fx:id="distantzia" prefWidth="100.0" text="Distantzia" />
         </columns>
       </TableView>
-      <Button fx:id="btn_kargatu" layoutX="447.0" layoutY="508.0" mnemonicParsing="false" onMouseClicked="#onClick" text="Kargatu" />
+      <Button fx:id="btn_kargatu" layoutX="389.0" layoutY="505.0" mnemonicParsing="false" onMouseClicked="#onClickKargatu" text="Kargatu" />
+      <Button fx:id="btn_bistaratu" layoutX="505.0" layoutY="505.0" mnemonicParsing="false" onMouseClicked="#onClickBistaratu" text="Bistaratu" />
    </children>
 </AnchorPane>

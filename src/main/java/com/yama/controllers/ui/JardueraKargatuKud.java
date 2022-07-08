@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -33,6 +34,9 @@ public class JardueraKargatuKud implements Initializable {
 
     @FXML
     private Button btn_kargatu;
+
+    @FXML
+    private Button btn_bistaratu;
 
     @FXML
     private TableView<JardueraModel> tbJard;
@@ -60,6 +64,7 @@ public class JardueraKargatuKud implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         jardZerr = new ArrayList<>();
 
+        btn_bistaratu.setDisable(true);
         tbJard.setEditable(false);
         izena.setResizable(false);
         izena.setReorderable(false);
@@ -78,12 +83,35 @@ public class JardueraKargatuKud implements Initializable {
         iraupena.setCellValueFactory(new PropertyValueFactory<>("iraupena"));
         distantzia.setCellValueFactory(new PropertyValueFactory<>("distantzia"));
 
+        tbJard.setRowFactory(tbJard2 -> {
+            final TableRow<JardueraModel> errenkada = new TableRow<>();
+            errenkada.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                final int index = errenkada.getIndex();
+                if (index < tbJard.getItems().size() && tbJard.getSelectionModel().isSelected(index)  ) {
+                    tbJard.getSelectionModel().clearSelection();
+                    btn_bistaratu.setDisable(true);
+                    event.consume();
+                }
+            });
+            return errenkada;
+        });
+
         Platform.runLater(() -> panela.requestFocus());
     }
 
     @FXML
-    void onClick(MouseEvent event) {
+    void onClickKargatu(MouseEvent event) {
+        tbJard.getSelectionModel().clearSelection();
+        btn_bistaratu.setDisable(true);
         aukeratuFitxategia();
+    }
+
+    @FXML
+    void onClickBistaratu(MouseEvent event) {
+        JardueraModel jard = jardZerr.get(tbJard.getSelectionModel().getSelectedIndex());
+        tbJard.getSelectionModel().clearSelection();
+        btn_bistaratu.setDisable(true);
+        mainApp.jardBistaratu(jard);
     }
 
     @FXML
@@ -179,6 +207,9 @@ public class JardueraKargatuKud implements Initializable {
     private void jardueraTaulaEguneratu() {
         jardZerrObs = FXCollections.observableArrayList(jardZerr);
         tbJard.setItems(jardZerrObs);
+        tbJard.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            btn_bistaratu.setDisable(false);
+        });
     }
 
     private void aktibatuFuntzionalitateak() {
@@ -197,5 +228,6 @@ public class JardueraKargatuKud implements Initializable {
 
     public void desaktibatuJardKar() {
         btn_kargatu.setDisable(true);
+        btn_bistaratu.setDisable(true);
     }
 }

@@ -1,6 +1,7 @@
 package com.yama.controllers.ui;
 
 import com.yama.Main;
+import com.yama.models.JardueraModel;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -24,7 +25,8 @@ public class MainKud implements Initializable {
     private Label lbl_jarduera;
 
     @FXML
-    private AnchorPane pane_barra, pane_beltza, pane_itxi, pane_jarduera, pane_JardueraKargatu, pane_menu, pane_menuIzenak, pane_menuIkonoak, pane_minimizatu;
+    private AnchorPane pane_barra, pane_beltza, pane_itxi, pane_jarduera, pane_JardBistaratu, pane_JardueraKargatu,
+            pane_menu, pane_menuIzenak, pane_menuIkonoak, pane_minimizatu;
 
     public MainKud(Main main) {
         mainApp = main;
@@ -122,7 +124,7 @@ public class MainKud implements Initializable {
     void onClick(MouseEvent event) { //alboko menuko elementu bat klikatzerakoan egin behar dena
 
         //klikatutako elementua aukeratutakoa ez bada horrekin erlazionatutako leihoa erakutsi
-        if (mainApp.lehioAktibo != 1 && (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera)) {
+        if (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera) {
             erakutsiJardueraKargatu();
             ordenaEgokitu();
         }
@@ -147,7 +149,6 @@ public class MainKud implements Initializable {
         elementuakZuriz();
 
         pane_JardueraKargatu.toFront();
-        pane_JardueraKargatu.requestFocus();
     }
 
     private void elementuakZuriz() { //alboko menuan zuriz jarri aukeratuak izan ez diren elementuak
@@ -155,6 +156,15 @@ public class MainKud implements Initializable {
             lbl_jarduera.setStyle("-fx-background-color: White");
             pane_jarduera.setStyle("-fx-background-color: White");
         }
+    }
+
+    public void erakutsiJardBistaratu() {
+        pane_JardBistaratu.toFront();
+        pane_JardBistaratu.requestFocus();
+    }
+
+    public void atzeraJardBistaratu() {
+        pane_JardBistaratu.toBack();
     }
 
     @FXML

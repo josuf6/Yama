@@ -1,7 +1,9 @@
 package com.yama;
 
+import com.yama.controllers.ui.JardBistaratuKud;
 import com.yama.controllers.ui.JardueraKargatuKud;
 import com.yama.controllers.ui.MainKud;
+import com.yama.models.JardueraModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,8 +24,9 @@ public class Main extends Application {
 
     private MainKud mainKud;
     private JardueraKargatuKud jardueraKargatuKud;
+    private JardBistaratuKud jardBistaratuKud;
 
-    public int lehioAktibo  ;
+    public int lehioAktibo;
 
     public boolean menuIrekita = false;
     public boolean menuMugitzen = false;
@@ -65,12 +68,15 @@ public class Main extends Application {
         //kudeatzaileak hasieratu
         mainKud = new MainKud(this);
         jardueraKargatuKud = new JardueraKargatuKud(this);
+        jardBistaratuKud = new JardBistaratuKud(this);
 
         Callback<Class<?>, Object> controllerFactory = type -> {
             if (type == MainKud.class) {
                 return mainKud;
             } else if (type == JardueraKargatuKud.class) {
                 return jardueraKargatuKud;
+            } else if (type == JardBistaratuKud.class) {
+                return jardBistaratuKud;
             } else {
                 try {
                     return type.newInstance();
@@ -84,5 +90,14 @@ public class Main extends Application {
         loaderMain.setControllerFactory(controllerFactory);
 
         mainUI = (Parent) loaderMain.load();
+    }
+
+    public void jardBistaratu(JardueraModel pJard) {
+        mainKud.erakutsiJardBistaratu();
+        jardBistaratuKud.jardBistaratu(pJard);
+    }
+
+    public void atzeraJardBistaratu() {
+        mainKud.atzeraJardBistaratu();
     }
 }

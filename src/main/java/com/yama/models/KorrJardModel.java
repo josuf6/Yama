@@ -8,4 +8,12 @@ public class KorrJardModel extends JardueraModel {
                          ArrayList<String> pDataZerr, ArrayList<Integer> pBMZerr, ArrayList<Double> pTenpZerr) {
         super(pIzena, pMota, pKoordZerr, pAltZerr, pDataZerr, pBMZerr, pTenpZerr);
     }
+
+    @Override
+    public String getIzena() {
+        if (izena.isBlank()) {
+            return  "Korrika jarduera";
+        }
+        return izena;
+    }
 }
