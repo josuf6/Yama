@@ -30,7 +30,7 @@ application {
 
 javafx {
     version = '17.0.1'
-    modules = ['javafx.controls', 'javafx.fxml']
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.web']
 }
 
 dependencies {
@@ -45,6 +45,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.json/json
     implementation 'org.json:json:20220320'
+
+    // https://mvnrepository.com/artifact/com.sothawo/mapjfx
+    implementation 'com.sothawo:mapjfx:3.1.0'
+
+    // https://mvnrepository.com/artifact/com.jfoenix/jfoenix
+    implementation 'com.jfoenix:jfoenix:9.0.10'
 }
 
 test {

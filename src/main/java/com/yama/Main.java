@@ -8,12 +8,17 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class Main extends Application {
 
@@ -93,11 +98,26 @@ public class Main extends Application {
     }
 
     public void jardBistaratu(JardueraModel pJard) {
-        mainKud.erakutsiJardBistaratu();
         jardBistaratuKud.jardBistaratu(pJard);
+        mainKud.erakutsiJardBistaratu();
     }
 
     public void atzeraJardBistaratu() {
         mainKud.atzeraJardBistaratu();
+    }
+
+    public boolean konexioaDago() {
+        try {
+            URL url = new URL("http://www.google.com");
+            URLConnection connection = url.openConnection();
+            connection.connect();
+            return true;
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Ez dago Interneteko konexiorik. Sareko ezarpenak egiaztatu eta berriro saiatu.", ButtonType.CLOSE);
+            alert.setTitle("Yama");
+            alert.setHeaderText("Interneteko konexiorik ez.");
+            alert.showAndWait();
+            return false;
+        }
     }
 }

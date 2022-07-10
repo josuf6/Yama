@@ -185,14 +185,6 @@ public class JardueraModel {
                         //Abiadura maximoa kudeatu
                         if (abiaduraKMH > abiaduraMax) {
                             abiaduraMax = abiaduraKMH;
-                            if (i > 1) {
-                                System.out.println(Arrays.toString(koordZerr.get(i - 1)));
-                            }
-                            System.out.println(Arrays.toString(koordZerr.get(i)));
-                            System.out.println(distantzia(lat1, lat2, lon1, lon2, ele1, ele2));
-                            System.out.println(iraupena(dataZerr.get(i - 1), dataZerr.get(i)));
-                            System.out.println(abiaduraMax);
-                            System.out.println();
                         }
 
                         //Denbora mugimenduan kudeatu
@@ -323,6 +315,10 @@ public class JardueraModel {
 
     public String getDenbMugi() { //Jardueraren denbora mugimenduan pantailatzerakoan honek izango duen formatua
         return formateatuIraupena(denbMugi);
+    }
+
+    public ArrayList<Double[]> getKoordZerr() {
+        return koordZerr;
     }
 
     private String formateatuIraupena(long pDenbora) {

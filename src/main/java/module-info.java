@@ -5,6 +5,9 @@ module com.yama {
     requires com.google.common;
     requires org.json;
     requires FitCSVTool;
+    requires com.sothawo.mapjfx;
+    requires org.slf4j;
+    requires com.jfoenix;
 
 
     opens com.yama to javafx.fxml;
