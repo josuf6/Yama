@@ -1,10 +1,8 @@
 package com.yama.models;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -317,8 +315,84 @@ public class JardueraModel {
         return formateatuIraupena(denbMugi);
     }
 
+    public String getBbAbiadura() {
+        BigDecimal bd = BigDecimal.valueOf(bbAbiadura);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(bd.doubleValue()).replace('.', ',') + " km/h";
+    }
+
+    public String getAbiaduraMax() {
+        BigDecimal bd = BigDecimal.valueOf(abiaduraMax);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(bd.doubleValue()).replace('.', ',') + " km/h";
+    }
+
+    public String getIgoeraTot() {
+        BigDecimal bd = BigDecimal.valueOf(Double.parseDouble(igoeraTot));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(bd.doubleValue()).replace('.', ',') + " m";
+    }
+
+    public String getAltueraMin() {
+        BigDecimal bd = BigDecimal.valueOf(Double.parseDouble(altueraMin));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(bd.doubleValue()).replace('.', ',') + " m";
+    }
+
+    public String getAltueraMax() {
+        BigDecimal bd = BigDecimal.valueOf(Double.parseDouble(altueraMax));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(bd.doubleValue()).replace('.', ',') + " m";
+    }
+
+    public String getBbBihotzMaiz() {
+        return bbBihotzMaiz + " bpm";
+    }
+
+    public String getBihotzMaizMax() {
+        return bihotzMaizMax + " bpm";
+    }
+
+    public String getBbTenp() {
+        BigDecimal bd = BigDecimal.valueOf(Double.parseDouble(bbTenp));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(bd.doubleValue()).replace('.', ',') + " ºC";
+    }
+
+    public String getTenpMin() {
+        BigDecimal bd = BigDecimal.valueOf(Double.parseDouble(tenpMin));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(bd.doubleValue()).replace('.', ',') + " ºC";
+    }
+
+    public String getTenpMax() {
+        BigDecimal bd = BigDecimal.valueOf(Double.parseDouble(tenpMax));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(bd.doubleValue()).replace('.', ',') + " ºC";
+    }
+
     public ArrayList<Double[]> getKoordZerr() {
         return koordZerr;
+    }
+
+    public ArrayList<Double> getAltZerr() {
+        return altZerr;
+    }
+
+    public ArrayList<Integer> getBihotzMaizZerr() {
+        return bihotzMaizZerr;
+    }
+
+    public ArrayList<Double> getTenpZerr() {
+        return tenpZerr;
     }
 
     private String formateatuIraupena(long pDenbora) {
@@ -359,7 +433,7 @@ public class JardueraModel {
 
     public String getDistantzia() { //Jardueraren distantzia pantailatzerakoan honek izango duen formatua
         if (distantzia < 1000) {
-            return distantzia + "m";
+            return distantzia + " m";
         }
 
         int m = distantzia % 1000;
@@ -367,7 +441,7 @@ public class JardueraModel {
             m = m / 10;
         }
         int km = distantzia / 1000;
-        return km + "," + m + "km";
+        return km + "," + m + " km";
     }
 
     private long iraupena(String pHasiData, String pBukData) { //Jardueraren iraupena kalkulatu koordenatuak erabiliz

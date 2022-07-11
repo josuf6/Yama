@@ -31,6 +31,30 @@ public class TxirrJardModel extends JardueraModel {
         return izena;
     }
 
+    public String getBbKad() {
+        return bbKad + " rpm";
+    }
+
+    public String getKadMax() {
+        return kadMax + " rpm";
+    }
+
+    public String getBbPot() {
+        return bbPot + " W";
+    }
+
+    public String getPotMax() {
+        return potMax + " W";
+    }
+
+    public ArrayList<Integer> getKadZerr() {
+        return kadZerr;
+    }
+
+    public ArrayList<Integer> getPotZerr() {
+        return potZerr;
+    }
+
     private void kudeatuKadentzia() { //Batez besteko kadentzia eta kadentzia maximoak kalkulatu
         ArrayList<Integer> pKadZerr = kadZerr;
         if (pKadZerr != null) {

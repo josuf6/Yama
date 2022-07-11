@@ -4,6 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.ImageView?>
@@ -56,9 +57,296 @@
                            </children></AnchorPane>
                   </content>
                 </Tab>
-                <Tab text="Grafikoak">
+                <Tab text="Estatistikak">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    <AnchorPane maxHeight="470.0" minHeight="0.0" minWidth="0.0" prefHeight="470.0" prefWidth="200.0">
+                           <children>
+                              <ScrollPane prefHeight="470.0" prefWidth="952.0">
+                                 <content>
+                                    <VBox prefWidth="936.0">
+                                       <children>
+                                          <AnchorPane prefHeight="200.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                             <children>
+                                                <Label layoutX="10.0" layoutY="10.0" text="Laburpena">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="706.0" layoutY="50.0" text="Iraupen totala">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="120.0" layoutY="50.0" text="Distantzia">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="76.0" layoutY="125.0" text="Denbora mugimenduan">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="laburBBAbiTxt" alignment="CENTER" layoutX="352.0" layoutY="50.0" prefHeight="20.0" prefWidth="194.0" text="Batez besteko abiadura">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="358.0" layoutY="125.0" prefHeight="20.0" prefWidth="181.0" text="Abiadura maximoa">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="laburDenbMugi" alignment="CENTER" layoutX="49.0" layoutY="155.0" prefHeight="26.0" prefWidth="202.0" text="Denbora mugimenduan">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="laburBBAbi" alignment="CENTER" layoutX="352.0" layoutY="80.0" prefHeight="20.0" prefWidth="194.0" text="Batez besteko abiadura">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="laburAbiMax" alignment="CENTER" layoutX="358.0" layoutY="155.0" prefHeight="20.0" prefWidth="181.0" text="Abiadura maximoa">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="laburIrauTot" alignment="CENTER" layoutX="634.0" layoutY="80.0" prefHeight="26.0" prefWidth="229.0" text="Iraupen totala" textAlignment="CENTER">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="laburDist" alignment="CENTER" layoutX="55.0" layoutY="80.0" prefHeight="26.0" prefWidth="190.0" text="Distantzia">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="18.0" left="18.0" right="18.0" />
+                                             </VBox.margin>
+                                          </AnchorPane>
+                                          <AnchorPane prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                             <children>
+                                                <Label layoutX="10.0" layoutY="10.0" text="Abiadura">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="abiBBAbiTxt" alignment="CENTER" layoutX="128.0" layoutY="325.0" prefHeight="20.0" prefWidth="194.0" text="Batez besteko abiadura">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="584.0" layoutY="325.0" prefHeight="20.0" prefWidth="181.0" text="Abiadura maximoa">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="abiBBAbi" alignment="CENTER" layoutX="128.0" layoutY="355.0" prefHeight="20.0" prefWidth="194.0" text="Batez besteko abiadura">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="abiAbiMax" alignment="CENTER" layoutX="584.0" layoutY="355.0" prefHeight="20.0" prefWidth="181.0" text="Abiadura maximoa">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="18.0" left="18.0" right="18.0" />
+                                             </VBox.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="altPane" maxWidth="900.0" prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                             <children>
+                                                <Label layoutX="10.0" layoutY="10.0" text="Altitudea">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="53.0" layoutY="325.0" prefHeight="20.0" prefWidth="194.0" text="Igoera totala">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="659.0" layoutY="325.0" prefHeight="20.0" prefWidth="181.0" text="Altitude maximoa">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="altIgoTot" alignment="CENTER" layoutX="53.0" layoutY="355.0" prefHeight="20.0" prefWidth="194.0" text="Igoera totala">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="altAltMax" alignment="CENTER" layoutX="659.0" layoutY="355.0" prefHeight="20.0" prefWidth="181.0" text="Altitude maximoa">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="359.0" layoutY="325.0" prefHeight="20.0" prefWidth="181.0" text="Altitude minimoa">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="altAltMin" alignment="CENTER" layoutX="359.0" layoutY="355.0" prefHeight="20.0" prefWidth="181.0" text="Altitude minimoa">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="18.0" left="18.0" right="18.0" />
+                                             </VBox.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="bMPane" prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                             <children>
+                                                <Label layoutX="10.0" layoutY="10.0" text="Bihotz-maiztasuna">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="120.0" layoutY="325.0" prefHeight="20.0" prefWidth="210.0" text="Batez besteko bihotz-maiztasuna">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="584.0" layoutY="325.0" prefHeight="20.0" prefWidth="181.0" text="Bihotz-maiztasun maximoa">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="bMBBBM" alignment="CENTER" layoutX="103.0" layoutY="355.0" prefHeight="26.0" prefWidth="244.0" text="Batez besteko bihotz-maiztasuna">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="bMBMMax" alignment="CENTER" layoutX="574.0" layoutY="355.0" prefHeight="26.0" prefWidth="201.0" text="Bihotz-maiztasun maximoa">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="18.0" left="18.0" right="18.0" />
+                                             </VBox.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="kadPane" prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                             <children>
+                                                <Label layoutX="10.0" layoutY="10.0" text="Kadentzia">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="120.0" layoutY="325.0" prefHeight="20.0" prefWidth="210.0" text="Batez besteko kadentzia">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="584.0" layoutY="325.0" prefHeight="20.0" prefWidth="181.0" text="Kadentzia maximoa">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="kadBBKad" alignment="CENTER" layoutX="103.0" layoutY="355.0" prefHeight="26.0" prefWidth="244.0" text="Batez besteko kadentzia">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="kadKadMax" alignment="CENTER" layoutX="574.0" layoutY="355.0" prefHeight="26.0" prefWidth="201.0" text="Kadentzia maximoa">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="18.0" left="18.0" right="18.0" />
+                                             </VBox.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="potPane" prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                             <children>
+                                                <Label layoutX="10.0" layoutY="10.0" text="Potentzia">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="120.0" layoutY="325.0" prefHeight="20.0" prefWidth="210.0" text="Batez besteko potentzia">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="584.0" layoutY="325.0" prefHeight="20.0" prefWidth="181.0" text="Potentzia maximoa">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="potBBPot" alignment="CENTER" layoutX="103.0" layoutY="355.0" prefHeight="26.0" prefWidth="244.0" text="Batez besteko potentzia">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="potPotMax" alignment="CENTER" layoutX="574.0" layoutY="355.0" prefHeight="26.0" prefWidth="201.0" text="Potentzia maximoa">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="18.0" left="18.0" right="18.0" />
+                                             </VBox.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="tenpPane" maxWidth="900.0" prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                             <children>
+                                                <Label layoutX="10.0" layoutY="10.0" text="Tenperatura">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="53.0" layoutY="325.0" prefHeight="20.0" prefWidth="194.0" text="Batez besteko tenperatura">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="659.0" layoutY="325.0" prefHeight="20.0" prefWidth="181.0" text="Tenperatura maximoa">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="tenpBBTenp" alignment="CENTER" layoutX="53.0" layoutY="355.0" prefHeight="20.0" prefWidth="194.0" text="Batez besteko tenperatura">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="tenpTenpMax" alignment="CENTER" layoutX="659.0" layoutY="355.0" prefHeight="20.0" prefWidth="181.0" text="Tenperatura maximoa">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutX="359.0" layoutY="325.0" prefHeight="20.0" prefWidth="181.0" text="Tenperatura minimoa">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="tenpTenpMin" alignment="CENTER" layoutX="359.0" layoutY="355.0" prefHeight="20.0" prefWidth="181.0" text="Tenperatura minimoa">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="18.0" left="18.0" right="18.0" />
+                                             </VBox.margin>
+                                          </AnchorPane>
+                                       </children>
+                                       <padding>
+                                          <Insets top="18.0" />
+                                       </padding>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
+                           </children></AnchorPane>
                   </content>
                 </Tab>
                   <Tab text="Mapa eta grafikoak">

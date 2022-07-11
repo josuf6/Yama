@@ -3,15 +3,20 @@ package com.yama.controllers.ui;
 import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
 import com.yama.Main;
+import com.yama.models.IbilJardModel;
 import com.yama.models.JardueraModel;
+import com.yama.models.KorrJardModel;
+import com.yama.models.TxirrJardModel;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
@@ -28,7 +33,7 @@ public class JardBistaratuKud implements Initializable {
     private Extent extent;
 
     @FXML
-    private AnchorPane panela;
+    private AnchorPane panela, altPane, bMPane, kadPane, potPane, tenpPane;
 
     @FXML
     private Button btn_atzera;
@@ -37,7 +42,14 @@ public class JardBistaratuKud implements Initializable {
     private ImageView imgMota;
 
     @FXML
-    private Label lblHasiData, lblIzena;
+    private Label lblHasiData, lblIzena,
+            laburAbiMax, laburBBAbi, laburBBAbiTxt, laburDenbMugi, laburDist, laburIrauTot,
+            abiAbiMax, abiBBAbi, abiBBAbiTxt,
+            altIgoTot, altAltMin, altAltMax,
+            bMBBBM, bMBMMax,
+            kadBBKad, kadKadMax,
+            potBBPot, potPotMax,
+            tenpBBTenp, tenpTenpMin, tenpTenpMax;
 
     @FXML
     private MapView mapa;
@@ -61,7 +73,7 @@ public class JardBistaratuKud implements Initializable {
         lblIzena.setText(jarduera.getIzena());
         lblHasiData.setText(jarduera.getHasiData());
         hasieratuMapa();
-        hasieratuGrafikoak();
+        hasieratuEstatistikak();
 
         //TODO
     }
@@ -133,7 +145,112 @@ public class JardBistaratuKud implements Initializable {
         return new Coordinate(lat, lon);
     }
 
-    private void hasieratuGrafikoak() {
+    private void hasieratuEstatistikak() {
+        hasiLaburPane();
+        hasiAbiPane();
+        hasiAltPane();
+        hasiBMPane();
+        hasiKadPane();
+        hasiPotPane();
+        hasiTenpPane();
 
+        //TODO pane guztiak
+    }
+
+    private void hasiLaburPane() {
+        laburDist.setText(jarduera.getDistantzia());
+        laburDenbMugi.setText(jarduera.getDenbMugi());
+        if (jarduera instanceof IbilJardModel || jarduera instanceof KorrJardModel) {
+            laburBBAbiTxt.setText("Batez besteko erritmoa");
+        } else {
+            laburBBAbiTxt.setText("Batez besteko abiadura");
+        }
+        laburBBAbi.setText(jarduera.getBbAbiadura());
+        laburAbiMax.setText(jarduera.getAbiaduraMax());
+        laburIrauTot.setText(jarduera.getIraupena());
+    }
+
+    private void hasiAbiPane() {
+        //TODO abiadura-grafikoa
+
+        if (jarduera instanceof IbilJardModel || jarduera instanceof KorrJardModel) {
+            abiBBAbiTxt.setText("Batez besteko erritmoa");
+        } else {
+            abiBBAbiTxt.setText("Batez besteko abiadura");
+        }
+        abiBBAbi.setText(jarduera.getBbAbiadura());
+        abiAbiMax.setText(jarduera.getAbiaduraMax());
+    }
+
+    private void hasiAltPane() {
+        //TODO altueraren grafikoa
+
+        if (jarduera.getAltZerr() != null) {
+            altIgoTot.setText(jarduera.getIgoeraTot());
+            altAltMin.setText(jarduera.getAltueraMin());
+            altAltMax.setText(jarduera.getAltueraMax());
+            altPane.setVisible(true);
+            altPane.setManaged(true);
+        } else {
+            altPane.setVisible(false);
+            altPane.setManaged(false);
+        }
+    }
+
+    private void hasiBMPane() {
+        //TODO Bihotz-maiztasunaren grafikoa
+
+        if (jarduera.getBihotzMaizZerr() != null) {
+            bMBBBM.setText(jarduera.getBbBihotzMaiz());
+            bMBMMax.setText(jarduera.getBihotzMaizMax());
+            bMPane.setVisible(true);
+            bMPane.setManaged(true);
+        } else {
+            bMPane.setVisible(false);
+            bMPane.setManaged(false);
+        }
+    }
+
+    private void hasiKadPane() {
+        //TODO Kadentziaren grafikoa
+
+        if (jarduera instanceof TxirrJardModel && ((TxirrJardModel) jarduera).getKadZerr() != null) {
+            kadBBKad.setText(((TxirrJardModel) jarduera).getBbKad());
+            kadKadMax.setText(((TxirrJardModel) jarduera).getKadMax());
+            kadPane.setVisible(true);
+            kadPane.setManaged(true);
+        } else {
+            kadPane.setVisible(false);
+            kadPane.setManaged(false);
+        }
+    }
+
+    private void hasiPotPane() {
+        //TODO Potentziaren grafikoa
+
+        if (jarduera instanceof TxirrJardModel && ((TxirrJardModel) jarduera).getPotZerr() != null) {
+            potBBPot.setText(((TxirrJardModel) jarduera).getBbPot());
+            potPotMax.setText(((TxirrJardModel) jarduera).getPotMax());
+            potPane.setVisible(true);
+            potPane.setManaged(true);
+        } else {
+            potPane.setVisible(false);
+            potPane.setManaged(false);
+        }
+    }
+
+    private void hasiTenpPane() {
+        //TODO altueraren grafikoa
+
+        if (jarduera.getTenpZerr() != null) {
+            tenpBBTenp.setText(jarduera.getBbTenp());
+            tenpTenpMin.setText(jarduera.getTenpMin());
+            tenpTenpMax.setText(jarduera.getTenpMax());
+            tenpPane.setVisible(true);
+            tenpPane.setManaged(true);
+        } else {
+            tenpPane.setVisible(false);
+            tenpPane.setManaged(false);
+        }
     }
 }
