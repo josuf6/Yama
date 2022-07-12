@@ -25,6 +25,7 @@ public class JardueraModel {
     protected String igoeraTot = ""; //m-tan
     protected String jaitsieraTot = ""; //m-tan
     protected String bbBihotzMaiz = ""; //bpm-tan
+    protected String bihotzMaizMin = ""; //bpm-tan
     protected String bihotzMaizMax = ""; //bpm-tan
     protected String bbTenp = ""; //Cº-tan
     protected String tenpMin = ""; //Cº-tan
@@ -248,6 +249,12 @@ public class JardueraModel {
 
             //Bihotz-maiztasuna kudeatu
             if (bihotzMaizZerr != null && bihotzMaizZerr.get(i) != null) {
+                if (bihotzMaizMin.isBlank()) {
+                    bihotzMaizMin = String.valueOf(bihotzMaizZerr.get(i));
+                } else if (bihotzMaizZerr.get(i) < Double.parseDouble(bihotzMaizMin)) {
+                    bihotzMaizMin = String.valueOf(bihotzMaizZerr.get(i));
+                }
+
                 if (bihotzMaizMax.isBlank()) {
                     bihotzMaizMax = String.valueOf(bihotzMaizZerr.get(i));
                 } else if (bihotzMaizZerr.get(i) > Double.parseDouble(bihotzMaizMax)) {
@@ -322,11 +329,19 @@ public class JardueraModel {
         return format.format(bd.doubleValue()).replace('.', ',') + " km/h";
     }
 
+    public double getBbAbiBal() {
+        return bbAbiadura;
+    }
+
     public String getAbiaduraMax() {
         BigDecimal bd = BigDecimal.valueOf(abiaduraMax);
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         DecimalFormat format = new DecimalFormat("0.#");
         return format.format(bd.doubleValue()).replace('.', ',') + " km/h";
+    }
+
+    public double getAbiMaxBal() {
+        return abiaduraMax;
     }
 
     public String getIgoeraTot() {
@@ -343,6 +358,10 @@ public class JardueraModel {
         return format.format(bd.doubleValue()).replace('.', ',') + " m";
     }
 
+    public double getAltueraMinBal() {
+        return Double.parseDouble(altueraMin);
+    }
+
     public String getAltueraMax() {
         BigDecimal bd = BigDecimal.valueOf(Double.parseDouble(altueraMax));
         bd = bd.setScale(2, RoundingMode.HALF_UP);
@@ -350,12 +369,28 @@ public class JardueraModel {
         return format.format(bd.doubleValue()).replace('.', ',') + " m";
     }
 
+    public double getAltueraMaxBal() {
+        return Double.parseDouble(altueraMax);
+    }
+
     public String getBbBihotzMaiz() {
         return bbBihotzMaiz + " bpm";
     }
 
+    public String getBbBihotzMaizBal() {
+        return bbBihotzMaiz;
+    }
+
+    public int getBihotzMaizMinBal() {
+        return Integer.parseInt(bihotzMaizMin);
+    }
+
     public String getBihotzMaizMax() {
         return bihotzMaizMax + " bpm";
+    }
+
+    public int getBihotzMaizMaxBal() {
+        return Integer.parseInt(bihotzMaizMax);
     }
 
     public String getBbTenp() {
@@ -365,11 +400,19 @@ public class JardueraModel {
         return format.format(bd.doubleValue()).replace('.', ',') + " ºC";
     }
 
+    public String getBbTenpBal() {
+        return bbTenp;
+    }
+
     public String getTenpMin() {
         BigDecimal bd = BigDecimal.valueOf(Double.parseDouble(tenpMin));
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         DecimalFormat format = new DecimalFormat("0.#");
         return format.format(bd.doubleValue()).replace('.', ',') + " ºC";
+    }
+
+    public double getTenpMinBal() {
+        return Double.parseDouble(tenpMin);
     }
 
     public String getTenpMax() {
@@ -379,8 +422,20 @@ public class JardueraModel {
         return format.format(bd.doubleValue()).replace('.', ',') + " ºC";
     }
 
+    public double getTenpMaxBal() {
+        return Double.parseDouble(tenpMax);
+    }
+
     public ArrayList<Double[]> getKoordZerr() {
         return koordZerr;
+    }
+
+    public ArrayList<Double> getAbiZerr() {
+        return abiZerr;
+    }
+
+    public ArrayList<Double> getDistZerr() {
+        return distZerr;
     }
 
     public ArrayList<Double> getAltZerr() {
@@ -442,6 +497,13 @@ public class JardueraModel {
         }
         int km = distantzia / 1000;
         return km + "," + m + " km";
+    }
+
+    public double getDistBal() {
+        BigDecimal bd = BigDecimal.valueOf(distantzia / 1000);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.##");
+        return Double.parseDouble(format.format(bd.doubleValue()));
     }
 
     private long iraupena(String pHasiData, String pBukData) { //Jardueraren iraupena kalkulatu koordenatuak erabiliz

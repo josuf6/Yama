@@ -13,13 +13,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="panela" prefHeight="560.0" prefWidth="952.0" style="-fx-background-color: inherit;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.JardBistaratuKud">
+<AnchorPane prefHeight="560.0" prefWidth="952.0" style="-fx-background-color: inherit;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.JardBistaratuKud">
    <children>
       <VBox maxHeight="560.0" maxWidth="952.0" prefHeight="560.0" prefWidth="952.0">
          <children>
             <HBox alignment="CENTER_LEFT">
                <children>
-                  <Button fx:id="btn_atzera" mnemonicParsing="false" onMouseClicked="#onClickAtzera" text="Atzera">
+                  <Button mnemonicParsing="false" onMouseClicked="#onClickAtzera" text="Atzera">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
@@ -129,6 +129,7 @@
                                           </AnchorPane>
                                           <AnchorPane prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                                              <children>
+                                                <AnchorPane fx:id="abiGrafPane" layoutY="40.0" prefHeight="290.0" prefWidth="870.0" />
                                                 <Label layoutX="10.0" layoutY="10.0" text="Abiadura">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
@@ -161,6 +162,7 @@
                                           </AnchorPane>
                                           <AnchorPane fx:id="altPane" maxWidth="900.0" prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                                              <children>
+                                                <AnchorPane fx:id="altGrafPane" layoutY="40.0" prefHeight="290.0" prefWidth="870.0" />
                                                 <Label layoutX="10.0" layoutY="10.0" text="Altitudea">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
@@ -203,6 +205,7 @@
                                           </AnchorPane>
                                           <AnchorPane fx:id="bMPane" prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                                              <children>
+                                                <AnchorPane fx:id="bMGrafPane" layoutY="40.0" prefHeight="290.0" prefWidth="870.0" />
                                                 <Label layoutX="10.0" layoutY="10.0" text="Bihotz-maiztasuna">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
@@ -235,6 +238,7 @@
                                           </AnchorPane>
                                           <AnchorPane fx:id="kadPane" prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                                              <children>
+                                                <AnchorPane fx:id="kadGrafPane" layoutY="40.0" prefHeight="290.0" prefWidth="870.0" />
                                                 <Label layoutX="10.0" layoutY="10.0" text="Kadentzia">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
@@ -267,6 +271,7 @@
                                           </AnchorPane>
                                           <AnchorPane fx:id="potPane" prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                                              <children>
+                                                <AnchorPane fx:id="potGrafPane" layoutY="40.0" prefHeight="290.0" prefWidth="870.0" />
                                                 <Label layoutX="10.0" layoutY="10.0" text="Potentzia">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
@@ -299,6 +304,7 @@
                                           </AnchorPane>
                                           <AnchorPane fx:id="tenpPane" maxWidth="900.0" prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                                              <children>
+                                                <AnchorPane fx:id="tenpGrafPane" layoutY="40.0" prefHeight="290.0" prefWidth="870.0" />
                                                 <Label layoutX="10.0" layoutY="10.0" text="Tenperatura">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
