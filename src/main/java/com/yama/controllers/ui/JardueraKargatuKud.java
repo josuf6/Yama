@@ -10,7 +10,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -111,9 +110,9 @@ public class JardueraKargatuKud implements Initializable {
         JardueraModel jard = jardZerr.get(tbJard.getSelectionModel().getSelectedIndex());
         tbJard.getSelectionModel().clearSelection();
         btn_bistaratu.setDisable(true);
-        if (mainApp.konexioaDago()) {
+        //if (mainApp.konexioaDago()) {
             mainApp.jardBistaratu(jard);
-        }
+        //}
     }
 
     @FXML

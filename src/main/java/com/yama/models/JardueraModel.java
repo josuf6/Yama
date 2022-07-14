@@ -23,10 +23,13 @@ public class JardueraModel {
     protected String altueraMin = ""; //m-tan
     protected String altueraMax = ""; //m-tan
     protected String igoeraTot = ""; //m-tan
-    protected String jaitsieraTot = ""; //m-tan
     protected String bbBihotzMaiz = ""; //bpm-tan
     protected String bihotzMaizMin = ""; //bpm-tan
     protected String bihotzMaizMax = ""; //bpm-tan
+    protected String bbKad = ""; //rpm-tan
+    protected String kadMax = ""; //rpm-tan
+    protected String bbPot = ""; //W-tan
+    protected String potMax = ""; //W-tan
     protected String bbTenp = ""; //Cº-tan
     protected String tenpMin = ""; //Cº-tan
     protected String tenpMax = ""; //Cº-tan
@@ -37,10 +40,13 @@ public class JardueraModel {
     protected ArrayList<Double> abiZerr; //km/h-tan
     protected ArrayList<String> dataZerr;
     protected ArrayList<Integer> bihotzMaizZerr; //bpm-tan
+    protected ArrayList<Integer> kadZerr; //rpm-tan
+    protected ArrayList<Integer> potZerr; //W-tan
     protected ArrayList<Double> tenpZerr; //Cº-tan
 
     public JardueraModel(String pIzena, String pMota, ArrayList<Double[]> pKoordZerr, ArrayList<Double> pAltZerr,
-                         ArrayList<String> pDataZerr, ArrayList<Integer> pBihotzMaizZerr, ArrayList<Double> pTenpZerr) {
+                         ArrayList<String> pDataZerr, ArrayList<Integer> pBihotzMaizZerr, ArrayList<Integer> pKadZerr,
+                         ArrayList<Integer> pPotZerr, ArrayList<Double> pTenpZerr) {
         izena = pIzena;
         mota = pMota;
 
@@ -51,9 +57,16 @@ public class JardueraModel {
         abiZerr = new ArrayList<>();
         dataZerr = pDataZerr;
         bihotzMaizZerr = pBihotzMaizZerr;
+        kadZerr = pKadZerr;
+        potZerr = pPotZerr;
         tenpZerr = pTenpZerr;
 
         kudeatuJarduera();
+        kudeatuPenditza();
+    }
+
+    private void kudeatuPenditza() {
+        //TODO aldapen portzentaiak kontuan izan
     }
 
     private void kudeatuJarduera() {
@@ -62,6 +75,8 @@ public class JardueraModel {
         String pAzkenAlt = "";
         int pBihotzMaizBatura = 0, pBihotzMaizKop = 0;
         double pTenpBatura = 0; int pTenpKop = 0;
+        long pKadBatura = 0; int pKadKop = 0;
+        long pPotBatura = 0; int pPotKop = 0;
         int koordErrepKop = 0;
 
         for (int i = 0; i < koordZerr.size(); i++) {
@@ -236,12 +251,6 @@ public class JardueraModel {
                         } else {
                             igoeraTot = String.valueOf(Double.parseDouble(igoeraTot) + (altZerr.get(i) - Double.parseDouble(pAzkenAlt)));
                         }
-                    } else if (altZerr.get(i) < Double.parseDouble(pAzkenAlt)) {
-                        if (jaitsieraTot.isBlank()) {
-                            jaitsieraTot = String.valueOf(Double.parseDouble(pAzkenAlt) - altZerr.get(i));
-                        } else {
-                            jaitsieraTot = String.valueOf(Double.parseDouble(jaitsieraTot) + (Double.parseDouble(pAzkenAlt) - altZerr.get(i)));
-                        }
                     }
                     pAzkenAlt = String.valueOf(altZerr.get(i));
                 }
@@ -264,6 +273,32 @@ public class JardueraModel {
                 pBihotzMaizBatura = pBihotzMaizBatura + bihotzMaizZerr.get(i);
                 pBihotzMaizKop++;
                 bbBihotzMaiz = String.valueOf(pBihotzMaizBatura / pBihotzMaizKop);
+            }
+
+            //Kadentzia kudeatu
+            if (kadZerr != null && kadZerr.get(i) != null) {
+                if (kadMax.isBlank()) {
+                    kadMax = String.valueOf(kadZerr.get(i));
+                } else if (kadZerr.get(i) > Integer.parseInt(kadMax)) {
+                    kadMax = String.valueOf(kadZerr.get(i));
+                }
+
+                pKadBatura = pKadBatura + kadZerr.get(i);
+                pKadKop++;
+                bbKad = String.valueOf(pKadBatura / pKadKop);
+            }
+
+            //Potentzia kudeatu
+            if (potZerr != null && potZerr.get(i) != null) {
+                if (potMax.isBlank()) {
+                    potMax = String.valueOf(potZerr.get(i));
+                } else if (potZerr.get(i) > Integer.parseInt(potMax)) {
+                    potMax = String.valueOf(potZerr.get(i));
+                }
+
+                pPotBatura = pPotBatura + potZerr.get(i);
+                pPotKop++;
+                bbPot = String.valueOf(pPotBatura / pPotKop);
             }
 
             //Tenperatura kudeatu

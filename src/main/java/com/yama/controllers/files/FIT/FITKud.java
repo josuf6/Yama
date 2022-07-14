@@ -231,13 +231,13 @@ public class FITKud {
                         if (pwZerr.stream().allMatch(Objects::isNull)) pwZerr = null;
 
                         if (jardMota.equals("Txirrindularitza")) {
-                            return new TxirrJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr, cadZerr, pwZerr);
+                            return new TxirrJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
                         } else if (jardMota.equals("Korrika")) {
-                            return new KorrJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
+                            return new KorrJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
                         } else if (jardMota.equals("Ibilaritza")) {
-                            return new IbilJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
+                            return new IbilJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
                         } else {
-                            return new JardueraModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, tempZerr);
+                            return new JardueraModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
                         }
                     }
                 }

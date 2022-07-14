@@ -14,7 +14,6 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
@@ -114,13 +113,28 @@ public class JardBistaratuKud implements Initializable {
         for (Double[] koords : jarduera.getKoordZerr()) {
             koordsArray.add(new Coordinate(koords[0], koords[1]));
         }
-        extent = Extent.forCoordinates(koordsArray);
+
+        sortuExtent(koordsArray);
+
         return new CoordinateLine(koordsArray);
     }
 
+    private void sortuExtent(ArrayList<Coordinate> koordsArray) {
+        Extent extentEstandar = Extent.forCoordinates(koordsArray);
+        double minLat = extentEstandar.getMin().getLatitude();
+        double minLon = extentEstandar.getMin().getLongitude();
+        double maxLat = extentEstandar.getMax().getLatitude();
+        double maxLon = extentEstandar.getMax().getLongitude();
+        double minLatBerria = minLat - ((maxLat - minLat) * 0.05);
+        double minLonBerria = minLon - ((maxLon - minLon) * 0.05);
+        double maxLatBerria = maxLat + ((maxLat - minLat) * 0.05);
+        double maxLonBerria = maxLon + ((maxLon - minLon) * 0.05);
+        extent = Extent.forCoordinates(new Coordinate(minLatBerria, minLonBerria), new Coordinate(maxLatBerria, maxLonBerria));
+    }
+
     private void afterMapIsInitialized() {
-        mapa.setCenter(kalkMapaZentroa());
-        mapa.setZoom(10);
+        //mapa.setCenter(kalkMapaZentroa());
+        //mapa.setZoom(10);
         mapa.addCoordinateLine(clKoords.setVisible(true)
                 .setColor(Color.ORANGE).setWidth(5));
     }
@@ -483,6 +497,9 @@ public class JardBistaratuKud implements Initializable {
         for (int i = 0; i < yZerr.size(); i++) {
             Number xElem = xZerr.get(i);
             Number yElem = yZerr.get(i);
+            if (yElem == null) {
+                yElem = 0;
+            }
             if (jarduera.getAbiZerr().get(i) > 0.5) { //Mugimenduan egonez gero
                 series.getData().add(new XYChart.Data(xElem, yElem));
             }
