@@ -1,8 +1,6 @@
 package com.yama;
 
-import com.yama.controllers.ui.JardBistaratuKud;
-import com.yama.controllers.ui.JardueraKargatuKud;
-import com.yama.controllers.ui.MainKud;
+import com.yama.controllers.ui.*;
 import com.yama.models.JardueraModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -28,10 +26,14 @@ public class Main extends Application {
     private static Scene scene;
 
     private MainKud mainKud;
+    private SaioaHasiKud saioaHasiKud;
+    private ErregistratuKud erregistratuKud;
+    private ProfilaBistaratuKud profilaBistaratuKud;
     private JardueraKargatuKud jardueraKargatuKud;
     private JardBistaratuKud jardBistaratuKud;
 
     public int lehioAktibo;
+    public String erabiltzaileAktibo = "";
 
     public boolean menuIrekita = false;
     public boolean menuMugitzen = false;
@@ -72,12 +74,21 @@ public class Main extends Application {
 
         //kudeatzaileak hasieratu
         mainKud = new MainKud(this);
+        saioaHasiKud = new SaioaHasiKud(this);
+        erregistratuKud = new ErregistratuKud(this);
+        profilaBistaratuKud = new ProfilaBistaratuKud(this);
         jardueraKargatuKud = new JardueraKargatuKud(this);
         jardBistaratuKud = new JardBistaratuKud(this);
 
         Callback<Class<?>, Object> controllerFactory = type -> {
             if (type == MainKud.class) {
                 return mainKud;
+            } else if (type == SaioaHasiKud.class) {
+                return saioaHasiKud;
+            } else if (type == ErregistratuKud.class) {
+                return erregistratuKud;
+            } else if (type == ProfilaBistaratuKud.class) {
+                return profilaBistaratuKud;
             } else if (type == JardueraKargatuKud.class) {
                 return jardueraKargatuKud;
             } else if (type == JardBistaratuKud.class) {

@@ -22,11 +22,11 @@ public class MainKud implements Initializable {
     private double yOffset = 0;
 
     @FXML
-    private Label lbl_jarduera;
+    private Label lbl_jarduera, lbl_profila;
 
     @FXML
-    private AnchorPane pane_barra, pane_beltza, pane_itxi, pane_jarduera, pane_JardBistaratu, pane_JardueraKargatu,
-            pane_menu, pane_menuIzenak, pane_menuIkonoak, pane_minimizatu;
+    private AnchorPane pane_barra, pane_beltza, pane_itxi, pane_jarduera, pane_profila, pane_JardBistaratu, pane_JardueraKargatu,
+            pane_menu, pane_menuIzenak, pane_menuIkonoak, pane_minimizatu, pane_ProfilaBistaratu, pane_SaioaHasi;
 
     public MainKud(Main main) {
         mainApp = main;
@@ -115,8 +115,8 @@ public class MainKud implements Initializable {
         });
 
 
-        //aplikazioa irekitzean "Jarduera kargatu" pantaila bistaratzeko
-        erakutsiJardueraKargatu();
+        //aplikazioa irekitzean profilaren pantaila bistaratzeko
+        erakutsiProfila();
         ordenaEgokitu();
     }
 
@@ -124,7 +124,10 @@ public class MainKud implements Initializable {
     void onClick(MouseEvent event) { //alboko menuko elementu bat klikatzerakoan egin behar dena
 
         //klikatutako elementua aukeratutakoa ez bada horrekin erlazionatutako leihoa erakutsi
-        if (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera) {
+        if (event.getSource() == lbl_profila || event.getSource() == pane_profila) {
+            erakutsiProfila();
+            ordenaEgokitu();
+        } else if (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera) {
             erakutsiJardueraKargatu();
             ordenaEgokitu();
         }
@@ -135,27 +138,56 @@ public class MainKud implements Initializable {
         }
     }
 
+    @FXML
+    void onEnter(MouseEvent event) { //kurtsorea alboko menuko elementu baten gainetik sartzean horren koloreak aldatu
+        if (mainApp.lehioAktibo != 1 && (event.getSource() == lbl_profila || event.getSource() == pane_profila)) {
+            lbl_profila.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
+            pane_profila.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
+        } else if (mainApp.lehioAktibo != 2 && (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera)) {
+            lbl_jarduera.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
+            pane_jarduera.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
+        }
+    }
+
+    @FXML
+    void onExit(MouseEvent event) { //kurtsorea alboko menuko elementu baten gainetik irtetzean horren koloreak aldatu
+        if (mainApp.lehioAktibo != 1 && (event.getSource() == lbl_profila || event.getSource() == pane_profila)) {
+            lbl_profila.setStyle("-fx-background-color: White");
+            pane_profila.setStyle("-fx-background-color: White");
+        } else if (mainApp.lehioAktibo != 2 && (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera)) {
+            lbl_jarduera.setStyle("-fx-background-color: White");
+            pane_jarduera.setStyle("-fx-background-color: White");
+        }
+    }
+
     private void ordenaEgokitu() { //leihoaren elementuen ordena egokitzeko
         pane_beltza.toFront();
         pane_menuIzenak.toFront();
         pane_menuIkonoak.toFront();
     }
 
-    private void erakutsiJardueraKargatu() {
+    private void erakutsiProfila() {
         mainApp.lehioAktibo = 1;
+        lbl_profila.setStyle("-fx-background-color: rgba(10,100,0,0.5)");
+        pane_profila.setStyle("-fx-background-color: rgba(10,100,0,0.5)");
+
+        elementuakZuriz();
+
+        if (mainApp.erabiltzaileAktibo.isBlank()) {
+            pane_SaioaHasi.toFront();
+        } else  {
+            pane_ProfilaBistaratu.toFront();
+        }
+    }
+
+    private void erakutsiJardueraKargatu() {
+        mainApp.lehioAktibo = 2;
         lbl_jarduera.setStyle("-fx-background-color: rgba(10,100,0,0.5)");
         pane_jarduera.setStyle("-fx-background-color: rgba(10,100,0,0.5)");
 
         elementuakZuriz();
 
         pane_JardueraKargatu.toFront();
-    }
-
-    private void elementuakZuriz() { //alboko menuan zuriz jarri aukeratuak izan ez diren elementuak
-        if (mainApp.lehioAktibo != 1) {
-            lbl_jarduera.setStyle("-fx-background-color: White");
-            pane_jarduera.setStyle("-fx-background-color: White");
-        }
     }
 
     public void erakutsiJardBistaratu() {
@@ -167,17 +199,11 @@ public class MainKud implements Initializable {
         pane_JardBistaratu.toBack();
     }
 
-    @FXML
-    void onEnter(MouseEvent event) { //kurtsorea alboko menuko elementu baten gainetik sartzean horren koloreak aldatu
-        if (mainApp.lehioAktibo != 1 && (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera)) {
-            lbl_jarduera.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
-            pane_jarduera.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
-        }
-    }
-
-    @FXML
-    void onExit(MouseEvent event) { //kurtsorea alboko menuko elementu baten gainetik irtetzean horren koloreak aldatu
-        if (mainApp.lehioAktibo != 1 && (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera)) {
+    private void elementuakZuriz() { //alboko menuan zuriz jarri aukeratuak izan ez diren elementuak
+        if (mainApp.lehioAktibo != 1) {
+            lbl_profila.setStyle("-fx-background-color: White");
+            pane_profila.setStyle("-fx-background-color: White");
+        } else if (mainApp.lehioAktibo != 2) {
             lbl_jarduera.setStyle("-fx-background-color: White");
             pane_jarduera.setStyle("-fx-background-color: White");
         }

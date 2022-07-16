@@ -29,9 +29,6 @@ public class JardueraKargatuKud implements Initializable {
     private ObservableList<JardueraModel> jardZerrObs;
 
     @FXML
-    private AnchorPane panela;
-
-    @FXML
     private Button btn_kargatu;
 
     @FXML
@@ -94,8 +91,6 @@ public class JardueraKargatuKud implements Initializable {
             });
             return errenkada;
         });
-
-        Platform.runLater(() -> panela.requestFocus());
     }
 
     @FXML

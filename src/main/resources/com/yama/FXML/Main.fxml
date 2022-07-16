@@ -44,6 +44,14 @@
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
+                  <Label fx:id="lbl_profila" alignment="BASELINE_LEFT" onMouseClicked="#onClick" onMouseEntered="#onEnter" onMouseExited="#onExit" prefHeight="60.0" prefWidth="178.0" text="Saioa hasi">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
                   <Label fx:id="lbl_jarduera" alignment="BASELINE_LEFT" onMouseClicked="#onClick" onMouseEntered="#onEnter" onMouseExited="#onExit" prefHeight="60.0" prefWidth="178.0" text="Jarduera kargatu">
                      <font>
                         <Font size="16.0" />
@@ -63,6 +71,15 @@
          <children>
             <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
+                  <AnchorPane fx:id="pane_profila" onMouseClicked="#onClick" onMouseEntered="#onEnter" onMouseExited="#onExit" prefHeight="60.0" prefWidth="48.0">
+                     <children>
+                        <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="4.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../irudiak/profila.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
                   <AnchorPane fx:id="pane_jarduera" onMouseClicked="#onClick" onMouseEntered="#onEnter" onMouseExited="#onExit" prefHeight="60.0" prefWidth="48.0">
                      <children>
                         <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="4.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
@@ -78,6 +95,21 @@
       </AnchorPane>
       <StackPane prefWidth="952.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
          <children>
+            <AnchorPane fx:id="pane_SaioaHasi">
+               <children>
+                  <fx:include fx:id="SaioaHasi" source="SaioaHasi.fxml" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="pane_Erregistratu">
+               <children>
+                  <fx:include fx:id="Erregistratu" source="Erregistratu.fxml" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="pane_ProfilaBistaratu">
+               <children>
+                  <fx:include fx:id="ProfilaBistaratu" source="ProfilaBistaratu.fxml" />
+               </children>
+            </AnchorPane>
             <AnchorPane fx:id="pane_JardueraKargatu">
                <fx:include fx:id="JardueraKargatu" source="JardueraKargatu.fxml" />
             </AnchorPane>
