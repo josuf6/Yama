@@ -25,7 +25,7 @@ public class MainKud implements Initializable {
     private Label lbl_jarduera, lbl_profila;
 
     @FXML
-    private AnchorPane pane_barra, pane_beltza, pane_itxi, pane_jarduera, pane_profila, pane_JardBistaratu, pane_JardueraKargatu,
+    private AnchorPane pane_barra, pane_beltza, pane_Erregistratu, pane_itxi, pane_jarduera, pane_profila, pane_JardBistaratu, pane_JardueraKargatu,
             pane_menu, pane_menuIzenak, pane_menuIkonoak, pane_minimizatu, pane_ProfilaBistaratu, pane_SaioaHasi;
 
     public MainKud(Main main) {
@@ -160,6 +160,10 @@ public class MainKud implements Initializable {
         }
     }
 
+    public void setProfilaText(String pText) {
+        lbl_profila.setText(pText);
+    }
+
     private void ordenaEgokitu() { //leihoaren elementuen ordena egokitzeko
         pane_beltza.toFront();
         pane_menuIzenak.toFront();
@@ -173,10 +177,10 @@ public class MainKud implements Initializable {
 
         elementuakZuriz();
 
-        if (mainApp.erabiltzaileAktibo.isBlank()) {
-            pane_SaioaHasi.toFront();
-        } else  {
-            pane_ProfilaBistaratu.toFront();
+        if (mainApp.getErabiltzaileAktibo() == null) {
+            mainApp.erakutsiSaioaHasi();
+        } else {
+            mainApp.erakutsiProfilaBistaratu();
         }
     }
 
@@ -188,6 +192,21 @@ public class MainKud implements Initializable {
         elementuakZuriz();
 
         pane_JardueraKargatu.toFront();
+    }
+
+    public void erakutsiSaioaHasi() {
+        pane_SaioaHasi.toFront();
+        pane_SaioaHasi.requestFocus();
+    }
+
+    public void erakutsiProfilaBistaratu() {
+        pane_ProfilaBistaratu.toFront();
+        pane_ProfilaBistaratu.requestFocus();
+    }
+
+    public void erakutsiErregistratu() {
+        pane_Erregistratu.toFront();
+        pane_Erregistratu.requestFocus();
     }
 
     public void erakutsiJardBistaratu() {
@@ -211,6 +230,7 @@ public class MainKud implements Initializable {
 
     private void menuIreki() {
         if (!mainApp.menuMugitzen) { //alboko menua ireki eta animazioak abiarazi
+            mainApp.menuIrekita = true;
             mainApp.menuMugitzen = true;
             pane_beltza.setVisible(true);
 
@@ -224,7 +244,6 @@ public class MainKud implements Initializable {
             translateTransition2.play();
 
             translateTransition2.setOnFinished(event -> {
-                mainApp.menuIrekita = true;
                 mainApp.menuMugitzen = false;
             });
         }
@@ -232,6 +251,7 @@ public class MainKud implements Initializable {
 
     private void menuItxi() {
         if (!mainApp.menuMugitzen) { //alboko menua itxi eta animazioak abiarazi
+            mainApp.menuIrekita = false;
             mainApp.menuMugitzen = true;
 
             FadeTransition fadeTransition3 = new FadeTransition(Duration.seconds(0.1), pane_beltza);
@@ -246,7 +266,6 @@ public class MainKud implements Initializable {
             translateTransition3.play();
 
             translateTransition3.setOnFinished(event -> {
-                mainApp.menuIrekita = false;
                 mainApp.menuMugitzen = false;
             });
         }

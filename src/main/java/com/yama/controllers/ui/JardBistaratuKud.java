@@ -84,6 +84,8 @@ public class JardBistaratuKud implements Initializable {
                 e.printStackTrace();
             }
         }
+
+        //TODO aukeratu "Mapa" erlaitza tabpane-an
     }
 
 

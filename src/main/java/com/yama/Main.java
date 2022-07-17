@@ -1,6 +1,8 @@
 package com.yama;
 
+import com.yama.controllers.db.YamaDBKud;
 import com.yama.controllers.ui.*;
+import com.yama.models.ErabiltzaileModel;
 import com.yama.models.JardueraModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -33,7 +35,7 @@ public class Main extends Application {
     private JardBistaratuKud jardBistaratuKud;
 
     public int lehioAktibo;
-    public String erabiltzaileAktibo = "";
+    private ErabiltzaileModel erabiltzaileAktibo = null;
 
     public boolean menuIrekita = false;
     public boolean menuMugitzen = false;
@@ -106,6 +108,37 @@ public class Main extends Application {
         loaderMain.setControllerFactory(controllerFactory);
 
         mainUI = (Parent) loaderMain.load();
+    }
+
+    public ErabiltzaileModel getErabiltzaileAktibo() {
+        return erabiltzaileAktibo;
+    }
+
+    public void erakutsiSaioaHasi() {
+        saioaHasiKud.garbituPantaila();
+        mainKud.erakutsiSaioaHasi();
+    }
+
+    public void erakutsiErregistratu() {
+        erregistratuKud.garbituPantaila();
+        mainKud.erakutsiErregistratu();
+    }
+
+    public void saioaHasi(String pEzizena) {
+        erabiltzaileAktibo = YamaDBKud.getYamaDBKud().getErabiltzailea(pEzizena);
+        mainKud.setProfilaText(erabiltzaileAktibo.getEzizena());
+        erakutsiProfilaBistaratu();
+    }
+
+    public void saioaItxi() {
+        erabiltzaileAktibo = null;
+        mainKud.setProfilaText("Saioa hasi");
+        erakutsiSaioaHasi();
+    }
+
+    public void erakutsiProfilaBistaratu() {
+        profilaBistaratuKud.eguneratuPantaila();
+        mainKud.erakutsiProfilaBistaratu();
     }
 
     public void jardBistaratu(JardueraModel pJard) {

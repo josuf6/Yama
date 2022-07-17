@@ -51,6 +51,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.jfoenix/jfoenix
     implementation 'com.jfoenix:jfoenix:9.0.10'
+
+    // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
+
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    implementation 'commons-codec:commons-codec:1.15'
 }
 
 test {

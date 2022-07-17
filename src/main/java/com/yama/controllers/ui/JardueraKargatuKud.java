@@ -102,9 +102,9 @@ public class JardueraKargatuKud implements Initializable {
 
     @FXML
     void onClickBistaratu(MouseEvent event) {
+        btn_bistaratu.setDisable(true);
         JardueraModel jard = jardZerr.get(tbJard.getSelectionModel().getSelectedIndex());
         tbJard.getSelectionModel().clearSelection();
-        btn_bistaratu.setDisable(true);
         //if (mainApp.konexioaDago()) {
             mainApp.jardBistaratu(jard);
         //}

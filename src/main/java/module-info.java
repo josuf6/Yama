@@ -8,6 +8,8 @@ module com.yama {
     requires com.sothawo.mapjfx;
     requires org.slf4j;
     requires com.jfoenix;
+    requires java.sql;
+    requires org.apache.commons.codec;
 
 
     opens com.yama to javafx.fxml;

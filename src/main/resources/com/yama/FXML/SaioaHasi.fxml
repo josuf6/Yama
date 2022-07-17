@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="560.0" prefWidth="952.0" style="-fx-background-color: inherit;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.SaioaHasiKud" />
+<AnchorPane prefHeight="560.0" prefWidth="952.0" style="-fx-background-color: inherit;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.SaioaHasiKud">
+   <children>
+      <Label layoutX="280.0" layoutY="186.0" text="Ezizena">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="280.0" layoutY="235.0" text="Pasahitza">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txt_ezizena" layoutX="423.0" layoutY="183.0" prefWidth="200.0" />
+      <PasswordField fx:id="txt_pasahitza" layoutX="423.0" layoutY="232.0" prefWidth="200.0" />
+      <Button fx:id="btn_saioaHasi" layoutX="442.0" layoutY="288.0" mnemonicParsing="false" onMouseClicked="#onClickSaioaHasi" text="Saioa hasi" />
+      <Button fx:id="btn_kontuBerria" layoutX="412.0" layoutY="331.0" mnemonicParsing="false" onMouseClicked="#onClickKontuBerria" text="Sortu kontu berri bat" />
+   </children>
+</AnchorPane>
