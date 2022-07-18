@@ -2,6 +2,7 @@ package com.yama.controllers.ui;
 
 import com.sothawo.mapjfx.*;
 import com.yama.Main;
+import com.yama.controllers.db.YamaDBKud;
 import com.yama.models.IbilJardModel;
 import com.yama.models.JardueraModel;
 import com.yama.models.KorrJardModel;
@@ -12,12 +13,19 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -25,6 +33,7 @@ public class JardBistaratuKud implements Initializable {
 
     private Main mainApp;
     private JardueraModel jarduera;
+    private double distantzia;
     private ArrayList<Double> distZerr;
     private boolean estatistikakHasita,
             laburPaneHasita, abiPaneHasita, altPaneHasita, bMPaneHasita, kadPaneHasita, potPaneHasita, tenpPaneHasita,
@@ -35,6 +44,9 @@ public class JardBistaratuKud implements Initializable {
 
     @FXML
     private AnchorPane altPane, bMPane, kadPane, potPane, tenpPane, abiGrafPane, altGrafPane, bMGrafPane, kadGrafPane, potGrafPane, tenpGrafPane;
+
+    @FXML
+    private Button btn_jardGorde;
 
     @FXML
     private ImageView imgMota;
@@ -61,14 +73,37 @@ public class JardBistaratuKud implements Initializable {
 
     @FXML
     void onClickAtzera() {
-        //TODO Pantaila garbitu
         mainApp.atzeraJardBistaratu();
     }
 
-    public void jardBistaratu(JardueraModel pJard) {
+    @FXML
+    void onClickJardGorde(MouseEvent event) {
+        if (!YamaDBKud.getYamaDBKud().jardueraGordeta(mainApp.getErabiltzaileAktibo().getEzizena(), jarduera)) {
+            YamaDBKud.getYamaDBKud().gordeJarduera(mainApp.getErabiltzaileAktibo().getEzizena(), jarduera);
+
+            jardBistaratu(jarduera, "gordeta");
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Datu hauek dituen jarduera bat existitzen da gordeta profil honetan.", ButtonType.CLOSE);
+            alert.setTitle("Yama");
+            alert.setHeaderText("Jarduera errepikatuta.");
+            alert.showAndWait();
+        }
+    }
+
+    public void jardBistaratu(JardueraModel pJard, String jardMota) {
+        garbituPantaila();
+
         jarduera = pJard;
         lblIzena.setText(jarduera.getIzena());
         lblHasiData.setText(jarduera.getHasiData());
+
+        if (jardMota.equals("inportatuta") && mainApp.getErabiltzaileAktibo() != null) {
+            btn_jardGorde.setVisible(true);
+        } else if (jardMota.equals("gordeta")) {
+            btn_jardGorde.setVisible(false);
+
+            //TODO jarduera profil batean gordeta badago (erabiltzailearen izena jarri pantailan)
+        }
 
         hasieratuMapa();
 
@@ -86,6 +121,12 @@ public class JardBistaratuKud implements Initializable {
         }
 
         //TODO aukeratu "Mapa" erlaitza tabpane-an
+    }
+
+    private void garbituPantaila() {
+        //TODO garbitu pantaila
+
+        //TODO erreseteatu mapa
     }
 
 
@@ -172,7 +213,10 @@ public class JardBistaratuKud implements Initializable {
 
     private void hasieratuEstatistikak() {
         distZerr = (ArrayList<Double>) jarduera.getDistZerr().clone();
-        distZerr.replaceAll(dist -> dist / 1000);
+        distantzia = jarduera.getDistBal();
+        if (distantzia >= 1000) {
+            distZerr.replaceAll(dist -> dist / 1000);
+        }
 
         //Estatistiken grafikoak sortzeko hariak prestatu eta hasieratu
         abiGrafHasita = false;
@@ -330,9 +374,13 @@ public class JardBistaratuKud implements Initializable {
 
         //Grafikoaren limiteak definitu eta grafikoa sortu
         ArrayList<Double> abiZerr = jarduera.getAbiZerr();
-        double distantzia = jarduera.getDistBal();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
         double abiMax = jarduera.getAbiMaxBal();
-        String xLabel = "km";
         String yLabel = "km/h";
         int[] kolorea = {70, 203, 255};
         if (jarduera instanceof IbilJardModel || jarduera instanceof KorrJardModel) {
@@ -340,7 +388,7 @@ public class JardBistaratuKud implements Initializable {
             abiMax = abiMax / 3.6;
             yLabel = "m/s";
         }
-        abiGraf = sortuGrafikoa(distZerr, abiZerr, distantzia, 0, abiMax, String.valueOf(jarduera.getBbAbiBal()), xLabel, yLabel, kolorea);
+        abiGraf = sortuGrafikoa(distZerr, abiZerr, xMax, 0, abiMax, String.valueOf(jarduera.getBbAbiBal()), xLabel, yLabel, kolorea);
     }
 
     private void hasiAbiPane() {
@@ -358,16 +406,20 @@ public class JardBistaratuKud implements Initializable {
     private void hasiAltGraf() {
         //Grafikoaren limiteak definitu eta grafikoa sortu
         ArrayList<Double> altZerr = jarduera.getAltZerr();
-        double distantzia = jarduera.getDistBal();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
         double altMin = jarduera.getAltueraMinBal();
         if (altMin > 0) {
             altMin = 0;
         }
         double altMax = jarduera.getAltueraMaxBal();
-        String xLabel = "km";
         String yLabel = "m";
         int[] kolorea = {77, 222, 77};
-        altGraf = sortuGrafikoa(distZerr, altZerr, distantzia, altMin, altMax, null, xLabel, yLabel, kolorea);
+        altGraf = sortuGrafikoa(distZerr, altZerr, xMax, altMin, altMax, null, xLabel, yLabel, kolorea);
 
         altPane.setVisible(true);
         altPane.setManaged(true);
@@ -385,14 +437,18 @@ public class JardBistaratuKud implements Initializable {
 
         //Grafikoaren limiteak definitu eta grafikoa sortu
         ArrayList<Double> bihotzMaizZerr = (ArrayList<Double>) jarduera.getBihotzMaizZerr().clone();
-        double distantzia = jarduera.getDistBal();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
         double bihotzMaizMin = jarduera.getBihotzMaizMinBal();
         bihotzMaizMin = bihotzMaizMin - (bihotzMaizMin * 0.1);
         double bihotzMaizMax = jarduera.getBihotzMaizMaxBal();
-        String xLabel = "km";
         String yLabel = "bpm";
         int[] kolorea = {222, 88, 77};
-        bihotzMaizGraf = sortuGrafikoa(distZerr, bihotzMaizZerr, distantzia, bihotzMaizMin, bihotzMaizMax, jarduera.getBbBihotzMaizBal(), xLabel, yLabel, kolorea);
+        bihotzMaizGraf = sortuGrafikoa(distZerr, bihotzMaizZerr, xMax, bihotzMaizMin, bihotzMaizMax, jarduera.getBbBihotzMaizBal(), xLabel, yLabel, kolorea);
 
         bMPane.setVisible(true);
         bMPane.setManaged(true);
@@ -409,12 +465,16 @@ public class JardBistaratuKud implements Initializable {
 
         //Grafikoaren limiteak definitu eta grafikoa sortu
         ArrayList<Double> kadZerr = (ArrayList<Double>) ((TxirrJardModel) jarduera).getKadZerr().clone();
-        double distantzia = jarduera.getDistBal();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
         double kadMax = ((TxirrJardModel) jarduera).getKadMaxBal();
-        String xLabel = "km";
         String yLabel = "rpm";
         int[] kolorea = {222, 150, 77};
-        kadGraf = sortuGrafikoa(distZerr, kadZerr, distantzia, 0, kadMax, ((TxirrJardModel) jarduera).getBbKadBal(), xLabel, yLabel, kolorea);
+        kadGraf = sortuGrafikoa(distZerr, kadZerr, xMax, 0, kadMax, ((TxirrJardModel) jarduera).getBbKadBal(), xLabel, yLabel, kolorea);
 
         kadPane.setVisible(true);
         kadPane.setManaged(true);
@@ -431,12 +491,16 @@ public class JardBistaratuKud implements Initializable {
 
         //Grafikoaren limiteak definitu eta grafikoa sortu
         ArrayList<Double> potZerr = (ArrayList<Double>) ((TxirrJardModel) jarduera).getPotZerr().clone();
-        double distantzia = jarduera.getDistBal();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
         double potMax = ((TxirrJardModel) jarduera).getPotMaxBal();
-        String xLabel = "km";
         String yLabel = "W";
         int[] kolorea = {222, 77, 222};
-        potGraf = sortuGrafikoa(distZerr, potZerr, distantzia, 0, potMax, ((TxirrJardModel) jarduera).getBbPotBal(), xLabel, yLabel, kolorea);
+        potGraf = sortuGrafikoa(distZerr, potZerr, xMax, 0, potMax, ((TxirrJardModel) jarduera).getBbPotBal(), xLabel, yLabel, kolorea);
 
         potPane.setVisible(true);
         potPane.setManaged(true);
@@ -453,14 +517,18 @@ public class JardBistaratuKud implements Initializable {
 
         //Grafikoaren limiteak definitu eta grafikoa sortu
         ArrayList<Double> tenpZerr = jarduera.getTenpZerr();
-        double distantzia = jarduera.getDistBal();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
         double tenpMin = jarduera.getTenpMinBal();
         tenpMin = tenpMin - (tenpMin * 0.1);
         double tenpMax = jarduera.getTenpMaxBal();
-        String xLabel = "km";
         String yLabel = "ºC";
         int[] kolorea = {77, 222, 222};
-        tenpGraf = sortuGrafikoa(distZerr, tenpZerr, distantzia, tenpMin, tenpMax, jarduera.getBbTenpBal(), xLabel, yLabel, kolorea);
+        tenpGraf = sortuGrafikoa(distZerr, tenpZerr, xMax, tenpMin, tenpMax, jarduera.getBbTenpBal(), xLabel, yLabel, kolorea);
 
         tenpPane.setVisible(true);
         tenpPane.setManaged(true);

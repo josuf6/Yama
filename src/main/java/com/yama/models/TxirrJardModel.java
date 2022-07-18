@@ -18,44 +18,4 @@ public class TxirrJardModel extends JardueraModel {
         }
         return izena;
     }
-
-    public String getBbKad() {
-        return bbKad + " rpm";
-    }
-
-    public String getBbKadBal() {
-        return bbKad;
-    }
-
-    public String getKadMax() {
-        return kadMax + " rpm";
-    }
-
-    public int getKadMaxBal() {
-        return Integer.parseInt(kadMax);
-    }
-
-    public String getBbPot() {
-        return bbPot + " W";
-    }
-
-    public String getBbPotBal() {
-        return bbPot;
-    }
-
-    public String getPotMax() {
-        return potMax + " W";
-    }
-
-    public int getPotMaxBal() {
-        return Integer.parseInt(potMax);
-    }
-
-    public ArrayList<Integer> getKadZerr() {
-        return kadZerr;
-    }
-
-    public ArrayList<Integer> getPotZerr() {
-        return potZerr;
-    }
 }

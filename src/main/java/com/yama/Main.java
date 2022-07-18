@@ -141,8 +141,8 @@ public class Main extends Application {
         mainKud.erakutsiProfilaBistaratu();
     }
 
-    public void jardBistaratu(JardueraModel pJard) {
-        jardBistaratuKud.jardBistaratu(pJard);
+    public void jardBistaratu(JardueraModel pJard, String jardMota) {
+        jardBistaratuKud.jardBistaratu(pJard, jardMota);
         mainKud.erakutsiJardBistaratu();
     }
 

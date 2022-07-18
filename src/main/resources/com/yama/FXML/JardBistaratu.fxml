@@ -29,6 +29,7 @@
                         <Font size="24.0" />
                      </font>
                   </Label>
+                  <Button fx:id="btn_jardGorde" mnemonicParsing="false" onMouseClicked="#onClickJardGorde" text="Jarduera gorde" />
                </children>
                <VBox.margin>
                   <Insets />

@@ -253,7 +253,6 @@ public class FITKud {
             long timeLong = Long.parseLong(pTime);
             Date date = new Date(timeLong);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
             return sdf.format(date);
         } catch (NumberFormatException e) {
             return "";

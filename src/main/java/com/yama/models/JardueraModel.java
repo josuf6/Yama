@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class JardueraModel {
 
@@ -244,6 +243,7 @@ public class JardueraModel {
                 //Igoera eta jaitsiera kudeatu
                 if (pAzkenAlt.isBlank()) {
                     pAzkenAlt = String.valueOf(altZerr.get(i));
+                    igoeraTot = String.valueOf(0);
                 } else {
                     if (altZerr.get(i) > Double.parseDouble(pAzkenAlt)) {
                         if (igoeraTot.isBlank()) {
@@ -332,15 +332,18 @@ public class JardueraModel {
 
     public String getIzena() {
         if (izena.isBlank()) {
-            return  "Kirol jarduera";
+            return "Kirol jarduera";
         }
+        return izena;
+    }
+
+    public String getIzenaBal() {
         return izena;
     }
 
     public String getHasiData() { //Jardueraren data pantailatzerakoan honek izango duen formatua
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
             Date data = sdf.parse(hasiData);
             SimpleDateFormat formatuPantailan = new SimpleDateFormat("yyyy/MM/dd HH:mm");
             return formatuPantailan.format(data);
@@ -465,6 +468,10 @@ public class JardueraModel {
         return koordZerr;
     }
 
+    public ArrayList<String> getDataZerr() {
+        return dataZerr;
+    }
+
     public ArrayList<Double> getAbiZerr() {
         return abiZerr;
     }
@@ -521,6 +528,10 @@ public class JardueraModel {
         return mota;
     }
 
+    public String getMotaBal() {
+        return mota;
+    }
+
     public String getDistantzia() { //Jardueraren distantzia pantailatzerakoan honek izango duen formatua
         if (distantzia < 1000) {
             return distantzia + " m";
@@ -534,11 +545,48 @@ public class JardueraModel {
         return km + "," + m + " km";
     }
 
-    public double getDistBal() {
-        BigDecimal bd = BigDecimal.valueOf(distantzia / 1000);
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
-        DecimalFormat format = new DecimalFormat("0.##");
-        return Double.parseDouble(format.format(bd.doubleValue()));
+    public double getDistBal() { //Grafikoetan bistaratzeko formatua
+        return distantzia;
+    }
+
+    public String getBbKad() {
+        return bbKad + " rpm";
+    }
+
+    public String getBbKadBal() {
+        return bbKad;
+    }
+
+    public String getKadMax() {
+        return kadMax + " rpm";
+    }
+
+    public int getKadMaxBal() {
+        return Integer.parseInt(kadMax);
+    }
+
+    public String getBbPot() {
+        return bbPot + " W";
+    }
+
+    public String getBbPotBal() {
+        return bbPot;
+    }
+
+    public String getPotMax() {
+        return potMax + " W";
+    }
+
+    public int getPotMaxBal() {
+        return Integer.parseInt(potMax);
+    }
+
+    public ArrayList<Integer> getKadZerr() {
+        return kadZerr;
+    }
+
+    public ArrayList<Integer> getPotZerr() {
+        return potZerr;
     }
 
     private long iraupena(String pHasiData, String pBukData) { //Jardueraren iraupena kalkulatu koordenatuak erabiliz

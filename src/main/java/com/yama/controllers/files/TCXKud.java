@@ -285,7 +285,6 @@ public class TCXKud {
         for (String formatu : dataFormatuak) {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat(formatu);
-                sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
                 Date data = sdf.parse(pTime);
                 SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 return sdfTime.format(data);

@@ -106,7 +106,7 @@ public class JardueraKargatuKud implements Initializable {
         JardueraModel jard = jardZerr.get(tbJard.getSelectionModel().getSelectedIndex());
         tbJard.getSelectionModel().clearSelection();
         //if (mainApp.konexioaDago()) {
-            mainApp.jardBistaratu(jard);
+            mainApp.jardBistaratu(jard, "inportatuta");
         //}
     }
 
