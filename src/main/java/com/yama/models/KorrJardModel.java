@@ -7,10 +7,10 @@ import java.util.ArrayList;
 
 public class KorrJardModel extends JardueraModel {
 
-    public KorrJardModel(String pIzena, String pMota, ArrayList<Double[]> pKoordZerr, ArrayList<Double> pAltZerr,
+    public KorrJardModel(int pIdDB, String pIzena, String pMota, ArrayList<Double[]> pKoordZerr, ArrayList<Double> pAltZerr,
                          ArrayList<String> pDataZerr, ArrayList<Integer> pBihotzMaizZerr, ArrayList<Integer> pKadZerr,
                          ArrayList<Integer> pPotZerr, ArrayList<Double> pTenpZerr) {
-        super(pIzena, pMota, pKoordZerr, pAltZerr, pDataZerr, pBihotzMaizZerr, pKadZerr, pPotZerr, pTenpZerr);
+        super(pIdDB, pIzena, pMota, pKoordZerr, pAltZerr, pDataZerr, pBihotzMaizZerr, pKadZerr, pPotZerr, pTenpZerr);
     }
 
     @Override

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.SQLException;
 
 public class Main extends Application {
 
@@ -126,8 +127,16 @@ public class Main extends Application {
 
     public void saioaHasi(String pEzizena) {
         erabiltzaileAktibo = YamaDBKud.getYamaDBKud().getErabiltzailea(pEzizena);
-        mainKud.setProfilaText(erabiltzaileAktibo.getEzizena());
-        erakutsiProfilaBistaratu();
+        if (erabiltzaileAktibo != null) {
+            mainKud.setProfilaText(erabiltzaileAktibo.getEzizena());
+            erakutsiProfilaBistaratu();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
+            alert.setTitle("Yama");
+            alert.setHeaderText("Ustekabeko errorea.");
+            alert.showAndWait();
+            saioaItxi();
+        }
     }
 
     public void saioaItxi() {
@@ -141,8 +150,8 @@ public class Main extends Application {
         mainKud.erakutsiProfilaBistaratu();
     }
 
-    public void jardBistaratu(JardueraModel pJard, String jardMota) {
-        jardBistaratuKud.jardBistaratu(pJard, jardMota);
+    public void jardBistaratu(JardueraModel pJard) {
+        jardBistaratuKud.jardBistaratu(pJard);
         mainKud.erakutsiJardBistaratu();
     }
 
@@ -150,18 +159,7 @@ public class Main extends Application {
         mainKud.atzeraJardBistaratu();
     }
 
-    public boolean konexioaDago() {
-        try {
-            URL url = new URL("http://www.google.com");
-            URLConnection connection = url.openConnection();
-            connection.connect();
-            return true;
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Ez dago Interneteko konexiorik. Sareko ezarpenak egiaztatu eta berriro saiatu.", ButtonType.CLOSE);
-            alert.setTitle("Yama");
-            alert.setHeaderText("Interneteko konexiorik ez.");
-            alert.showAndWait();
-            return false;
-        }
+    public void jardKargTaulaEguneratu(JardueraModel jardEguneratuta) {
+        jardueraKargatuKud.eguneratuJarduera(jardEguneratuta);
     }
 }

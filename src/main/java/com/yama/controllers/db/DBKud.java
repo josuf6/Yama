@@ -42,27 +42,23 @@ public class DBKud {
 
     }
 
-    public ResultSet execSQL(String query, Object[] datuak) {
+    public ResultSet execSQL(String query, Object[] datuak) throws SQLException {
         int count = 0;
         PreparedStatement s = null;
         ResultSet rs = null;
 
-        try {
-            s = conn.prepareStatement(query);
-            for (int i = 0; i < datuak.length; i++) {
-                s.setObject(i + 1, datuak[i]);
-            }
-            if (query.toLowerCase().indexOf("select") == 0) {
-                // select agindu bat
-                rs = s.executeQuery();
+        s = conn.prepareStatement(query);
+        for (int i = 0; i < datuak.length; i++) {
+            s.setObject(i + 1, datuak[i]);
+        }
+        if (query.toLowerCase().indexOf("select") == 0) {
+            // select agindu bat
+            rs = s.executeQuery();
 
-            } else {
-                // update, delete, create agindu bat
-                count = s.executeUpdate();
-                System.out.println(count + " rows affected");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else {
+            // update, delete, update agindu bat
+            count = s.executeUpdate();
+            System.out.println(count + " rows affected");
         }
 
         return rs;

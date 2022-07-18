@@ -1,8 +1,6 @@
 package com.yama.controllers.db;
 
-import com.yama.models.ErabiltzaileModel;
-import com.yama.models.JardueraModel;
-import com.yama.models.TxirrJardModel;
+import com.yama.models.*;
 import javafx.scene.control.TextField;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,6 +8,7 @@ import org.json.JSONObject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -26,120 +25,132 @@ public class YamaDBKud {
     public ErabiltzaileModel getErabiltzailea(String pEzizena) {
         String query = "select ezizena, izena, abizena from Erabiltzailea where ezizena=?";
         Object[] datuak = {pEzizena};
-        ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
+
         ErabiltzaileModel erabiltzailea = null;
-        if (rs != null) {
-            try {
+        try {
+            ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
+            if (rs != null) {
                 rs.next();
                 erabiltzailea = new ErabiltzaileModel(rs.getString("ezizena"), rs.getString("izena"), rs.getString("abizena"));
-            } catch(SQLException throwables){
-                throwables.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return erabiltzailea;
     }
 
-    public boolean pasahitzBerdinaDa(String pEzizena, String pPasahitza) {
+    public int pasahitzBerdinaDa(String pEzizena, String pPasahitza) {
         String pasBerriHash = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pPasahitza);
         String query = "select pasahitza from Erabiltzailea where ezizena=?";
         Object[] datuak = {pEzizena};
-        ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
-        if (rs != null) {
-            try {
+
+        try {
+            ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
+            if (rs != null) {
                 rs.next();
                 String pasahitzZaharHash = rs.getString("pasahitza");
-                if (!pasBerriHash.equals(pasahitzZaharHash)) {
-                    return false;
-                }
-            } catch(SQLException throwables){
-                throwables.printStackTrace();
+                if (!pasBerriHash.equals(pasahitzZaharHash)) return 0;
+                else return 1;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return true;
+        return -1;
     }
 
-    public boolean existitzenDaErabiltzailea(String pEzizena) {
+    public int existitzenDaErabiltzailea(String pEzizena) {
         String query = "select * from Erabiltzailea where ezizena=?";
         Object[] datuak = {pEzizena};
-        ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
+
         try {
-            return rs.next();
-        } catch(SQLException throwables){
-            throwables.printStackTrace();
+            ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
+            if (rs.next()) return 1;
+            else return 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return false;
+        return -1;
     }
 
-    public void erregistratuErabiltzailea(String pEzizena, String pPasahitza, String pIzena, String pAbizena) {
+    public boolean erregistratuErabiltzailea(String pEzizena, String pPasahitza, String pIzena, String pAbizena) {
         String pasHash = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pPasahitza);
         String query = "insert into Erabiltzailea values(?, ?, ?, ?)";
         Object[] datuak = {pEzizena, pasHash, pIzena, pAbizena};
-        DBKud.getDBKud().execSQL(query, datuak);
-    }
-
-    public void ezabatuErabiltzailea(String pEzizena) {
-        String query = "delete from Erabiltzailea where ezizena=?";
-        Object[] datuak = {pEzizena};
-        DBKud.getDBKud().execSQL(query, datuak);
-    }
-
-    public boolean egiaztatuErabiltzailea(String pEzizena, String pPasahitza) {
-        String pasHash = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pPasahitza);
-        String query = "select ezizena from Erabiltzailea where ezizena=? and pasahitza=?";
-        Object[] datuak = {pEzizena, pasHash};
-        ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
         try {
-            return rs.next();
-        } catch(SQLException throwables){
-            throwables.printStackTrace();
+            DBKud.getDBKud().execSQL(query, datuak);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
 
-    public void eguneratuErabIzen(String ezizena, String izenBerri) {
-        String query = "update Erabiltzailea set izena=? where ezizena=?";
-        Object[] datuak = {izenBerri, ezizena};
-        DBKud.getDBKud().execSQL(query, datuak);
+    public boolean ezabatuErabiltzailea(String pEzizena) {
+        String query = "delete from Erabiltzailea where ezizena=?";
+        Object[] datuak = {pEzizena};
+        try {
+            DBKud.getDBKud().execSQL(query, datuak);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public void eguneratuErabAbizen(String ezizena, String abiBerri) {
-        String query = "update Erabiltzailea set abizena=? where ezizena=?";
-        Object[] datuak = {abiBerri, ezizena};
-        DBKud.getDBKud().execSQL(query, datuak);
+    public int egiaztatuErabiltzailea(String pEzizena, String pPasahitza) {
+        String pasHash = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pPasahitza);
+        String query = "select ezizena from Erabiltzailea where ezizena=? and pasahitza=?";
+        Object[] datuak = {pEzizena, pasHash};
+        try {
+            ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
+            if (rs.next()) return 1;
+            else return 0;
+        } catch(SQLException throwables){
+            throwables.printStackTrace();
+        }
+        return -1;
     }
 
-    public void eguneratuErabPasahitz(String ezizena, String pasahitzBerri) {
-        String pasHash = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pasahitzBerri);
-        String query = "update Erabiltzailea set pasahitza=? where ezizena=?";
-        Object[] datuak = {pasHash, ezizena};
-        DBKud.getDBKud().execSQL(query, datuak);
+    public boolean eguneratuErabiltzailea(String ezizena, String izenBerri, String abiBerri, String ezizenBerri, String pasahitzBerri) {
+        String query;
+        Object[] datuak;
+        if (!pasahitzBerri.isBlank()) {
+            String pasHash = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pasahitzBerri);
+            query = "update Erabiltzailea set ezizena=?, pasahitza=?, izena=?, abizena=? where ezizena=?";
+            datuak = new Object[]{ezizenBerri, pasHash, izenBerri, abiBerri, ezizena};
+        } else {
+            query = "update Erabiltzailea set ezizena=?, izena=?, abizena=? where ezizena=?";
+            datuak = new Object[]{ezizenBerri, izenBerri, abiBerri, ezizena};
+        }
+
+        try {
+            DBKud.getDBKud().execSQL(query, datuak);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public void eguneratuErabEzizen(String ezizena, String ezizenBerri) {
-        String query = "update Erabiltzailea set ezizena=? where ezizena=?";
-        Object[] datuak = {ezizenBerri, ezizena};
-        DBKud.getDBKud().execSQL(query, datuak);
-    }
-
-    public boolean jardueraGordeta(String pEzizena, JardueraModel pJarduera) {
+    public int jardueraGordeta(String pEzizena, JardueraModel pJarduera) {
         String query = "select datuak from Jarduera where ezizena=?";
         Object[] datuak = {pEzizena};
-        ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
-        String jardueraDatuak = "";
-        if (rs != null) {
-            try {
+        try {
+            ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
+            String jardueraDatuak = "";
+            if (rs != null) {
                 while (rs.next()) {
                     jardueraDatuak = rs.getString("datuak");
                     if (berdinakDiraJarduerak(formateatuDatuak(pJarduera), jardueraDatuak)) {
-                        return true;
+                        return 1;
                     }
                 }
-                return false;
-            } catch(SQLException throwables){
-                throwables.printStackTrace();
+                return 0;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return true;
+        return -1;
     }
 
     private boolean berdinakDiraJarduerak(String pJard1Datuak, String pJard2Datuak) {
@@ -164,21 +175,18 @@ public class YamaDBKud {
         }
 
         //Beste zerrendak aztertu
-        if (!berdinakDiraZerrendak("dataZerr", jard1DatuakJSON, jard2DatuakJSON)) return false;
-        if (!berdinakDiraZerrendak("altZerr", jard1DatuakJSON, jard2DatuakJSON)) return false;
-        if (!berdinakDiraZerrendak("bihotzMaizZerr", jard1DatuakJSON, jard2DatuakJSON)) return false;
-        if (!berdinakDiraZerrendak("kadZerr", jard1DatuakJSON, jard2DatuakJSON)) return false;
-        if (!berdinakDiraZerrendak("potZerr", jard1DatuakJSON, jard2DatuakJSON)) return false;
-        if (!berdinakDiraZerrendak("tenpZerr", jard1DatuakJSON, jard2DatuakJSON)) return false;
+        if (!berdinakDiraZerrendak(jard1DatuakJSON.getJSONArray("dataZerr"), jard2DatuakJSON.getJSONArray("dataZerr"))) return false;
+        if (!berdinakDiraZerrendak(jard1DatuakJSON.getJSONArray("altZerr"), jard2DatuakJSON.getJSONArray("altZerr"))) return false;
+        if (!berdinakDiraZerrendak(jard1DatuakJSON.getJSONArray("bihotzMaizZerr"), jard2DatuakJSON.getJSONArray("bihotzMaizZerr"))) return false;
+        if (!berdinakDiraZerrendak(jard1DatuakJSON.getJSONArray("kadZerr"), jard2DatuakJSON.getJSONArray("kadZerr"))) return false;
+        if (!berdinakDiraZerrendak(jard1DatuakJSON.getJSONArray("potZerr"), jard2DatuakJSON.getJSONArray("potZerr"))) return false;
+        if (!berdinakDiraZerrendak(jard1DatuakJSON.getJSONArray("tenpZerr"), jard2DatuakJSON.getJSONArray("tenpZerr"))) return false;
 
         return true;
     }
 
 
-    private boolean berdinakDiraZerrendak(String pZerrIzen, JSONObject jard1DatuakJSON, JSONObject jard2DatuakJSON) {
-        JSONArray zerr1 = jard1DatuakJSON.getJSONArray(pZerrIzen);
-        JSONArray zerr2 = jard2DatuakJSON.getJSONArray(pZerrIzen);
-
+    private boolean berdinakDiraZerrendak(JSONArray zerr1, JSONArray zerr2) {
         if (zerr1.length() != zerr2.length()) {
             return false;
         } else {
@@ -195,11 +203,62 @@ public class YamaDBKud {
         return true;
     }
 
-    public void gordeJarduera(String pEzizena, JardueraModel pJarduera) {
+    public boolean gordeJarduera(String pEzizena, JardueraModel pJarduera) {
         String query = "insert into Jarduera (datuak, ezizena) values(?, ?)";
         String jardDatuak = formateatuDatuak(pJarduera);
         Object[] datuak = {jardDatuak, pEzizena};
-        DBKud.getDBKud().execSQL(query, datuak);
+        try {
+            DBKud.getDBKud().execSQL(query, datuak);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int getAzkenJardId() {
+        String query = "select id from Jarduera order by id desc";
+        Object[] datuaBerriak = {};
+        int emaitza = -1;
+        try {
+            ResultSet rs = DBKud.getDBKud().execSQL(query, datuaBerriak);
+            if (rs != null) {
+                rs.next();
+                emaitza = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return emaitza;
+    }
+
+    public JardueraModel getJarduera(int idDB) {
+        String query = "select id, datuak from Jarduera where id=?";
+        Object[] datuaBerriak = {idDB};
+        try {
+            ResultSet rs = DBKud.getDBKud().execSQL(query, datuaBerriak);
+            if (rs != null) {
+                rs.next();
+                String datuak = rs.getString("datuak");
+                return formateatuJarduera(idDB, datuak);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean eguneratuJarduera(int idDB, JardueraModel pJarduera) {
+        String query = "update Jarduera set datuak=? where id=?";
+        String jardDatuak = formateatuDatuak(pJarduera);
+        Object[] datuak = {jardDatuak, idDB};
+        try {
+            DBKud.getDBKud().execSQL(query, datuak);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private String formateatuDatuak(JardueraModel pJarduera) {
@@ -214,5 +273,79 @@ public class YamaDBKud {
         jardDatuakJSON.put("potZerr", pJarduera.getPotZerr());
         jardDatuakJSON.put("tenpZerr", pJarduera.getTenpZerr());
         return String.valueOf(jardDatuakJSON);
+    }
+
+    private JardueraModel formateatuJarduera(int idDB, String datuak) {
+        JSONObject jardDatuakJSON = new JSONObject(datuak);
+        String izena = jardDatuakJSON.getString("izena");
+        String mota = jardDatuakJSON.getString("mota");
+
+        //Koordenatuen zerrenda osatu
+        ArrayList<Double[]> koordZerr = new ArrayList<>();
+        JSONArray koordZerrJSON = jardDatuakJSON.getJSONArray("koordZerr");
+        if (koordZerrJSON != null) {
+            for (int i = 0; i < koordZerrJSON.length(); i++) {
+                double lat = koordZerrJSON.getJSONArray(i).getDouble(0);
+                double lon = koordZerrJSON.getJSONArray(i).getDouble(1);
+                koordZerr.add(new Double[]{lat, lon});
+            }
+        } else {
+            koordZerr = null;
+        }
+
+        //Beste zerrendak osatu
+        ArrayList<String> dataZerr = zerrendaOsatuString(jardDatuakJSON.getJSONArray("dataZerr"));
+        ArrayList<Double> altZerr = zerrendaOsatuDouble(jardDatuakJSON.getJSONArray("altZerr"));
+        ArrayList<Integer> bihotzMaizZerr = zerrendaOsatuInteger(jardDatuakJSON.getJSONArray("bihotzMaizZerr"));
+        ArrayList<Integer> kadZerr = zerrendaOsatuInteger(jardDatuakJSON.getJSONArray("kadZerr"));
+        ArrayList<Integer> potZerr = zerrendaOsatuInteger(jardDatuakJSON.getJSONArray("potZerr"));
+        ArrayList<Double> tenpZerr = zerrendaOsatuDouble(jardDatuakJSON.getJSONArray("tenpZerr"));
+
+        //Sortutako objektua itzuli
+        if (mota.equals("Txirrindularitza")) {
+            return new TxirrJardModel(idDB, izena, mota, koordZerr, altZerr, dataZerr, bihotzMaizZerr, kadZerr, potZerr, tenpZerr);
+        } else if (mota.equals("Korrika")) {
+            return new KorrJardModel(idDB, izena, mota, koordZerr, altZerr, dataZerr, bihotzMaizZerr, kadZerr, potZerr, tenpZerr);
+        } else if (mota.equals("Ibilaritza")) {
+            return new IbilJardModel(idDB, izena, mota, koordZerr, altZerr, dataZerr, bihotzMaizZerr, kadZerr, potZerr, tenpZerr);
+        } else {
+            return new JardueraModel(idDB, izena, mota, koordZerr, altZerr, dataZerr, bihotzMaizZerr, kadZerr, potZerr, tenpZerr);
+        }
+    }
+
+    private ArrayList<String> zerrendaOsatuString(JSONArray zerrJSON) {
+        ArrayList<String> zerrArray = new ArrayList<>();
+        if (zerrJSON != null) {
+            for (int i = 0; i < zerrJSON.length(); i++) {
+                if (zerrJSON.get(i) != null) zerrArray.add(zerrJSON.getString(i));
+                else zerrArray.add(null);
+            }
+            return zerrArray;
+        }
+        return null;
+    }
+
+    private ArrayList<Integer> zerrendaOsatuInteger(JSONArray zerrJSON) {
+        ArrayList<Integer> zerrArray = new ArrayList<>();
+        if (zerrJSON != null) {
+            for (int i = 0; i < zerrJSON.length(); i++) {
+                if (!zerrJSON.get(i).equals(null)) zerrArray.add(zerrJSON.getInt(i));
+                else zerrArray.add(null);
+            }
+            return zerrArray;
+        }
+        return null;
+    }
+
+    private ArrayList<Double> zerrendaOsatuDouble(JSONArray zerrJSON) {
+        ArrayList<Double> zerrArray = new ArrayList<>();
+        if (zerrJSON != null) {
+            for (int i = 0; i < zerrJSON.length(); i++) {
+                if (zerrJSON.get(i) != null) zerrArray.add(zerrJSON.getDouble(i));
+                else zerrArray.add(null);
+            }
+            return zerrArray;
+        }
+        return null;
     }
 }

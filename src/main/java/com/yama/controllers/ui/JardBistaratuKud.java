@@ -13,10 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -46,7 +43,10 @@ public class JardBistaratuKud implements Initializable {
     private AnchorPane altPane, bMPane, kadPane, potPane, tenpPane, abiGrafPane, altGrafPane, bMGrafPane, kadGrafPane, potGrafPane, tenpGrafPane;
 
     @FXML
-    private Button btn_jardGorde;
+    private Button btn_datuakEguneratu, btn_jardGorde;
+
+    @FXML
+    private ComboBox<String> cmb_kirolMotaBerria;
 
     @FXML
     private ImageView imgMota;
@@ -64,12 +64,23 @@ public class JardBistaratuKud implements Initializable {
     @FXML
     private MapView mapa;
 
+    @FXML
+    private TextField txt_izenBerria;
+
     public JardBistaratuKud(Main main) {
         mainApp = main;
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {}
+    public void initialize(URL location, ResourceBundle resources) {
+        cmb_kirolMotaBerria.getItems().add("");
+        cmb_kirolMotaBerria.getItems().add("Txirrindularitza");
+        cmb_kirolMotaBerria.getItems().add("Korrika");
+        cmb_kirolMotaBerria.getItems().add("Ibilaritza");
+
+        setTextFieldProperty(txt_izenBerria);
+        setComboBoxProperty(cmb_kirolMotaBerria);
+    }
 
     @FXML
     void onClickAtzera() {
@@ -77,29 +88,155 @@ public class JardBistaratuKud implements Initializable {
     }
 
     @FXML
-    void onClickJardGorde(MouseEvent event) {
-        if (!YamaDBKud.getYamaDBKud().jardueraGordeta(mainApp.getErabiltzaileAktibo().getEzizena(), jarduera)) {
-            YamaDBKud.getYamaDBKud().gordeJarduera(mainApp.getErabiltzaileAktibo().getEzizena(), jarduera);
+    void onClickDatuakEguneratu() {
+        btn_datuakEguneratu.setDisable(true);
+        String izenBerria = txt_izenBerria.getText();
+        String motaBerria = cmb_kirolMotaBerria.getSelectionModel().getSelectedItem();
 
-            jardBistaratu(jarduera, "gordeta");
-        } else {
+        JardueraModel jardBerria = jarduera;
+        boolean izenaAldatuta = false;
+        boolean motaAldatuta = false;
+        if (!izenBerria.equals(jarduera.getIzenaBal())) {
+            jardBerria.setIzena(izenBerria);
+            izenaAldatuta = true;
+        }
+        if (!motaBerria.equals(jarduera.getMotaBal())) {
+            jardBerria.setMota(motaBerria);
+            motaAldatuta = true;
+            jardBerria = formateatuJard(jardBerria);
+        }
+        if (jarduera.getIdDB() < 0) {
+            if (motaAldatuta) {
+                switch (jardBerria.getMotaBal()) {
+                    case "Txirrindularitza" -> {
+                        TxirrJardModel txirrJardBerria = (TxirrJardModel) jardBerria;
+                        mainApp.jardKargTaulaEguneratu(txirrJardBerria);
+                        jardBistaratu(txirrJardBerria);
+                    }
+                    case "Korrika" -> {
+                        KorrJardModel korrJardBerria = (KorrJardModel) jardBerria;
+                        mainApp.jardKargTaulaEguneratu(korrJardBerria);
+                        jardBistaratu(korrJardBerria);
+                    }
+                    case "Ibilaritza" -> {
+                        IbilJardModel ibilJardBerria = (IbilJardModel) jardBerria;
+                        mainApp.jardKargTaulaEguneratu(ibilJardBerria);
+                        jardBistaratu(ibilJardBerria);
+                    }
+                    default -> {
+                        mainApp.jardKargTaulaEguneratu(jardBerria);
+                        jardBistaratu(jardBerria);
+                    }
+                }
+            } else if (izenaAldatuta) {
+                lblIzena.setText(jardBerria.getIzena());
+            }
+        } else if (jarduera.getIdDB() >= 0) {
+            if (YamaDBKud.getYamaDBKud().eguneratuJarduera(jardBerria.getIdDB(), jardBerria)) {
+                JardueraModel bistaratzekoJard = YamaDBKud.getYamaDBKud().getJarduera(jardBerria.getIdDB());
+                if (bistaratzekoJard != null) {
+                    jardBistaratu(bistaratzekoJard);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
+                    alert.setTitle("Yama");
+                    alert.setHeaderText("Ustekabeko errorea.");
+                    alert.showAndWait();
+                    mainApp.atzeraJardBistaratu();
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
+                alert.setTitle("Yama");
+                alert.setHeaderText("Ustekabeko errorea.");
+                alert.showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    void onClickJardGorde(MouseEvent event) {
+        JardueraModel jardBerria = formateatuJard(jarduera);
+        int emaitza = YamaDBKud.getYamaDBKud().jardueraGordeta(mainApp.getErabiltzaileAktibo().getEzizena(), jardBerria);
+        if (emaitza == 0) {
+            if (YamaDBKud.getYamaDBKud().gordeJarduera(mainApp.getErabiltzaileAktibo().getEzizena(), jardBerria)) {
+                int jardId = YamaDBKud.getYamaDBKud().getAzkenJardId();
+                if (jardId > -1) {
+                    jardBerria.setIdDB(jardId);
+                    jardBistaratu(jardBerria);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
+                    alert.setTitle("Yama");
+                    alert.setHeaderText("Ustekabeko errorea.");
+                    alert.showAndWait();
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
+                alert.setTitle("Yama");
+                alert.setHeaderText("Ustekabeko errorea.");
+                alert.showAndWait();
+            }
+        } else if (emaitza == 1) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Datu hauek dituen jarduera bat existitzen da gordeta profil honetan.", ButtonType.CLOSE);
             alert.setTitle("Yama");
             alert.setHeaderText("Jarduera errepikatuta.");
             alert.showAndWait();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
+            alert.setTitle("Yama");
+            alert.setHeaderText("Ustekabeko errorea.");
+            alert.showAndWait();
         }
     }
 
-    public void jardBistaratu(JardueraModel pJard, String jardMota) {
+    private void setTextFieldProperty(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (txt_izenBerria.getText().equals(jarduera.getIzenaBal()) && cmb_kirolMotaBerria.getSelectionModel().getSelectedItem().equals(jarduera.getMotaBal())) {
+                btn_datuakEguneratu.setDisable(true);
+            } else {
+                btn_datuakEguneratu.setDisable(false);
+            }
+        });
+    }
+
+    private void setComboBoxProperty(ComboBox<String> cmb_kirolMotaBerria) {
+        cmb_kirolMotaBerria.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (txt_izenBerria.getText().equals(jarduera.getIzenaBal()) && cmb_kirolMotaBerria.getSelectionModel().getSelectedItem().equals(jarduera.getMotaBal())) {
+                btn_datuakEguneratu.setDisable(true);
+            } else {
+                btn_datuakEguneratu.setDisable(false);
+            }
+        });
+    }
+
+    private JardueraModel formateatuJard(JardueraModel jarduera) {
+        int idDB = jarduera.getIdDB();
+        String izena = jarduera.getIzenaBal();
+        String mota = jarduera.getMotaBal();
+        ArrayList<Double[]> koordZerr = jarduera.getKoordZerr();
+        ArrayList<Double> altZerr = jarduera.getAltZerr();
+        ArrayList<String> dataZerr = jarduera.getDataZerr();
+        ArrayList<Integer> bihotzMaizZerr = jarduera.getBihotzMaizZerr();
+        ArrayList<Integer> kadZerr = jarduera.getKadZerr();
+        ArrayList<Integer> potZerr = jarduera.getPotZerr();
+        ArrayList<Double> tenpZerr = jarduera.getTenpZerr();
+
+        return switch (mota) {
+            case "Txirrindularitza" -> new TxirrJardModel(idDB, izena, mota, koordZerr, altZerr, dataZerr, bihotzMaizZerr, kadZerr, potZerr, tenpZerr);
+            case "Korrika" -> new KorrJardModel(idDB, izena, mota, koordZerr, altZerr, dataZerr, bihotzMaizZerr, kadZerr, potZerr, tenpZerr);
+            case "Ibilaritza" -> new IbilJardModel(idDB, izena, mota, koordZerr, altZerr, dataZerr, bihotzMaizZerr, kadZerr, potZerr, tenpZerr);
+            default -> new JardueraModel(idDB, izena, mota, koordZerr, altZerr, dataZerr, bihotzMaizZerr, kadZerr, potZerr, tenpZerr);
+        };
+    }
+
+    public void jardBistaratu(JardueraModel pJard) {
+        jarduera = pJard;
         garbituPantaila();
 
-        jarduera = pJard;
         lblIzena.setText(jarduera.getIzena());
         lblHasiData.setText(jarduera.getHasiData());
 
-        if (jardMota.equals("inportatuta") && mainApp.getErabiltzaileAktibo() != null) {
+        if (jarduera.getIdDB() < 0 && mainApp.getErabiltzaileAktibo() != null) {
             btn_jardGorde.setVisible(true);
-        } else if (jardMota.equals("gordeta")) {
+        } else {
             btn_jardGorde.setVisible(false);
 
             //TODO jarduera profil batean gordeta badago (erabiltzailearen izena jarri pantailan)
@@ -124,6 +261,9 @@ public class JardBistaratuKud implements Initializable {
     }
 
     private void garbituPantaila() {
+        btn_datuakEguneratu.setDisable(true);
+        cmb_kirolMotaBerria.getSelectionModel().select(jarduera.getMotaBal());
+        txt_izenBerria.setText(jarduera.getIzenaBal());
         //TODO garbitu pantaila
 
         //TODO erreseteatu mapa

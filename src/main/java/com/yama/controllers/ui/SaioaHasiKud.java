@@ -52,12 +52,18 @@ public class SaioaHasiKud implements Initializable {
 
     @FXML
     void onClickSaioaHasi(MouseEvent event) {
-        if (YamaDBKud.getYamaDBKud().egiaztatuErabiltzailea(txt_ezizena.getText(), txt_pasahitza.getText())) {
+        int emaitza = YamaDBKud.getYamaDBKud().egiaztatuErabiltzailea(txt_ezizena.getText(), txt_pasahitza.getText());
+        if (emaitza == 1) {
             mainApp.saioaHasi(txt_ezizena.getText());
-        } else {
+        } else  if (emaitza == 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Zehaztutako ezizena eta/edo pasahitza ez dira zuzenak.", ButtonType.CLOSE);
             alert.setTitle("Yama");
             alert.setHeaderText("Kredentzial okerrak.");
+            alert.showAndWait();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
+            alert.setTitle("Yama");
+            alert.setHeaderText("Ustekabeko errorea.");
             alert.showAndWait();
         }
     }

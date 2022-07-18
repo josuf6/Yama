@@ -11,6 +11,7 @@ import java.util.Date;
 
 public class JardueraModel {
 
+    protected int idDB;
     protected String izena;
     protected String mota;
     protected String hasiData;
@@ -43,9 +44,10 @@ public class JardueraModel {
     protected ArrayList<Integer> potZerr; //W-tan
     protected ArrayList<Double> tenpZerr; //Cº-tan
 
-    public JardueraModel(String pIzena, String pMota, ArrayList<Double[]> pKoordZerr, ArrayList<Double> pAltZerr,
+    public JardueraModel(int pIdDB, String pIzena, String pMota, ArrayList<Double[]> pKoordZerr, ArrayList<Double> pAltZerr,
                          ArrayList<String> pDataZerr, ArrayList<Integer> pBihotzMaizZerr, ArrayList<Integer> pKadZerr,
                          ArrayList<Integer> pPotZerr, ArrayList<Double> pTenpZerr) {
+        idDB = pIdDB;
         izena = pIzena;
         mota = pMota;
 
@@ -330,6 +332,14 @@ public class JardueraModel {
         bbAbiadura = bbAbiMS * 3.6;
     }
 
+    public int getIdDB() {
+        return idDB;
+    }
+
+    public void setIdDB(int idDB) {
+        this.idDB = idDB;
+    }
+
     public String getIzena() {
         if (izena.isBlank()) {
             return "Kirol jarduera";
@@ -339,6 +349,10 @@ public class JardueraModel {
 
     public String getIzenaBal() {
         return izena;
+    }
+
+    public void setIzena(String izena) {
+        this.izena = izena;
     }
 
     public String getHasiData() { //Jardueraren data pantailatzerakoan honek izango duen formatua
@@ -530,6 +544,10 @@ public class JardueraModel {
 
     public String getMotaBal() {
         return mota;
+    }
+
+    public void setMota(String mota) {
+        this.mota = mota;
     }
 
     public String getDistantzia() { //Jardueraren distantzia pantailatzerakoan honek izango duen formatua

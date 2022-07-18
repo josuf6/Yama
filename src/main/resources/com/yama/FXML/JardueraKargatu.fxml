@@ -16,7 +16,8 @@
             <TableColumn fx:id="distantzia" prefWidth="100.0" text="Distantzia" />
         </columns>
       </TableView>
-      <Button fx:id="btn_kargatu" layoutX="389.0" layoutY="505.0" mnemonicParsing="false" onMouseClicked="#onClickKargatu" text="Kargatu" />
-      <Button fx:id="btn_bistaratu" layoutX="505.0" layoutY="505.0" mnemonicParsing="false" onMouseClicked="#onClickBistaratu" text="Bistaratu" />
+      <Button fx:id="btn_kargatu" layoutX="334.0" layoutY="504.0" mnemonicParsing="false" onMouseClicked="#onClickKargatu" text="Kargatu" />
+      <Button fx:id="btn_bistaratu" layoutX="450.0" layoutY="504.0" mnemonicParsing="false" onMouseClicked="#onClickBistaratu" text="Bistaratu" />
+      <Button fx:id="btn_ezabatu" layoutX="556.0" layoutY="504.0" mnemonicParsing="false" onMouseClicked="#onClickEzabatu" text="Ezabatu" />
    </children>
 </AnchorPane>

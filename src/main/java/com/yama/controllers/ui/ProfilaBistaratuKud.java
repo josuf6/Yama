@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ProfilaBistaratuKud implements Initializable {
@@ -50,12 +51,19 @@ public class ProfilaBistaratuKud implements Initializable {
         String ezizenBerri = txt_ezizenBerri.getText();
         String pasahitzBerri = txt_pasahitzBerri.getText();
         if (!izenBerri.isBlank() || !abiBerri.isBlank() || !ezizenBerri.isBlank() || !pasahitzBerri.isBlank()) {
-            if (datuEgokiak(izenBerri, abiBerri, ezizenBerri, pasahitzBerri)) {
-                datuakEguneratu(izenBerri, abiBerri, ezizenBerri, pasahitzBerri);
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Zehaztutako daturen bat aurrekoaren berdina da.", ButtonType.CLOSE);
+            try {
+                if (datuEgokiak(izenBerri, abiBerri, ezizenBerri, pasahitzBerri)) {
+                    datuakEguneratu(izenBerri, abiBerri, ezizenBerri, pasahitzBerri);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Zehaztutako daturen bat aurrekoaren berdina da.", ButtonType.CLOSE);
+                    alert.setTitle("Yama");
+                    alert.setHeaderText("Datu desegokiak.");
+                    alert.showAndWait();
+                }
+            } catch (SQLException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
                 alert.setTitle("Yama");
-                alert.setHeaderText("Datu desegokiak.");
+                alert.setHeaderText("Ustekabeko errorea.");
                 alert.showAndWait();
             }
         }
@@ -68,8 +76,16 @@ public class ProfilaBistaratuKud implements Initializable {
         alert.setHeaderText("Ezabatu profila?");
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
-                YamaDBKud.getYamaDBKud().ezabatuErabiltzailea(erabiltzailea.getEzizena());
-                saioaItxi();
+                if (YamaDBKud.getYamaDBKud().ezabatuErabiltzailea(erabiltzailea.getEzizena())) {
+                    //TODO ezabatu profilarekin erlazionatutako jarduerak
+
+                    saioaItxi();
+                } else {
+                    Alert alert2 = new Alert(Alert.AlertType.ERROR, "Ezin izan da erabiltzailea ezabatu. Berriro saiatu", ButtonType.CLOSE);
+                    alert2.setTitle("Yama");
+                    alert2.setHeaderText("Errorea erabiltzailea ezabatzen.");
+                    alert2.showAndWait();
+                }
             }
         });
     }
@@ -131,7 +147,7 @@ public class ProfilaBistaratuKud implements Initializable {
         //TODO erabiltzailearekin erlazionatutako jarduerak jarri
     }
 
-    private boolean datuEgokiak(String izenBerri, String abiBerri, String ezizenBerri, String pasahitzBerri) {
+    private boolean datuEgokiak(String izenBerri, String abiBerri, String ezizenBerri, String pasahitzBerri) throws SQLException {
         if (!izenBerri.isBlank() && izenBerri.equals(erabiltzailea.getIzena())) {
             return false;
         }
@@ -141,27 +157,38 @@ public class ProfilaBistaratuKud implements Initializable {
         if (!ezizenBerri.isBlank() && ezizenBerri.equals(erabiltzailea.getEzizena())) {
             return false;
         }
-        if (!pasahitzBerri.isBlank() && YamaDBKud.getYamaDBKud().pasahitzBerdinaDa(erabiltzailea.getEzizena(), pasahitzBerri)) {
+
+        int emaitza = YamaDBKud.getYamaDBKud().pasahitzBerdinaDa(erabiltzailea.getEzizena(), pasahitzBerri);
+        if (emaitza == 1 && !pasahitzBerri.isBlank()) {
+            return false;
+        } else if (emaitza == -1) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
+            alert.setTitle("Yama");
+            alert.setHeaderText("Ustekabeko errorea.");
+            alert.showAndWait();
             return false;
         }
+
         return true;
     }
 
     private void datuakEguneratu(String izenBerri, String abiBerri, String ezizenBerri, String pasahitzBerri) {
         String ezizena = erabiltzailea.getEzizena();
-        if (!izenBerri.isBlank()) {
-            YamaDBKud.getYamaDBKud().eguneratuErabIzen(erabiltzailea.getEzizena(), izenBerri);
+
+        if (izenBerri.isBlank()) izenBerri = erabiltzailea.getIzena();
+        if (abiBerri.isBlank()) abiBerri = erabiltzailea.getAbizena();
+        if (ezizenBerri.isBlank()) ezizenBerri = erabiltzailea.getEzizena();
+
+        if (!YamaDBKud.getYamaDBKud().eguneratuErabiltzailea(erabiltzailea.getEzizena(), izenBerri, abiBerri, ezizenBerri, pasahitzBerri)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Ezin izan da erabiltzailea eguneratu. Berriro saiatu", ButtonType.CLOSE);
+            alert.setTitle("Yama");
+            alert.setHeaderText("Errorea erabiltzailea eguneratzen.");
+            alert.showAndWait();
+        } else {
+            if (!ezizenBerri.isBlank()) {
+                ezizena = ezizenBerri;
+            }
+            mainApp.saioaHasi(ezizena);
         }
-        if (!abiBerri.isBlank()) {
-            YamaDBKud.getYamaDBKud().eguneratuErabAbizen(erabiltzailea.getEzizena(), abiBerri);
-        }
-        if (!pasahitzBerri.isBlank()) {
-            YamaDBKud.getYamaDBKud().eguneratuErabPasahitz(erabiltzailea.getEzizena(), pasahitzBerri);
-        }
-        if (!ezizenBerri.isBlank()) {
-            YamaDBKud.getYamaDBKud().eguneratuErabEzizen(erabiltzailea.getEzizena(), ezizenBerri);
-            ezizena = ezizenBerri;
-        }
-        mainApp.saioaHasi(ezizena);
     }
 }

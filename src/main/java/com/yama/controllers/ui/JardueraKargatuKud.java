@@ -1,5 +1,6 @@
 package com.yama.controllers.ui;
 
+import com.garmin.fit.plugins.ActivityFileValidationResult;
 import com.yama.Main;
 import com.yama.controllers.files.FIT.FITKud;
 import com.yama.controllers.files.GPXKud;
@@ -25,32 +26,18 @@ public class JardueraKargatuKud implements Initializable {
 
     private Main mainApp;
 
+    private int jardBistIndex;
     private ArrayList<JardueraModel> jardZerr;
     private ObservableList<JardueraModel> jardZerrObs;
 
     @FXML
-    private Button btn_kargatu;
-
-    @FXML
-    private Button btn_bistaratu;
+    private Button btn_kargatu, btn_bistaratu, btn_ezabatu;
 
     @FXML
     private TableView<JardueraModel> tbJard;
 
     @FXML
-    private TableColumn<JardueraModel, String> izena;
-
-    @FXML
-    private TableColumn<JardueraModel, String> hasiData;
-
-    @FXML
-    private TableColumn<JardueraModel, String> mota;
-
-    @FXML
-    private TableColumn<JardueraModel, String> iraupena;
-
-    @FXML
-    private TableColumn<JardueraModel, String> distantzia;
+    private TableColumn<JardueraModel, String> izena, hasiData, mota, iraupena, distantzia;
 
     public JardueraKargatuKud(Main main) {
         mainApp = main;
@@ -61,6 +48,7 @@ public class JardueraKargatuKud implements Initializable {
         jardZerr = new ArrayList<>();
 
         btn_bistaratu.setDisable(true);
+        btn_ezabatu.setDisable(true);
         tbJard.setEditable(false);
         izena.setResizable(false);
         izena.setReorderable(false);
@@ -86,6 +74,7 @@ public class JardueraKargatuKud implements Initializable {
                 if (index < tbJard.getItems().size() && tbJard.getSelectionModel().isSelected(index)  ) {
                     tbJard.getSelectionModel().clearSelection();
                     btn_bistaratu.setDisable(true);
+                    btn_ezabatu.setDisable(true);
                     event.consume();
                 }
             });
@@ -97,17 +86,27 @@ public class JardueraKargatuKud implements Initializable {
     void onClickKargatu(MouseEvent event) {
         tbJard.getSelectionModel().clearSelection();
         btn_bistaratu.setDisable(true);
+        btn_ezabatu.setDisable(true);
         aukeratuFitxategia();
     }
 
     @FXML
     void onClickBistaratu(MouseEvent event) {
         btn_bistaratu.setDisable(true);
-        JardueraModel jard = jardZerr.get(tbJard.getSelectionModel().getSelectedIndex());
+        btn_ezabatu.setDisable(true);
+        jardBistIndex = tbJard.getSelectionModel().getSelectedIndex();
+        JardueraModel jard = jardZerr.get(jardBistIndex);
+        mainApp.jardBistaratu(jard);
         tbJard.getSelectionModel().clearSelection();
-        //if (mainApp.konexioaDago()) {
-            mainApp.jardBistaratu(jard, "inportatuta");
-        //}
+    }
+
+    @FXML
+    void onClickEzabatu(MouseEvent event) {
+        jardZerr.remove(tbJard.getSelectionModel().getSelectedIndex());
+        tbJard.getSelectionModel().clearSelection();
+        jardueraTaulaEguneratu();
+        btn_bistaratu.setDisable(true);
+        btn_ezabatu.setDisable(true);
     }
 
     @FXML
@@ -205,7 +204,14 @@ public class JardueraKargatuKud implements Initializable {
         tbJard.setItems(jardZerrObs);
         tbJard.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             btn_bistaratu.setDisable(false);
+            btn_ezabatu.setDisable(false);
         });
+        tbJard.refresh();
+    }
+
+    public void eguneratuJarduera(JardueraModel jardEguneratuta) {
+        jardZerr.set(jardBistIndex, jardEguneratuta);
+        jardueraTaulaEguneratu();
     }
 
     private void aktibatuFuntzionalitateak() {
@@ -225,5 +231,6 @@ public class JardueraKargatuKud implements Initializable {
     public void desaktibatuJardKar() {
         btn_kargatu.setDisable(true);
         btn_bistaratu.setDisable(true);
+        btn_ezabatu.setDisable(true);
     }
 }

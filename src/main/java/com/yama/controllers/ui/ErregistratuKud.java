@@ -40,13 +40,25 @@ public class ErregistratuKud implements Initializable {
 
     @FXML
     void onClickKontuaSortu(MouseEvent event) {
-        if (!YamaDBKud.getYamaDBKud().existitzenDaErabiltzailea(txt_ezizena.getText())) {
-            YamaDBKud.getYamaDBKud().erregistratuErabiltzailea(txt_ezizena.getText(), txt_pasahitza.getText(), txt_izena.getText(), txt_abizena.getText());
-            mainApp.saioaHasi(txt_ezizena.getText());
-        } else {
+        int emaitza = YamaDBKud.getYamaDBKud().existitzenDaErabiltzailea(txt_ezizena.getText());
+        if (emaitza == 0) {
+            if (YamaDBKud.getYamaDBKud().erregistratuErabiltzailea(txt_ezizena.getText(), txt_pasahitza.getText(), txt_izena.getText(), txt_abizena.getText())) {
+                mainApp.saioaHasi(txt_ezizena.getText());
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Ezin izan da erabiltzailea erregistratu. Berriro saiatu.", ButtonType.CLOSE);
+                alert.setTitle("Yama");
+                alert.setHeaderText("Errorea erabiltzailea erregistratzen.");
+                alert.showAndWait();
+            }
+        } else if (emaitza == 1) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Zehaztutako ezizena erabileran dago.", ButtonType.CLOSE);
             alert.setTitle("Yama");
             alert.setHeaderText("Ezizen okerra.");
+            alert.showAndWait();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
+            alert.setTitle("Yama");
+            alert.setHeaderText("Ustekabeko errorea.");
             alert.showAndWait();
         }
     }

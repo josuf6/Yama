@@ -236,13 +236,13 @@ public class GPXKud {
                 if (pwZerr.stream().allMatch(Objects::isNull)) pwZerr = null;
 
                 if (jardMota.equals("Txirrindularitza")) {
-                    return new TxirrJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
+                    return new TxirrJardModel(-1, jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
                 } else if (jardMota.equals("Korrika")) {
-                    return new KorrJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
+                    return new KorrJardModel(-1, jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
                 } else if (jardMota.equals("Ibilaritza")) {
-                    return new IbilJardModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
+                    return new IbilJardModel(-1, jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
                 } else {
-                    return new JardueraModel(jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
+                    return new JardueraModel(-1, jardIzena, jardMota, coordZerr, eleZerr, timeZerr, hrZerr, cadZerr, pwZerr, tempZerr);
                 }
             }
         }
