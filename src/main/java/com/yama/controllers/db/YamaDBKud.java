@@ -89,6 +89,20 @@ public class YamaDBKud {
         String query = "delete from Erabiltzailea where ezizena=?";
         Object[] datuak = {pEzizena};
         try {
+            if (ezabatuErabJarduerak(pEzizena)) {
+                DBKud.getDBKud().execSQL(query, datuak);
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean ezabatuErabJarduerak(String pEzizena) {
+        String query = "delete from Jarduera where ezizena=?";
+        Object[] datuak = {pEzizena};
+        try {
             DBKud.getDBKud().execSQL(query, datuak);
             return true;
         } catch (SQLException e) {
@@ -232,6 +246,24 @@ public class YamaDBKud {
         return emaitza;
     }
 
+    public ArrayList<JardueraModel> getErabJarduerak(String pEzizena) {
+        String query = "select * from Jarduera where ezizena=?";
+        Object[] datuak = {pEzizena};
+        try {
+            ResultSet rs = DBKud.getDBKud().execSQL(query, datuak);
+            if (rs != null) {
+                ArrayList<JardueraModel> jardZerr = new ArrayList<>();
+                while (rs.next()) {
+                    jardZerr.add(formateatuJarduera(rs.getInt("id"), rs.getString("datuak")));
+                }
+                return jardZerr;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public JardueraModel getJarduera(int idDB) {
         String query = "select id, datuak from Jarduera where id=?";
         Object[] datuaBerriak = {idDB};
@@ -283,7 +315,7 @@ public class YamaDBKud {
         //Koordenatuen zerrenda osatu
         ArrayList<Double[]> koordZerr = new ArrayList<>();
         JSONArray koordZerrJSON = jardDatuakJSON.getJSONArray("koordZerr");
-        if (koordZerrJSON != null) {
+        if (koordZerrJSON.length() > 0) {
             for (int i = 0; i < koordZerrJSON.length(); i++) {
                 double lat = koordZerrJSON.getJSONArray(i).getDouble(0);
                 double lon = koordZerrJSON.getJSONArray(i).getDouble(1);
@@ -315,7 +347,7 @@ public class YamaDBKud {
 
     private ArrayList<String> zerrendaOsatuString(JSONArray zerrJSON) {
         ArrayList<String> zerrArray = new ArrayList<>();
-        if (zerrJSON != null) {
+        if (zerrJSON.length() > 0) {
             for (int i = 0; i < zerrJSON.length(); i++) {
                 if (zerrJSON.get(i) != null) zerrArray.add(zerrJSON.getString(i));
                 else zerrArray.add(null);
@@ -327,7 +359,7 @@ public class YamaDBKud {
 
     private ArrayList<Integer> zerrendaOsatuInteger(JSONArray zerrJSON) {
         ArrayList<Integer> zerrArray = new ArrayList<>();
-        if (zerrJSON != null) {
+        if (zerrJSON.length() > 0) {
             for (int i = 0; i < zerrJSON.length(); i++) {
                 if (!zerrJSON.get(i).equals(null)) zerrArray.add(zerrJSON.getInt(i));
                 else zerrArray.add(null);
@@ -339,7 +371,7 @@ public class YamaDBKud {
 
     private ArrayList<Double> zerrendaOsatuDouble(JSONArray zerrJSON) {
         ArrayList<Double> zerrArray = new ArrayList<>();
-        if (zerrJSON != null) {
+        if (zerrJSON.length() > 0) {
             for (int i = 0; i < zerrJSON.length(); i++) {
                 if (zerrJSON.get(i) != null) zerrArray.add(zerrJSON.getDouble(i));
                 else zerrArray.add(null);

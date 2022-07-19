@@ -36,6 +36,7 @@ public class JardBistaratuKud implements Initializable {
             laburPaneHasita, abiPaneHasita, altPaneHasita, bMPaneHasita, kadPaneHasita, potPaneHasita, tenpPaneHasita,
             abiGrafHasita, altGrafHasita, bMGrafHasita, kadGrafHasita, potGrafHasita, tenpGrafHasita;
     private CoordinateLine clKoords;
+    private Marker hasiMarker, bukMarker;
     private Extent extent;
     private AreaChart<Number, Number> abiGraf, altGraf, bihotzMaizGraf, kadGraf, potGraf, tenpGraf;
 
@@ -63,6 +64,12 @@ public class JardBistaratuKud implements Initializable {
 
     @FXML
     private MapView mapa;
+
+    @FXML
+    private ScrollPane scrll_Estatistikak;
+
+    @FXML
+    private TabPane tabPane;
 
     @FXML
     private TextField txt_izenBerria;
@@ -129,7 +136,8 @@ public class JardBistaratuKud implements Initializable {
                     }
                 }
             } else if (izenaAldatuta) {
-                lblIzena.setText(jardBerria.getIzena());
+                mainApp.jardKargTaulaEguneratu(jardBerria);
+                jardBistaratu(jardBerria);
             }
         } else if (jarduera.getIdDB() >= 0) {
             if (YamaDBKud.getYamaDBKud().eguneratuJarduera(jardBerria.getIdDB(), jardBerria)) {
@@ -230,6 +238,7 @@ public class JardBistaratuKud implements Initializable {
     public void jardBistaratu(JardueraModel pJard) {
         jarduera = pJard;
         garbituPantaila();
+        tabPane.getSelectionModel().select(0);
 
         lblIzena.setText(jarduera.getIzena());
         lblHasiData.setText(jarduera.getHasiData());
@@ -256,22 +265,39 @@ public class JardBistaratuKud implements Initializable {
                 e.printStackTrace();
             }
         }
-
-        //TODO aukeratu "Mapa" erlaitza tabpane-an
     }
 
     private void garbituPantaila() {
         btn_datuakEguneratu.setDisable(true);
         cmb_kirolMotaBerria.getSelectionModel().select(jarduera.getMotaBal());
         txt_izenBerria.setText(jarduera.getIzenaBal());
-        //TODO garbitu pantaila
 
-        //TODO erreseteatu mapa
+        abiGrafPane.getChildren().clear();
+        altGrafPane.getChildren().clear();
+        bMGrafPane.getChildren().clear();
+        kadGrafPane.getChildren().clear();
+        potGrafPane.getChildren().clear();
+        tenpGrafPane.getChildren().clear();
+        scrll_Estatistikak.setVvalue(0);
+
+        //TODO garbitu pantaila (analisia erlaitza)
+
+        mapa.removeCoordinateLine(clKoords);
+        mapa.removeMarker(hasiMarker);
+        mapa.removeMarker(bukMarker);
+
+        //TODO erreseteatu mapa (analisia erlaitza)
     }
 
 
     private void hasieratuMapa() {
         clKoords = sortuIbilbidea();
+
+        Coordinate hasiKoord = new Coordinate(jarduera.getKoordZerr().get(0)[0], jarduera.getKoordZerr().get(0)[1]);
+        Coordinate bukKoord = new Coordinate(jarduera.getKoordZerr().get(jarduera.getKoordZerr().size() - 1)[0], jarduera.getKoordZerr().get(jarduera.getKoordZerr().size() - 1)[1]);
+
+        hasiMarker = new Marker(Main.class.getResource("irudiak/start.png"), -15, -15).setPosition(hasiKoord);
+        bukMarker = new Marker(Main.class.getResource("irudiak/stop.png"), -15, -15).setPosition(bukKoord);
 
         ChangeListener<Boolean> trackVisibleListener = (observable, oldValue, newValue) -> mapa.setExtent(extent);
         clKoords.visibleProperty().addListener(trackVisibleListener);
@@ -318,8 +344,11 @@ public class JardBistaratuKud implements Initializable {
     private void afterMapIsInitialized() {
         //mapa.setCenter(kalkMapaZentroa());
         //mapa.setZoom(10);
+
         mapa.addCoordinateLine(clKoords.setVisible(true)
                 .setColor(Color.ORANGE).setWidth(5));
+        mapa.addMarker(hasiMarker.setVisible(true));
+        mapa.addMarker(bukMarker.setVisible(true));
     }
 
     private Coordinate kalkMapaZentroa() {

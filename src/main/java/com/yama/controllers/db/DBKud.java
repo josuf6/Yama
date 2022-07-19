@@ -43,8 +43,8 @@ public class DBKud {
     }
 
     public ResultSet execSQL(String query, Object[] datuak) throws SQLException {
-        int count = 0;
-        PreparedStatement s = null;
+        int count;
+        PreparedStatement s;
         ResultSet rs = null;
 
         s = conn.prepareStatement(query);
@@ -56,7 +56,7 @@ public class DBKud {
             rs = s.executeQuery();
 
         } else {
-            // update, delete, update agindu bat
+            // insert, delete, update agindu bat
             count = s.executeUpdate();
             System.out.println(count + " rows affected");
         }

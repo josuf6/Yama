@@ -92,21 +92,21 @@ public class JardueraKargatuKud implements Initializable {
 
     @FXML
     void onClickBistaratu(MouseEvent event) {
+        jardBistIndex = tbJard.getSelectionModel().getSelectedIndex();
+        tbJard.getSelectionModel().clearSelection();
         btn_bistaratu.setDisable(true);
         btn_ezabatu.setDisable(true);
-        jardBistIndex = tbJard.getSelectionModel().getSelectedIndex();
         JardueraModel jard = jardZerr.get(jardBistIndex);
         mainApp.jardBistaratu(jard);
-        tbJard.getSelectionModel().clearSelection();
     }
 
     @FXML
     void onClickEzabatu(MouseEvent event) {
         jardZerr.remove(tbJard.getSelectionModel().getSelectedIndex());
         tbJard.getSelectionModel().clearSelection();
-        jardueraTaulaEguneratu();
         btn_bistaratu.setDisable(true);
         btn_ezabatu.setDisable(true);
+        jardueraTaulaEguneratu();
     }
 
     @FXML

@@ -156,6 +156,9 @@ public class Main extends Application {
     }
 
     public void atzeraJardBistaratu() {
+        if (lehioAktibo == 1) {
+            profilaBistaratuKud.eguneratuPantaila();
+        }
         mainKud.atzeraJardBistaratu();
     }
 

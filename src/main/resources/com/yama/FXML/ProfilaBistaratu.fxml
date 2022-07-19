@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="560.0" prefWidth="952.0" style="-fx-background-color: inherit;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.ProfilaBistaratuKud">
@@ -22,11 +25,31 @@
          </font>
       </Label>
       <Button layoutX="866.0" layoutY="28.0" mnemonicParsing="false" onMouseClicked="#onClickSaioaItxi" text="Saioa itxi" />
-      <TabPane layoutY="100.0" prefHeight="460.0" prefWidth="952.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" layoutY="100.0" prefHeight="460.0" prefWidth="952.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Jarduerak">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0">
+                     <children>
+                        <ScrollPane fx:id="scrollPane" maxHeight="1.7976931348623157E308" prefHeight="431.0" prefWidth="952.0" style="-fx-background-color: #F4F4F4;">
+                           <content>
+                              <VBox fx:id="vBox_jarduerak" prefWidth="936.0">
+                                 <padding>
+                                    <Insets top="18.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                        </ScrollPane>
+                        <AnchorPane fx:id="pane_jardEz" minHeight="0.0" minWidth="0.0" prefHeight="431.0" prefWidth="952.0" style="-fx-background-color: #F4F4F4;">
+                           <children>
+                              <Label layoutX="373.0" layoutY="202.0" text="Ez da jarduerarik aurkitu :(" textFill="#0000007e">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </children></AnchorPane>
             </content>
           </Tab>
           <Tab text="Profila editatu">

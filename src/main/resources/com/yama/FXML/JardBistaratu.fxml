@@ -50,7 +50,7 @@
                   <Insets left="20.0" />
                </VBox.margin>
             </HBox>
-            <TabPane prefWidth="952.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tabPane" prefWidth="952.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="Mapa">
                   <content>
@@ -62,9 +62,9 @@
                 </Tab>
                 <Tab text="Estatistikak">
                   <content>
-                    <AnchorPane maxHeight="470.0" minHeight="0.0" minWidth="0.0" prefHeight="470.0" prefWidth="200.0">
+                    <AnchorPane maxHeight="470.0" maxWidth="952.0" minHeight="0.0" minWidth="0.0" prefHeight="470.0" prefWidth="952.0">
                            <children>
-                              <ScrollPane prefHeight="470.0" prefWidth="952.0">
+                              <ScrollPane fx:id="scrll_Estatistikak" prefHeight="470.0" prefWidth="952.0">
                                  <content>
                                     <VBox prefWidth="936.0">
                                        <children>
