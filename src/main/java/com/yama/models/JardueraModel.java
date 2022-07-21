@@ -242,7 +242,7 @@ public class JardueraModel {
                     altueraMax = String.valueOf(altZerr.get(i));
                 }
 
-                //Igoera eta jaitsiera kudeatu
+                //Igoera kudeatu
                 if (pAzkenAlt.isBlank()) {
                     pAzkenAlt = String.valueOf(altZerr.get(i));
                     igoeraTot = String.valueOf(0);

@@ -111,6 +111,18 @@ public class YamaDBKud {
         return false;
     }
 
+    public boolean ezabatuJarduera(int pId) {
+        String query = "delete from Jarduera where id=?";
+        Object[] datuak = {pId};
+        try {
+            DBKud.getDBKud().execSQL(query, datuak);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public int egiaztatuErabiltzailea(String pEzizena, String pPasahitza) {
         String pasHash = org.apache.commons.codec.digest.DigestUtils.sha256Hex(pPasahitza);
         String query = "select ezizena from Erabiltzailea where ezizena=? and pasahitza=?";

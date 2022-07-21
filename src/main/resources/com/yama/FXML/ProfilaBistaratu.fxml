@@ -33,7 +33,7 @@
                      <children>
                         <ScrollPane fx:id="scrollPane" maxHeight="1.7976931348623157E308" prefHeight="431.0" prefWidth="952.0" style="-fx-background-color: #F4F4F4;">
                            <content>
-                              <VBox fx:id="vBox_jarduerak" prefWidth="936.0">
+                              <VBox fx:id="vBox_jarduerak" prefWidth="636.0">
                                  <padding>
                                     <Insets top="18.0" />
                                  </padding>

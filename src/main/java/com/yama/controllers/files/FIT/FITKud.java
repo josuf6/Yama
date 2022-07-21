@@ -35,17 +35,21 @@ public class FITKud {
         String fitxIzena = Files.getNameWithoutExtension(fitx.getName());
         String csvFitxPath = tmpdir + fitxIzena + ".csv";
 
-        CSVTool csvTool = new CSVTool();
-        csvTool.run(new String[]{"-b", fitx.getAbsolutePath(), csvFitxPath});
+        try {
+            CSVTool csvTool = new CSVTool();
+            csvTool.run(new String[]{"-b", fitx.getAbsolutePath(), csvFitxPath});
 
-        //Sortutako fitxategia parseatu eta gorde lortutako datuak JardueraModel objektu batean
-        JardueraModel jarduera = parseatuCSV(csvFitxPath);
+            //Sortutako fitxategia parseatu eta gorde lortutako datuak JardueraModel objektu batean
+            JardueraModel jarduera = parseatuCSV(csvFitxPath);
 
-        //Sortutako CSV fitxategia ezabatu
-        File myObj = new File(csvFitxPath);
-        myObj.delete();
+            //Sortutako CSV fitxategia ezabatu
+            File myObj = new File(csvFitxPath);
+            myObj.delete();
 
-        return jarduera;
+            return jarduera;
+        } catch (RuntimeException e) {}
+
+        return null;
     }
 
     private JardueraModel parseatuCSV(String csvFitxPath) {

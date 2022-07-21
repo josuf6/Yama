@@ -115,7 +115,7 @@ public class TCXKud {
 
                         //Puntuaren latitudea eta longitudea lortu
                         Element position = (Element) point.getElementsByTagName("Position").item(0);
-                        if (position.hasChildNodes()) {
+                        if (position != null && position.hasChildNodes()) {
 
                             //Puntuaren koordenatuak lortu
                             NodeList latNodes = point.getElementsByTagName("LatitudeDegrees");
