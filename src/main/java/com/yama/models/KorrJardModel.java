@@ -23,6 +23,7 @@ public class KorrJardModel extends JardueraModel {
 
     @Override
     public String getBbAbiadura() {
+        //TODO hau aldatu (errtimoa denbora/distantzia da)
         BigDecimal bd = BigDecimal.valueOf(bbAbiadura / 3.6);
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         DecimalFormat format = new DecimalFormat("0.#");

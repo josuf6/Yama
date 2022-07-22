@@ -159,7 +159,6 @@ public class ProfilaBistaratuKud implements Initializable {
         txt_ezizenBerri.clear();
         txt_pasahitzBerri.clear();
 
-        //TODO jardueren txartelak ezabatu
         vBox_jarduerak.getChildren().clear();
     }
 
@@ -190,8 +189,6 @@ public class ProfilaBistaratuKud implements Initializable {
         } else {
             pane_jardEz.toFront();
         }
-
-        //TODO erabiltzailearekin erlazionatutako jarduerak jarri
     }
 
     private AnchorPane sortuJardTxartela(JardueraModel jarduera) {

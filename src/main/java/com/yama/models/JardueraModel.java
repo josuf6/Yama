@@ -35,6 +35,7 @@ public class JardueraModel {
     protected String tenpMax = ""; //Cº-tan
     protected ArrayList<Double[]> koordZerr; //[0] latitudea eta [1] longitudea
     protected ArrayList<Double> distZerr; //m-tan
+    protected ArrayList<Long> denbZerr; //s-tan
     protected ArrayList<Long> denbMugiZerr; //s-tan
     protected ArrayList<Double> altZerr; //m-tan
     protected ArrayList<Double> abiZerr; //km/h-tan
@@ -53,6 +54,7 @@ public class JardueraModel {
 
         koordZerr = pKoordZerr;
         distZerr = new ArrayList<>();
+        denbZerr = new ArrayList<>();
         denbMugiZerr = new ArrayList<>();
         altZerr = pAltZerr;
         abiZerr = new ArrayList<>();
@@ -166,6 +168,13 @@ public class JardueraModel {
                             double azpiPuntIraup = iraupena(dataZerr.get(i - j - 1), dataZerr.get(i - j));
                             double pondInd = azpiPuntIraup / puntuIraupena; //Ponderazio indizea
 
+                            //Denbora kudeatu
+                            if (denbZerr.size() > 0) {
+                                denbZerr.add((long) (denbZerr.get(denbZerr.size() - 1) + azpiPuntIraup));
+                            } else {
+                                denbZerr.add((long) azpiPuntIraup);
+                            }
+
                             //Denbora mugimenduan kudeatu
                             if (abiaduraKMH > 0.5) {
                                 denbMugi += azpiPuntIraup;
@@ -202,6 +211,13 @@ public class JardueraModel {
                             abiaduraMax = abiaduraKMH;
                         }
 
+                        //Denbora kudeatu
+                        if (denbZerr.size() > 0) {
+                            denbZerr.add((long) (denbZerr.get(denbZerr.size() - 1) + puntuIraupena));
+                        } else {
+                            denbZerr.add((long) puntuIraupena);
+                        }
+
                         //Denbora mugimenduan kudeatu
                         if (abiaduraKMH > 0.5) {
                             denbMugi += puntuIraupena;
@@ -221,6 +237,7 @@ public class JardueraModel {
                 }
             } else {
                 distZerr.add(0.0);
+                denbZerr.add(0L);
                 denbMugiZerr.add(0L);
                 abiZerr.add(0.0);
             }
@@ -370,6 +387,10 @@ public class JardueraModel {
         return formateatuIraupena(iraupena);
     }
 
+    public String getDenbPunt(int i) { //Jardueraren denbora mugimenduan pantailatzerakoan honek izango duen formatua
+        return formateatuIraupena(denbZerr.get(i));
+    }
+
     public String getDenbMugi() { //Jardueraren denbora mugimenduan pantailatzerakoan honek izango duen formatua
         return formateatuIraupena(denbMugi);
     }
@@ -385,6 +406,13 @@ public class JardueraModel {
         return bbAbiadura;
     }
 
+    public String getAbiadura(int i) {
+        BigDecimal bd = BigDecimal.valueOf(abiZerr.get(i));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(bd.doubleValue()).replace('.', ',') + " km/h";
+    }
+
     public String getAbiaduraMax() {
         BigDecimal bd = BigDecimal.valueOf(abiaduraMax);
         bd = bd.setScale(2, RoundingMode.HALF_UP);
@@ -398,6 +426,14 @@ public class JardueraModel {
 
     public String getIgoeraTot() {
         BigDecimal bd = BigDecimal.valueOf(Double.parseDouble(igoeraTot));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(bd.doubleValue()).replace('.', ',') + " m";
+    }
+
+    public String getAltuera(int i) {
+        if (altZerr.get(i) == null) return "-";
+        BigDecimal bd = BigDecimal.valueOf(altZerr.get(i));
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         DecimalFormat format = new DecimalFormat("0.#");
         return format.format(bd.doubleValue()).replace('.', ',') + " m";
@@ -431,6 +467,11 @@ public class JardueraModel {
 
     public String getBbBihotzMaizBal() {
         return bbBihotzMaiz;
+    }
+
+    public String getBihotzMaiz(int i) {
+        if (bihotzMaizZerr.get(i) == null) return "-";
+        return bihotzMaizZerr.get(i) + " bpm";
     }
 
     public int getBihotzMaizMinBal() {
@@ -550,6 +591,20 @@ public class JardueraModel {
         this.mota = mota;
     }
 
+    public String getDistPunt(int i) { //Jardueraren distantzia pantailatzerakoan honek izango duen formatua
+        int distantzia = (int) Double.parseDouble(String.valueOf(distZerr.get(i)));
+        if (distantzia < 1000) {
+            return distantzia + " m";
+        }
+
+        int m = distantzia % 1000;
+        if (m >= 100) {
+            m = m / 10;
+        }
+        int km = distantzia / 1000;
+        return km + "," + m + " km";
+    }
+
     public String getDistantzia() { //Jardueraren distantzia pantailatzerakoan honek izango duen formatua
         if (distantzia < 1000) {
             return distantzia + " m";
@@ -585,6 +640,11 @@ public class JardueraModel {
 
     public String getBbPot() {
         return bbPot + " W";
+    }
+
+    public String getPot(int i) {
+        if (potZerr.get(i) == null) return "-";
+        return potZerr.get(i) + " W";
     }
 
     public String getBbPotBal() {
