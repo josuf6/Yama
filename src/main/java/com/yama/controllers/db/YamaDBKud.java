@@ -1,14 +1,11 @@
 package com.yama.controllers.db;
 
 import com.yama.models.*;
-import javafx.scene.control.TextField;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -210,7 +207,6 @@ public class YamaDBKud {
 
         return true;
     }
-
 
     private boolean berdinakDiraZerrendak(JSONArray zerr1, JSONArray zerr2) {
         if (zerr1.length() != zerr2.length()) {

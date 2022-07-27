@@ -16,10 +16,6 @@ import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.sql.SQLException;
 
 public class Main extends Application {
 
@@ -34,8 +30,9 @@ public class Main extends Application {
     private ProfilaBistaratuKud profilaBistaratuKud;
     private JardueraKargatuKud jardueraKargatuKud;
     private JardBistaratuKud jardBistaratuKud;
+    private EstatistikakIkusiKud estatistikakIkusiKud;
 
-    public int lehioAktibo;
+    public int leihoAktibo;
     private ErabiltzaileModel erabiltzaileAktibo = null;
 
     public boolean menuIrekita = false;
@@ -82,6 +79,7 @@ public class Main extends Application {
         profilaBistaratuKud = new ProfilaBistaratuKud(this);
         jardueraKargatuKud = new JardueraKargatuKud(this);
         jardBistaratuKud = new JardBistaratuKud(this);
+        estatistikakIkusiKud = new EstatistikakIkusiKud(this);
 
         Callback<Class<?>, Object> controllerFactory = type -> {
             if (type == MainKud.class) {
@@ -96,6 +94,8 @@ public class Main extends Application {
                 return jardueraKargatuKud;
             } else if (type == JardBistaratuKud.class) {
                 return jardBistaratuKud;
+            } else if (type == EstatistikakIkusiKud.class) {
+                return estatistikakIkusiKud;
             } else {
                 try {
                     return type.newInstance();
@@ -129,6 +129,7 @@ public class Main extends Application {
         erabiltzaileAktibo = YamaDBKud.getYamaDBKud().getErabiltzailea(pEzizena);
         if (erabiltzaileAktibo != null) {
             mainKud.setProfilaText(erabiltzaileAktibo.getEzizena());
+            mainKud.erakutsiEstatistikakAukera();
             erakutsiProfilaBistaratu();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Ustekabeko errore bat egon da. Berrio saiatu.", ButtonType.CLOSE);
@@ -142,6 +143,7 @@ public class Main extends Application {
     public void saioaItxi() {
         erabiltzaileAktibo = null;
         mainKud.setProfilaText("Saioa hasi");
+        mainKud.kenduEstatistikakAukera();
         erakutsiSaioaHasi();
     }
 
@@ -150,13 +152,17 @@ public class Main extends Application {
         mainKud.erakutsiProfilaBistaratu();
     }
 
+    public void erakutsiEstatistikakIkusi() {
+        estatistikakIkusiKud.hasieratuPantaila();
+    }
+
     public void jardBistaratu(JardueraModel pJard) {
         jardBistaratuKud.jardBistaratu(pJard);
         mainKud.erakutsiJardBistaratu();
     }
 
     public void atzeraJardBistaratu() {
-        if (lehioAktibo == 1) {
+        if (leihoAktibo == 1) {
             profilaBistaratuKud.eguneratuPantaila();
         }
         mainKud.atzeraJardBistaratu();

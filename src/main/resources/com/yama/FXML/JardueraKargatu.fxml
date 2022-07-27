@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="560.0" prefWidth="952.0" style="-fx-background-color: inherit;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.JardueraKargatuKud">
    <children>
-      <TableView fx:id="tbJard" layoutX="26.0" layoutY="38.0" onMouseClicked="#onClickTaula" prefHeight="450.0" prefWidth="900.0">
+      <Label layoutX="26.0" layoutY="13.0" text="Jarduera kargatu">
+         <font>
+            <Font name="System Bold" size="30.0" />
+         </font>
+      </Label>
+      <TableView fx:id="tbJard" layoutX="26.0" layoutY="70.0" onMouseClicked="#onClickTaula" prefHeight="400.0" prefWidth="900.0" stylesheets="@../CSS/tableview.css">
         <columns>
-          <TableColumn fx:id="izena" prefWidth="299.0" text="Izena" />
-          <TableColumn fx:id="hasiData" minWidth="0.0" prefWidth="199.0" text="Data" />
-            <TableColumn fx:id="mota" prefWidth="200.0" text="Mota" />
-            <TableColumn fx:id="iraupena" prefWidth="100.0" text="Iraupena" />
-            <TableColumn fx:id="distantzia" prefWidth="100.0" text="Distantzia" />
+          <TableColumn fx:id="izena" maxWidth="287.0" prefWidth="287.0" text="Izena" />
+          <TableColumn fx:id="hasiData" maxWidth="199.0" minWidth="0.0" prefWidth="199.0" text="Data" />
+            <TableColumn fx:id="mota" maxWidth="199.0" prefWidth="199.0" text="Mota" />
+            <TableColumn fx:id="iraupena" maxWidth="99.0" prefWidth="99.0" text="Iraupena" />
+            <TableColumn fx:id="distantzia" maxWidth="98.0" prefWidth="99.0" text="Distantzia" />
         </columns>
       </TableView>
-      <Button fx:id="btn_kargatu" layoutX="334.0" layoutY="504.0" mnemonicParsing="false" onMouseClicked="#onClickKargatu" text="Kargatu" />
-      <Button fx:id="btn_bistaratu" layoutX="450.0" layoutY="504.0" mnemonicParsing="false" onMouseClicked="#onClickBistaratu" text="Bistaratu" />
-      <Button fx:id="btn_ezabatu" layoutX="556.0" layoutY="504.0" mnemonicParsing="false" onMouseClicked="#onClickEzabatu" text="Ezabatu" />
+      <Button fx:id="btn_kargatu" layoutX="201.0" layoutY="504.0" mnemonicParsing="false" onMouseClicked="#onClickKargatu" stylesheets="@../CSS/button.css" text="Kargatu" />
+      <Button fx:id="btn_bistaratu" layoutX="401.0" layoutY="504.0" mnemonicParsing="false" onMouseClicked="#onClickBistaratu" stylesheets="@../CSS/button.css" text="Bistaratu" />
+      <Button fx:id="btn_ezabatu" layoutX="601.0" layoutY="504.0" mnemonicParsing="false" onMouseClicked="#onClickEzabatu" stylesheets="@../CSS/button.css" text="Ezabatu" />
    </children>
 </AnchorPane>

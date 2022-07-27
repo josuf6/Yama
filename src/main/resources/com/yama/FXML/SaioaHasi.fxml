@@ -9,19 +9,28 @@
 
 <AnchorPane prefHeight="560.0" prefWidth="952.0" style="-fx-background-color: inherit;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.SaioaHasiKud">
    <children>
-      <Label layoutX="280.0" layoutY="186.0" text="Ezizena">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="280.0" layoutY="235.0" text="Pasahitza">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="txt_ezizena" layoutX="423.0" layoutY="183.0" prefWidth="200.0" />
-      <PasswordField fx:id="txt_pasahitza" layoutX="423.0" layoutY="232.0" prefWidth="200.0" />
-      <Button fx:id="btn_saioaHasi" layoutX="442.0" layoutY="288.0" mnemonicParsing="false" onMouseClicked="#onClickSaioaHasi" text="Saioa hasi" />
-      <Button fx:id="btn_kontuBerria" layoutX="412.0" layoutY="331.0" mnemonicParsing="false" onMouseClicked="#onClickKontuBerria" text="Sortu kontu berri bat" />
+      <AnchorPane layoutX="226.0" layoutY="105.0" prefHeight="350.0" prefWidth="500.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+         <children>
+            <Label layoutX="14.0" layoutY="14.0" text="Saioa hasi">
+               <font>
+                  <Font name="System Bold" size="30.0" />
+               </font>
+            </Label>
+            <Label layoutX="94.0" layoutY="113.0" text="Ezizena">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="94.0" layoutY="163.0" text="Pasahitza">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txt_ezizena" layoutX="206.0" layoutY="110.0" prefWidth="200.0" stylesheets="@../CSS/textfield.css" />
+            <PasswordField fx:id="txt_pasahitza" layoutX="206.0" layoutY="160.0" prefWidth="200.0" stylesheets="@../CSS/textfield.css" />
+            <Button fx:id="btn_saioaHasi" layoutX="175.0" layoutY="230.0" mnemonicParsing="false" onMouseClicked="#onClickSaioaHasi" stylesheets="@../CSS/button.css" text="Saioa hasi" />
+            <Button layoutX="175.0" layoutY="280.0" mnemonicParsing="false" onMouseClicked="#onClickKontuBerria" stylesheets="@../CSS/button.css" text="Sortu kontu berri bat" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

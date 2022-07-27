@@ -8,30 +8,53 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="560.0" prefWidth="952.0" style="-fx-background-color: inherit;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.ProfilaBistaratuKud">
    <children>
-      <Label fx:id="lbl_izenAbizen" layoutX="41.0" layoutY="23.0" text="IzenAbizen">
+      <Label fx:id="lbl_izenAbizen" layoutX="40.0" layoutY="10.0" text="IzenAbizen">
          <font>
-            <Font size="24.0" />
+            <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Label fx:id="lbl_ezizena" layoutX="41.0" layoutY="58.0" text="Ezizena">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Button layoutX="866.0" layoutY="28.0" mnemonicParsing="false" onMouseClicked="#onClickSaioaItxi" text="Saioa itxi" />
-      <TabPane fx:id="tabPane" layoutY="100.0" prefHeight="460.0" prefWidth="952.0" tabClosingPolicy="UNAVAILABLE">
+      <HBox alignment="CENTER" layoutX="40.0" layoutY="45.0">
+         <children>
+            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@../irudiak/profila_beltza.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="lbl_ezizena" text="Ezizena">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <AnchorPane fx:id="pane_SaioaItxi" layoutX="892.0" layoutY="15.0" onMouseClicked="#onClickSaioaItxi" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: F4F4F4; -fx-background-radius: 5;">
+         <children>
+            <ImageView fitHeight="44.0" fitWidth="44.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../irudiak/logout.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <TabPane fx:id="tabPane" layoutY="80.0" prefHeight="480.0" prefWidth="952.0" stylesheets="@../CSS/tabpane.css" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Jarduerak">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
-                        <ScrollPane fx:id="scrollPane" maxHeight="1.7976931348623157E308" prefHeight="431.0" prefWidth="952.0" style="-fx-background-color: #F4F4F4;">
+                        <ScrollPane fx:id="scrollPane" maxHeight="1.7976931348623157E308" prefHeight="451.0" prefWidth="952.0" style="-fx-background-color: #F4F4F4;" stylesheets="@../CSS/scrollpane.css">
                            <content>
                               <VBox fx:id="vBox_jarduerak" prefWidth="636.0">
                                  <padding>
@@ -56,32 +79,41 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                     <children>
-                        <Label layoutX="295.0" layoutY="93.0" text="Izena">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label layoutX="295.0" layoutY="145.0" text="Abizena">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label layoutX="295.0" layoutY="197.0" text="Ezizena">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label layoutX="295.0" layoutY="246.0" text="Pasahitza">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <TextField fx:id="txt_izenBerri" layoutX="438.0" layoutY="90.0" prefWidth="200.0" />
-                        <TextField fx:id="txt_abiBerri" layoutX="438.0" layoutY="142.0" prefWidth="200.0" />
-                        <TextField fx:id="txt_ezizenBerri" layoutX="438.0" layoutY="194.0" prefWidth="200.0" />
-                        <PasswordField fx:id="txt_pasahitzBerri" layoutX="438.0" layoutY="243.0" prefWidth="200.0" />
-                        <Button fx:id="btn_datuakEguneratu" layoutX="418.0" layoutY="302.0" mnemonicParsing="false" onMouseClicked="#onClickDatuakEguneratu" text="Datuak eguneratu" />
-                        <Button layoutX="428.0" layoutY="347.0" mnemonicParsing="false" onMouseClicked="#onClickProfilaEzabatu" text="Profila ezabatu" />
+                        <AnchorPane layoutX="226.0" layoutY="25.0" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                           <children>
+                              <Label layoutX="10.0" layoutY="10.0" text="Profila editatu">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="94.0" layoutY="69.0" text="Ezizena">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                              </Label>
+                              <Label layoutX="94.0" layoutY="119.0" text="Izena">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                              </Label>
+                              <Label layoutX="94.0" layoutY="169.0" text="Abizena">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                              </Label>
+                              <Label layoutX="94.0" layoutY="219.0" text="Pasahitza">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                              </Label>
+                              <TextField fx:id="txt_ezizenBerri" layoutX="206.0" layoutY="66.0" prefWidth="200.0" stylesheets="@../CSS/textfield.css" />
+                              <TextField fx:id="txt_izenBerri" layoutX="206.0" layoutY="116.0" prefWidth="200.0" stylesheets="@../CSS/textfield.css" />
+                              <TextField fx:id="txt_abiBerri" layoutX="206.0" layoutY="166.0" prefWidth="200.0" stylesheets="@../CSS/textfield.css" />
+                              <PasswordField fx:id="txt_pasahitzBerri" layoutX="206.0" layoutY="216.0" prefWidth="200.0" stylesheets="@../CSS/textfield.css" />
+                              <Button fx:id="btn_datuakEguneratu" layoutX="175.0" layoutY="286.0" mnemonicParsing="false" onMouseClicked="#onClickDatuakEguneratu" stylesheets="@../CSS/button.css" text="Datuak eguneratu" />
+                              <Button layoutX="175.0" layoutY="336.0" mnemonicParsing="false" onMouseClicked="#onClickProfilaEzabatu" stylesheets="@../CSS/button.css" text="Profila ezabatu" />
+                           </children>
+                        </AnchorPane>
                     </children>
                 </AnchorPane>
             </content>

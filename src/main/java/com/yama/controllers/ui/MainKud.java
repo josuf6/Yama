@@ -1,7 +1,6 @@
 package com.yama.controllers.ui;
 
 import com.yama.Main;
-import com.yama.models.JardueraModel;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -22,11 +21,12 @@ public class MainKud implements Initializable {
     private double yOffset = 0;
 
     @FXML
-    private Label lbl_jarduera, lbl_profila;
+    private Label lbl_estatistikak, lbl_jarduera, lbl_profila;
 
     @FXML
-    private AnchorPane pane_barra, pane_beltza, pane_Erregistratu, pane_itxi, pane_jarduera, pane_profila, pane_JardBistaratu, pane_JardueraKargatu,
-            pane_menu, pane_menuIzenak, pane_menuIkonoak, pane_minimizatu, pane_ProfilaBistaratu, pane_SaioaHasi;
+    private AnchorPane pane_barra, pane_beltza, pane_Erregistratu, pane_estatistikak, pane_EstatistikakIkusi, pane_itxi,
+            pane_jarduera, pane_profila, pane_JardBistaratu, pane_JardueraKargatu, pane_menu, pane_menuIzenak,
+            pane_menuIkonoak, pane_minimizatu, pane_ProfilaBistaratu, pane_SaioaHasi;
 
     public MainKud(Main main) {
         mainApp = main;
@@ -116,6 +116,8 @@ public class MainKud implements Initializable {
 
 
         //aplikazioa irekitzean profilaren pantaila bistaratzeko
+        if (mainApp.getErabiltzaileAktibo() == null) kenduEstatistikakAukera();
+        else erakutsiEstatistikakAukera();
         erakutsiProfila();
         ordenaEgokitu();
     }
@@ -130,6 +132,9 @@ public class MainKud implements Initializable {
         } else if (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera) {
             erakutsiJardueraKargatu();
             ordenaEgokitu();
+        } else if (event.getSource() == lbl_estatistikak || event.getSource() == pane_estatistikak) {
+            erakutsiEstatistikakIkusi();
+            ordenaEgokitu();
         }
 
         if (mainApp.menuIrekita) { //alboko menua itxi irekita badago
@@ -140,28 +145,30 @@ public class MainKud implements Initializable {
 
     @FXML
     void onEnter(MouseEvent event) { //kurtsorea alboko menuko elementu baten gainetik sartzean horren koloreak aldatu
-        if (mainApp.lehioAktibo != 1 && (event.getSource() == lbl_profila || event.getSource() == pane_profila)) {
+        if (mainApp.leihoAktibo != 1 && (event.getSource() == lbl_profila || event.getSource() == pane_profila)) {
             lbl_profila.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
             pane_profila.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
-        } else if (mainApp.lehioAktibo != 2 && (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera)) {
+        } else if (mainApp.leihoAktibo != 2 && (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera)) {
             lbl_jarduera.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
             pane_jarduera.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
+        } else if (mainApp.leihoAktibo != 3 && (event.getSource() == lbl_estatistikak || event.getSource() == pane_estatistikak)) {
+            lbl_estatistikak.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
+            pane_estatistikak.setStyle("-fx-background-color: rgba(10,100,0,0.2)");
         }
     }
 
     @FXML
     void onExit(MouseEvent event) { //kurtsorea alboko menuko elementu baten gainetik irtetzean horren koloreak aldatu
-        if (mainApp.lehioAktibo != 1 && (event.getSource() == lbl_profila || event.getSource() == pane_profila)) {
+        if (mainApp.leihoAktibo != 1 && (event.getSource() == lbl_profila || event.getSource() == pane_profila)) {
             lbl_profila.setStyle("-fx-background-color: White");
             pane_profila.setStyle("-fx-background-color: White");
-        } else if (mainApp.lehioAktibo != 2 && (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera)) {
+        } else if (mainApp.leihoAktibo != 2 && (event.getSource() == lbl_jarduera || event.getSource() == pane_jarduera)) {
             lbl_jarduera.setStyle("-fx-background-color: White");
             pane_jarduera.setStyle("-fx-background-color: White");
+        } else if (mainApp.leihoAktibo != 3 && (event.getSource() == lbl_estatistikak || event.getSource() == pane_estatistikak)) {
+            lbl_estatistikak.setStyle("-fx-background-color: White");
+            pane_estatistikak.setStyle("-fx-background-color: White");
         }
-    }
-
-    public void setProfilaText(String pText) {
-        lbl_profila.setText(pText);
     }
 
     private void ordenaEgokitu() { //leihoaren elementuen ordena egokitzeko
@@ -170,8 +177,12 @@ public class MainKud implements Initializable {
         pane_menuIkonoak.toFront();
     }
 
+    public void setProfilaText(String pText) {
+        lbl_profila.setText(pText);
+    }
+
     private void erakutsiProfila() {
-        mainApp.lehioAktibo = 1;
+        mainApp.leihoAktibo = 1;
         lbl_profila.setStyle("-fx-background-color: rgba(10,100,0,0.5)");
         pane_profila.setStyle("-fx-background-color: rgba(10,100,0,0.5)");
 
@@ -185,13 +196,38 @@ public class MainKud implements Initializable {
     }
 
     private void erakutsiJardueraKargatu() {
-        mainApp.lehioAktibo = 2;
+        mainApp.leihoAktibo = 2;
         lbl_jarduera.setStyle("-fx-background-color: rgba(10,100,0,0.5)");
         pane_jarduera.setStyle("-fx-background-color: rgba(10,100,0,0.5)");
 
         elementuakZuriz();
 
         pane_JardueraKargatu.toFront();
+    }
+
+    private void erakutsiEstatistikakIkusi() {
+        mainApp.leihoAktibo = 3;
+        lbl_estatistikak.setStyle("-fx-background-color: rgba(10,100,0,0.5)");
+        pane_estatistikak.setStyle("-fx-background-color: rgba(10,100,0,0.5)");
+
+        elementuakZuriz();
+
+        mainApp.erakutsiEstatistikakIkusi();
+        pane_EstatistikakIkusi.toFront();
+    }
+
+    public void erakutsiEstatistikakAukera() {
+        lbl_estatistikak.setVisible(true);
+        lbl_estatistikak.setManaged(true);
+        pane_estatistikak.setVisible(true);
+        pane_estatistikak.setManaged(true);
+    }
+
+    public void kenduEstatistikakAukera() {
+        lbl_estatistikak.setVisible(false);
+        lbl_estatistikak.setManaged(false);
+        pane_estatistikak.setVisible(false);
+        pane_estatistikak.setManaged(false);
     }
 
     public void erakutsiSaioaHasi() {
@@ -219,12 +255,17 @@ public class MainKud implements Initializable {
     }
 
     private void elementuakZuriz() { //alboko menuan zuriz jarri aukeratuak izan ez diren elementuak
-        if (mainApp.lehioAktibo != 1) {
+        if (mainApp.leihoAktibo != 1) {
             lbl_profila.setStyle("-fx-background-color: White");
             pane_profila.setStyle("-fx-background-color: White");
-        } else if (mainApp.lehioAktibo != 2) {
+        }
+        if (mainApp.leihoAktibo != 2) {
             lbl_jarduera.setStyle("-fx-background-color: White");
             pane_jarduera.setStyle("-fx-background-color: White");
+        }
+        if (mainApp.leihoAktibo != 3) {
+            lbl_estatistikak.setStyle("-fx-background-color: White");
+            pane_estatistikak.setStyle("-fx-background-color: White");
         }
     }
 

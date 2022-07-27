@@ -1,8 +1,5 @@
 package com.yama.models;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class KorrJardModel extends JardueraModel {
@@ -23,10 +20,11 @@ public class KorrJardModel extends JardueraModel {
 
     @Override
     public String getBbAbiadura() {
-        //TODO hau aldatu (errtimoa denbora/distantzia da)
-        BigDecimal bd = BigDecimal.valueOf(bbAbiadura / 3.6);
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
-        DecimalFormat format = new DecimalFormat("0.#");
-        return format.format(bd.doubleValue()).replace('.', ',') + " m/s";
+        int min = (int) (60 / bbAbiadura);
+        double minDouble = 60 / bbAbiadura;
+        int segInt = (int) ((minDouble - min) * 60);
+        String segString = String.valueOf(segInt);
+        if (segInt < 10) segString = "0" + segString;
+        return min + ":" + segString + " min/km";
     }
 }

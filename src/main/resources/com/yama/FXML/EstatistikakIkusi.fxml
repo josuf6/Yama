@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="560.0" prefHeight="560.0" prefWidth="952.0" style="-fx-background-color: inherit;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yama.controllers.ui.EstatistikakIkusiKud">
+   <children>
+      <ScrollPane fx:id="scrll_Estatistikak" hbarPolicy="NEVER" prefHeight="560.0" prefWidth="952.0" stylesheets="@../CSS/scrollpane.css">
+         <content>
+            <VBox alignment="TOP_CENTER" prefHeight="0.0" prefWidth="936.0" spacing="18.0">
+               <children>
+                  <Label prefWidth="600.0" text="Estatistikak">
+                     <font>
+                        <Font name="System Bold" size="30.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Label>
+                  <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Urtea:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </Label>
+                        <ComboBox fx:id="cmb_urtea" prefWidth="150.0" stylesheets="@../CSS/combobox.css" />
+                        <Label text="Kirola:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="30.0" right="10.0" />
+                           </HBox.margin>
+                        </Label>
+                        <ComboBox fx:id="cmb_kirola" prefWidth="150.0" stylesheets="@../CSS/combobox.css" />
+                     </children>
+                  </HBox>
+                  <AnchorPane fx:id="pane_hilak" prefHeight="300.0" prefWidth="600.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <VBox.margin>
+                        <Insets left="176.0" right="160.0" />
+                     </VBox.margin>
+                  </AnchorPane>
+                  <AnchorPane prefHeight="150.0" prefWidth="600.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="600.0" spacing="30.0">
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="100.0" prefWidth="180.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Jarduera kopurua">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lbl_laburJardKop" text="Jarduerak">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="100.0" prefWidth="180.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Denbora totala">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lbl_laburDenbTot" text="Denbora">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="100.0" prefWidth="180.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Distantzia totala">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lbl_laburDistTot" text="Distantzia">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="176.0" right="160.0" />
+                     </VBox.margin>
+                  </AnchorPane>
+                  <AnchorPane fx:id="pane_jardKop" prefHeight="250.0" prefWidth="600.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <VBox.margin>
+                        <Insets left="176.0" right="160.0" />
+                     </VBox.margin>
+                     <children>
+                        <VBox alignment="CENTER" layoutX="25.0" prefHeight="250.0" prefWidth="250.0">
+                           <children>
+                              <Label text="Jarduera kopurua">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label fx:id="lbl_jardKop" text="Jarduerak">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="30.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="25.0">
+                                 <children>
+                                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Label text="Txirrindularitza">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lbl_txirrKop" text="Label">
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets bottom="20.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <Label text="Korrika">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lbl_korrKop" text="Label">
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Label text="Ibilaritza">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lbl_ibilKop" text="Label">
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets bottom="20.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <Label text="Bestelakoa">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lbl_besteKop" text="Label">
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <AnchorPane fx:id="pane_sekDiag" layoutX="325.0" prefHeight="250.0" prefWidth="250.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+               <padding>
+                  <Insets bottom="18.0" top="18.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

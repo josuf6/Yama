@@ -23,7 +23,7 @@
       </AnchorPane>
       <AnchorPane fx:id="pane_itxi" layoutY="8.0" prefHeight="24.0" prefWidth="24.0" style="-fx-background-color: #0A6400; -fx-background-radius: 5.0;" AnchorPane.rightAnchor="10.0">
          <children>
-            <ImageView fitHeight="18.0" fitWidth="188.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../irudiak/itxi.png" />
                </image>
@@ -63,6 +63,14 @@
                         <Insets />
                      </VBox.margin>
                   </Label>
+                  <Label fx:id="lbl_estatistikak" alignment="BASELINE_LEFT" onMouseClicked="#onClick" onMouseEntered="#onEnter" onMouseExited="#onExit" prefHeight="60.0" prefWidth="178.0" text="Estatistikak ikusi">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
                </children>
             </VBox>
          </children>
@@ -85,6 +93,15 @@
                         <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="4.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../irudiak/kargatu.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="pane_estatistikak" onMouseClicked="#onClick" onMouseEntered="#onEnter" onMouseExited="#onExit" prefHeight="60.0" prefWidth="48.0">
+                     <children>
+                        <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="4.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../irudiak/estatistikak.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -116,6 +133,11 @@
             <AnchorPane fx:id="pane_JardBistaratu">
                <children>
                   <fx:include fx:id="JardBistaratu" source="JardBistaratu.fxml" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="pane_EstatistikakIkusi">
+               <children>
+                  <fx:include fx:id="EstatistikakIkusi" source="EstatistikakIkusi.fxml" />
                </children>
             </AnchorPane>
          </children></StackPane>

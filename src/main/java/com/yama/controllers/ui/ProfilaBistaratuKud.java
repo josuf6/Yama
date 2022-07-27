@@ -16,7 +16,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -36,7 +35,7 @@ public class ProfilaBistaratuKud implements Initializable {
     private ArrayList<JardueraModel> jardZerr;
 
     @FXML
-    private AnchorPane pane_jardEz;
+    private AnchorPane pane_jardEz, pane_SaioaItxi;
 
     @FXML
     private Button btn_datuakEguneratu;
@@ -65,6 +64,14 @@ public class ProfilaBistaratuKud implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        pane_SaioaItxi.setOnMouseEntered(event -> {
+            pane_SaioaItxi.setStyle("-fx-background-color: rgb(200,200,200); -fx-background-radius: 5.0");
+        });
+
+        pane_SaioaItxi.setOnMouseExited(event -> {
+            pane_SaioaItxi.setStyle("-fx-background-color: rgb(244,244,244); -fx-background-radius: 5.0");
+        });
+
         setTextFieldProperty(txt_izenBerri);
         setTextFieldProperty(txt_abiBerri);
         setTextFieldProperty(txt_ezizenBerri);

@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 public class JardueraModel {
@@ -65,11 +65,6 @@ public class JardueraModel {
         tenpZerr = pTenpZerr;
 
         kudeatuJarduera();
-        kudeatuPenditza();
-    }
-
-    private void kudeatuPenditza() {
-        //TODO aldapen portzentaiak kontuan izan
     }
 
     private void kudeatuJarduera() {
@@ -111,7 +106,7 @@ public class JardueraModel {
                 double lon2Bir = bdLon2.setScale(8, RoundingMode.HALF_UP).doubleValue();
 
                 //Aurreko 2 puntuak berdinak diren ala ez egiaztatu
-                boolean koordErrep = lat1Bir == lat2Bir && lon1Bir == lon2Bir; //TODO koordenatuen errepikapena altuera kontuan izan gabe kudeatu behar da ere (altuera berriak kalkulatzea falta da)
+                boolean koordErrep = lat1Bir == lat2Bir && lon1Bir == lon2Bir;
                 if (koordErrep) { //Berdinak badira jarraian dauden errepikatutako puntuen kopurua handitu
                     koordErrepKop++;
                 }
@@ -128,41 +123,18 @@ public class JardueraModel {
                     //Errepikatutako puntuak egon badira, baina aurrekoak bezalakoa ez den puntu bat aurkitzen bada
                     if (koordErrepKop > 0) {
 
-                        //Desberdinak diren azkeneko 2 puntuen arteko abiadura kalkulatu
+                        //Desberdinak diren azkeneko 2 puntuen arteko iraupena kalkulatu
                         double puntuIraupena;
                         if (i - koordErrepKop - 2 > 0) {
                             puntuIraupena = iraupena(dataZerr.get(i - koordErrepKop - 2), dataZerr.get(i));
                         } else {
                             puntuIraupena = iraupena(dataZerr.get(0), dataZerr.get(i));
                         }
-                        double abiaduraMS = 0;
-                        if (puntuIraupena > 0) {
-                            abiaduraMS = puntuDistantzia / puntuIraupena; //abiadura m/s-tan
-                        }
-                        double abiaduraKMH = abiaduraMS * 3.6; //m/s-tik km/h-ra pasatzeko
-
-                        /*if (i - koordErrepKop > 1) {
-                            abiaduraKMH = (abiaduraKMH + abiZerr.get(i - koordErrepKop - 1)) / 2;
-
-                            //TODO abiadura maximoa kudeatu
-                        }*/
-
-                        //Abiadura maximoa kudeatu
-                        if (abiaduraKMH > abiaduraMax) {
-                            abiaduraMax = abiaduraKMH;
-                            if (i > 1) {
-                                System.out.println(Arrays.toString(koordZerr.get(i - 1)));
-                            }
-                            System.out.println(Arrays.toString(koordZerr.get(i)));
-                            System.out.println(abiaduraMax);
-                            System.out.println();
-                        }
 
                         Double[] koordDifer = {lat2 - lat1, lon2 - lon1}; //Azkeneko 2 koordenatuen arteko diferentzia
 
                         //Errepikatutako puntuak zeharkatu eta kudeatu
                         for (int j = koordErrepKop; j >= 0; j--) {
-                            abiZerr.add(abiaduraKMH);
 
                             //Denborarekiko ponderazio indizea kalkulatu
                             double azpiPuntIraup = iraupena(dataZerr.get(i - j - 1), dataZerr.get(i - j));
@@ -175,12 +147,6 @@ public class JardueraModel {
                                 denbZerr.add((long) azpiPuntIraup);
                             }
 
-                            //Denbora mugimenduan kudeatu
-                            if (abiaduraKMH > 0.5) {
-                                denbMugi += azpiPuntIraup;
-                            }
-                            denbMugiZerr.add(denbMugi);
-
                             //Puntuaren distantzia kalkulatu denborarekiko ponderatuz
                             double puntuDistPond = puntuDistantzia * pondInd;
                             distZerr.add(distZerr.get(i - j - 1) + puntuDistPond);
@@ -192,6 +158,25 @@ public class JardueraModel {
                             Double[] aurrekoarenKoord = koordZerr.get(i - j - 1);
                             Double[] koordEguneratuak = {aurrekoarenKoord[0] + latBerriDif, aurrekoarenKoord[1] + lonBerriDif};
                             koordZerr.set(i - j, koordEguneratuak);
+
+                            //Puntuaren abiadura kalkulatu
+                            double abiaduraMS = 0;
+                            if (azpiPuntIraup > 0) {
+                                abiaduraMS = puntuDistPond / azpiPuntIraup; //abiadura m/s-tan
+                            }
+                            double abiaduraKMH = abiaduraMS * 3.6; //m/s-tik km/h-ra pasatzeko
+                            abiZerr.add(abiaduraKMH);
+
+                            //Abiadura maximoa kudeatu
+                            if (abiaduraKMH > abiaduraMax) {
+                                abiaduraMax = abiaduraKMH;
+                            }
+
+                            //Denbora mugimenduan kudeatu
+                            if (abiaduraKMH > 0.5) {
+                                denbMugi += azpiPuntIraup;
+                            }
+                            denbMugiZerr.add(denbMugi);
                         }
                         koordErrepKop = 0;
                     } else { //Errepikatutako puntuak egon ez badira
@@ -383,8 +368,36 @@ public class JardueraModel {
         }
     }
 
+    public String getHasiDataUrte() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date data = sdf.parse(hasiData);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(data);
+            return String.valueOf(calendar.get(Calendar.YEAR));
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public String getHasiDataHilabete() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date data = sdf.parse(hasiData);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(data);
+            return String.valueOf(calendar.get(Calendar.MONTH));
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
     public String getIraupena() { //Jardueraren iraupena pantailatzerakoan honek izango duen formatua
         return formateatuIraupena(iraupena);
+    }
+
+    public long getIraupenaBal() {
+        return iraupena;
     }
 
     public String getDenbPunt(int i) { //Jardueraren denbora mugimenduan pantailatzerakoan honek izango duen formatua
@@ -578,7 +591,7 @@ public class JardueraModel {
 
     public String getMota() { //Jardueraren mota pantailatzerakoan honek izango duen formatua
         if (mota.isBlank()) {
-            return  "Zehaztu gabeko kirola";
+            return "Bestelakoa";
         }
         return mota;
     }
@@ -680,18 +693,6 @@ public class JardueraModel {
         }
 
         return 0;
-    }
-
-    private String kalkulatuDenbMugimenduan() {
-        //TODO kalkulatu hau abiaduraren arabera
-
-        return "";
-    }
-
-    private String kudeatuAbiadura() {
-        //TODO kalkulatu hau koordenatuen eta elebazioaren arabera
-
-        return "";
     }
 
     //https://stackoverflow.com/a/16794680

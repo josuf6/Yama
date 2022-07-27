@@ -15,7 +15,7 @@ public class ErregistratuKud implements Initializable {
     private Main mainApp;
 
     @FXML
-    private Button btn_kontuaSortu, btn_SaioaHasi;
+    private Button btn_kontuaSortu;
 
     @FXML
     private PasswordField txt_pasahitza;

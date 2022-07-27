@@ -1,6 +1,5 @@
 package com.yama.controllers.ui;
 
-import com.garmin.fit.plugins.ActivityFileValidationResult;
 import com.yama.Main;
 import com.yama.controllers.files.FIT.FITKud;
 import com.yama.controllers.files.GPXKud;
@@ -14,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -216,7 +214,6 @@ public class JardueraKargatuKud implements Initializable {
 
     private void aktibatuFuntzionalitateak() {
         aktibatuJardKar();
-        //TODO mainApp erabiliz beste pantailen funtzionalitateak aktibatu beharrezkoa bada
     }
 
     public void aktibatuJardKar() {
@@ -225,7 +222,6 @@ public class JardueraKargatuKud implements Initializable {
 
     private void desaktibatuFuntzionalitateak() {
         desaktibatuJardKar();
-        //TODO mainApp erabiliz beste pantailen funtzionalitateak desaktibatu beharrezkoa bada
     }
 
     public void desaktibatuJardKar() {

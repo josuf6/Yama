@@ -14,6 +14,7 @@ import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -32,7 +33,7 @@ public class JardBistaratuKud implements Initializable {
     private JardueraModel jarduera;
     private double distantzia;
     private ArrayList<Double> distZerr;
-    private boolean estatistikakHasita, analisiaHasita, analisiTabHasieratuta,
+    private boolean analisiTabHasieratuta,
             laburPaneHasita, abiPaneHasita, altPaneHasita, bMPaneHasita, kadPaneHasita, potPaneHasita, tenpPaneHasita,
             abiGrafHasita, altGrafHasita, bMGrafHasita, kadGrafHasita, potGrafHasita, tenpGrafHasita;
     private Coordinate hasiKoord, bukKoord;
@@ -44,19 +45,20 @@ public class JardBistaratuKud implements Initializable {
     private AreaChart<Number, Number> abiGraf, altGraf, bihotzMaizGraf, kadGraf, potGraf, tenpGraf, analisiAbiGraf, analisiAltGraf, analisiBMGraf, analisiPotGraf;
 
     @FXML
-    private AnchorPane analisiGrafPane, altPane, bMPane, kadPane, potPane, tenpPane, abiGrafPane, altGrafPane, bMGrafPane, kadGrafPane, potGrafPane, tenpGrafPane, pane_mapaAnalisia;
+    private AnchorPane pane_atzera, pane_jardGorde, analisiGrafPane, altPane, bMPane, kadPane, potPane, tenpPane,
+            abiGrafPane, altGrafPane, bMGrafPane, kadGrafPane, potGrafPane, tenpGrafPane, pane_mapaAnalisia;
 
     @FXML
-    private Button btn_datuakEguneratu, btn_jardGorde;
+    private Button btn_datuakEguneratu;
 
     @FXML
     private ComboBox<String> cmb_kirolMotaBerria, cmb_analisia;
 
     @FXML
-    private ImageView imgMota;
+    private ImageView imgMota, imgProfila;
 
     @FXML
-    private Label lblHasiData, lblIzena,
+    private Label lblHasiData, lblIzena, lblProfila,
             laburAbiMax, laburBBAbi, laburBBAbiTxt, laburDenbMugi, laburDist, laburIrauTot,
             abiAbiMax, abiBBAbi, abiBBAbiTxt,
             altIgoTot, altAltMin, altAltMax,
@@ -83,8 +85,24 @@ public class JardBistaratuKud implements Initializable {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        cmb_kirolMotaBerria.getItems().add("");
+    public void initialize(URL location, ResourceBundle resources) {//pane_menu-ren (alboko menua irekitzeko eta ixteko erabiltzen den botoia) gertaerak
+        pane_atzera.setOnMouseEntered(event -> {
+            pane_atzera.setStyle("-fx-background-color: rgb(200,200,200); -fx-background-radius: 5.0");
+        });
+
+        pane_atzera.setOnMouseExited(event -> {
+            pane_atzera.setStyle("-fx-background-color: rgb(244,244,244); -fx-background-radius: 5.0");
+        });
+
+        pane_jardGorde.setOnMouseEntered(event -> {
+            pane_jardGorde.setStyle("-fx-background-color: rgb(200,200,200); -fx-background-radius: 5.0");
+        });
+
+        pane_jardGorde.setOnMouseExited(event -> {
+            pane_jardGorde.setStyle("-fx-background-color: rgb(244,244,244); -fx-background-radius: 5.0");
+        });
+
+        cmb_kirolMotaBerria.getItems().add("Bestelakoa");
         cmb_kirolMotaBerria.getItems().add("Txirrindularitza");
         cmb_kirolMotaBerria.getItems().add("Korrika");
         cmb_kirolMotaBerria.getItems().add("Ibilaritza");
@@ -109,6 +127,7 @@ public class JardBistaratuKud implements Initializable {
         btn_datuakEguneratu.setDisable(true);
         String izenBerria = txt_izenBerria.getText();
         String motaBerria = cmb_kirolMotaBerria.getSelectionModel().getSelectedItem();
+        if (motaBerria.equals("Bestelakoa")) motaBerria = "";
 
         JardueraModel jardBerria = jarduera;
         boolean izenaAldatuta = false;
@@ -253,37 +272,43 @@ public class JardBistaratuKud implements Initializable {
         lblIzena.setText(jarduera.getIzena());
         lblHasiData.setText(jarduera.getHasiData());
 
-        if (jarduera.getIdDB() < 0 && mainApp.getErabiltzaileAktibo() != null) {
-            btn_jardGorde.setVisible(true);
+        Image irudia;
+        if (jarduera instanceof TxirrJardModel) {
+            irudia = new Image(Main.class.getResource("irudiak/cycling.png").toString());
+        } else if (jarduera instanceof KorrJardModel) {
+            irudia = new Image(Main.class.getResource("irudiak/running.png").toString());
+        } else if (jarduera instanceof IbilJardModel) {
+            irudia = new Image(Main.class.getResource("irudiak/walking.png").toString());
         } else {
-            btn_jardGorde.setVisible(false);
+            irudia = new Image(Main.class.getResource("irudiak/sport.png").toString());
+        }
+        imgMota.setImage(irudia);
 
-            //TODO jarduera profil batean gordeta badago (erabiltzailearen izena jarri pantailan)
+        if (jarduera.getIdDB() < 0 && mainApp.getErabiltzaileAktibo() != null) {
+            pane_jardGorde.setVisible(true);
+        } else {
+            pane_jardGorde.setVisible(false);
+        }
+
+        if (jarduera.getIdDB() >= 0 && mainApp.getErabiltzaileAktibo() != null) {
+            lblProfila.setText(mainApp.getErabiltzaileAktibo().getEzizena());
+            imgProfila.setVisible(true);
+            lblProfila.setVisible(true);
+        } else {
+            imgProfila.setVisible(false);
+            lblProfila.setVisible(false);
         }
 
 
         hasieratuMapa();
-
-        estatistikakHasita = false;
         hasieratuEstatistikak();
-
-        analisiaHasita = false;
         hasieratuAnalisia();
-
-        //TODO mapa/estatistikak pantaila (haria ere)
-
-        while (!estatistikakHasita/* || !analisiaHasita*/) { //TODO gehitu analisiaHasita aldagaia mapa/estatistikak pantaila egin eta gero
-            try { //Hau ez badago programaren exekuzioa ez da aurera joaten
-                Thread.sleep(0);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void garbituPantaila() {
         btn_datuakEguneratu.setDisable(true);
-        cmb_kirolMotaBerria.getSelectionModel().select(jarduera.getMotaBal());
+        if (jarduera.getMotaBal().isBlank()) cmb_kirolMotaBerria.getSelectionModel().select("Bestelakoa");
+        else cmb_kirolMotaBerria.getSelectionModel().select(jarduera.getMotaBal());
         txt_izenBerria.setText(jarduera.getIzenaBal());
 
         scrll_Estatistikak.setVvalue(0);
@@ -372,33 +397,328 @@ public class JardBistaratuKud implements Initializable {
         mapa.addMarker(bukMarker.setVisible(true));
     }
 
-    private Coordinate kalkMapaZentroa() {
-        double iparLat = jarduera.getKoordZerr().get(0)[0];
-        double hegoLat = jarduera.getKoordZerr().get(0)[0];
-        double ekiLon = jarduera.getKoordZerr().get(0)[1];
-        double mendLon = jarduera.getKoordZerr().get(0)[1];
-
-        //Lortu muturretan dauden koordenatuak
-        for (Double[] koords : jarduera.getKoordZerr()) {
-            if (koords[0] > iparLat) {
-                iparLat = koords[0];
-            }
-            if (koords[0] < hegoLat) {
-                hegoLat = koords[0];
-            }
-            if (koords[1] > ekiLon) {
-                ekiLon = koords[1];
-            }
-            if (koords[1] < mendLon) {
-                mendLon = koords[1];
-            }
+    private void hasieratuEstatistikak() {
+        distZerr = (ArrayList<Double>) jarduera.getDistZerr().clone();
+        distantzia = jarduera.getDistBal();
+        if (distantzia >= 1000) {
+            distZerr.replaceAll(dist -> dist / 1000);
         }
 
-        //Kalkulatu erdiko puntua
-        double lat = (iparLat + hegoLat) / 2;
-        double lon = (ekiLon + mendLon) / 2;
+        //Estatistiken grafikoak sortzeko hariak prestatu eta hasieratu
+        abiGrafHasita = false;
+        altGrafHasita = false;
+        bMGrafHasita = false;
+        kadGrafHasita = false;
+        potGrafHasita = false;
+        tenpGrafHasita = false;
 
-        return new Coordinate(lat, lon);
+        Thread hariAbiPane = new Thread(() -> { //Beti dago abiaduraren informazioa
+            hasiAbiGraf();
+            abiGrafHasita = true;
+        });
+        hariAbiPane.start();
+
+        if (jarduera.getAltZerr() != null) { //Altitudearen informazioa badago
+            Thread hariAltPane = new Thread(() -> {
+                hasiAltGraf();
+                altGrafHasita = true;
+            });
+            hariAltPane.start();
+        } else { //Altitudearen informazioa ez badago
+            altPane.setVisible(false);
+            altPane.setManaged(false);
+            altGrafHasita = true;
+        }
+
+        if (jarduera.getBihotzMaizZerr() != null) { //Bihotz-maiztasunaren informazioa badago
+            Thread hariBMPane = new Thread(() -> {
+                hasiBMGraf();
+                bMGrafHasita = true;
+            });
+            hariBMPane.start();
+        } else { //Bihotz-maiztasunaren informazioa ez badago
+            bMPane.setVisible(false);
+            bMPane.setManaged(false);
+            bMGrafHasita = true;
+        }
+
+        if (jarduera instanceof TxirrJardModel && jarduera.getKadZerr() != null) { //Kadentziaren informazioa badago
+            Thread hariKadPane = new Thread(() -> {
+                hasiKadGraf();
+                kadGrafHasita = true;
+            });
+            hariKadPane.start();
+        } else { //Kadentziaren informazioa ez badago
+            kadPane.setVisible(false);
+            kadPane.setManaged(false);
+            kadGrafHasita = true;
+        }
+
+        if (jarduera instanceof TxirrJardModel && jarduera.getPotZerr() != null) { //Potentziaren informazioa badago
+            Thread hariPotPane = new Thread(() -> {
+                hasiPotGraf();
+                potGrafHasita = true;
+            });
+            hariPotPane.start();
+        } else { //Potentziaren informazioa ez badago
+            potPane.setVisible(false);
+            potPane.setManaged(false);
+            potGrafHasita = true;
+        }
+
+        if (jarduera.getTenpZerr() != null) { //Tenperaturaren informazioa badago
+            Thread hariTenpPane = new Thread(() -> {
+                hasiTenpGraf();
+                tenpGrafHasita = true;
+            });
+            hariTenpPane.start();
+        } else { //Tenperaturaren informazioa ez badago
+            tenpPane.setVisible(false);
+            tenpPane.setManaged(false);
+            tenpGrafHasita = true;
+        }
+
+        //Estatistiken panelak hasieratu (grafikoak sortzen diren bitartean)
+        laburPaneHasita = false;
+        abiPaneHasita = false;
+        altPaneHasita = false;
+        bMPaneHasita = false;
+        kadPaneHasita = false;
+        potPaneHasita = false;
+        tenpPaneHasita = false;
+
+        do {
+            try { //Hau ez badago programaren exekuzioa ez da aurera joaten
+                Thread.sleep(0);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (!laburPaneHasita) {
+                hasiLaburPane();
+                laburPaneHasita = true;
+            }
+
+            if (abiGrafHasita && !abiPaneHasita) {
+                hasiAbiPane();
+                abiPaneHasita = true;
+            }
+
+            if (altGrafHasita && !altPaneHasita) {
+                if (jarduera.getAltZerr() != null) {
+                    hasiAltPane();
+                }
+                altPaneHasita = true;
+            }
+
+            if (bMGrafHasita && !bMPaneHasita) {
+                if (jarduera.getBihotzMaizZerr() != null) {
+                    hasiBMPane();
+                }
+                bMPaneHasita = true;
+            }
+
+            if (kadGrafHasita && !kadPaneHasita) {
+                if (jarduera instanceof TxirrJardModel && jarduera.getKadZerr() != null) {
+                    hasiKadPane();
+                }
+                kadPaneHasita = true;
+            }
+
+            if (potGrafHasita && !potPaneHasita) {
+                if (jarduera instanceof TxirrJardModel && jarduera.getPotZerr() != null) {
+                    hasiPotPane();
+                }
+                potPaneHasita = true;
+            }
+
+            if (tenpGrafHasita && !tenpPaneHasita) {
+                if (jarduera.getTenpZerr() != null) {
+                    hasiTenpPane();
+                }
+                tenpPaneHasita = true;
+            }
+        } while (!laburPaneHasita || !abiPaneHasita || !altPaneHasita || !bMPaneHasita || !kadPaneHasita || !potPaneHasita || !tenpPaneHasita);
+    }
+
+    private void hasiLaburPane() {
+        laburDist.setText(jarduera.getDistantzia());
+        laburDenbMugi.setText(jarduera.getDenbMugi());
+        if (jarduera instanceof IbilJardModel || jarduera instanceof KorrJardModel) {
+            laburBBAbiTxt.setText("Batez besteko erritmoa");
+        } else {
+            laburBBAbiTxt.setText("Batez besteko abiadura");
+        }
+        laburBBAbi.setText(jarduera.getBbAbiadura());
+        laburAbiMax.setText(jarduera.getAbiaduraMax());
+        laburIrauTot.setText(jarduera.getIraupena());
+    }
+
+    private void hasiAbiGraf() {
+
+        //Grafikoaren limiteak definitu eta grafikoa sortu
+        ArrayList<Double> abiZerr = jarduera.getAbiZerr();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
+        double abiMax = jarduera.getAbiMaxBal();
+        String yLabel = "km/h";
+        int[] kolorea = {70, 203, 255};
+        abiGraf = sortuGrafikoa(distZerr, abiZerr, xMax, 0, abiMax, String.valueOf(jarduera.getBbAbiBal()), xLabel, yLabel, kolorea);
+    }
+
+    private void hasiAbiPane() {
+        if (jarduera instanceof IbilJardModel || jarduera instanceof KorrJardModel) {
+            abiBBAbiTxt.setText("Batez besteko erritmoa");
+        } else {
+            abiBBAbiTxt.setText("Batez besteko abiadura");
+        }
+        abiBBAbi.setText(jarduera.getBbAbiadura());
+        abiAbiMax.setText(jarduera.getAbiaduraMax());
+
+        jarriGrafikoa(abiGraf, abiGrafPane);
+    }
+
+    private void hasiAltGraf() {
+        //Grafikoaren limiteak definitu eta grafikoa sortu
+        ArrayList<Double> altZerr = jarduera.getAltZerr();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
+        double altMin = jarduera.getAltueraMinBal();
+        if (altMin > 0) {
+            altMin = 0;
+        }
+        double altMax = jarduera.getAltueraMaxBal();
+        String yLabel = "m";
+        int[] kolorea = {77, 222, 77};
+        altGraf = sortuGrafikoa(distZerr, altZerr, xMax, altMin, altMax, null, xLabel, yLabel, kolorea);
+
+        altPane.setVisible(true);
+        altPane.setManaged(true);
+    }
+
+    private void hasiAltPane() {
+        altIgoTot.setText(jarduera.getIgoeraTot());
+        altAltMin.setText(jarduera.getAltueraMin());
+        altAltMax.setText(jarduera.getAltueraMax());
+
+        jarriGrafikoa(altGraf, altGrafPane);
+    }
+
+    private void hasiBMGraf() {
+
+        //Grafikoaren limiteak definitu eta grafikoa sortu
+        ArrayList<Double> bihotzMaizZerr = (ArrayList<Double>) jarduera.getBihotzMaizZerr().clone();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
+        double bihotzMaizMin = jarduera.getBihotzMaizMinBal();
+        bihotzMaizMin = bihotzMaizMin - (bihotzMaizMin * 0.1);
+        double bihotzMaizMax = jarduera.getBihotzMaizMaxBal();
+        String yLabel = "bpm";
+        int[] kolorea = {222, 88, 77};
+        bihotzMaizGraf = sortuGrafikoa(distZerr, bihotzMaizZerr, xMax, bihotzMaizMin, bihotzMaizMax, jarduera.getBbBihotzMaizBal(), xLabel, yLabel, kolorea);
+
+        bMPane.setVisible(true);
+        bMPane.setManaged(true);
+    }
+
+    private void hasiBMPane() {
+        bMBBBM.setText(jarduera.getBbBihotzMaiz());
+        bMBMMax.setText(jarduera.getBihotzMaizMax());
+
+        jarriGrafikoa(bihotzMaizGraf, bMGrafPane);
+    }
+
+    private void hasiKadGraf() {
+
+        //Grafikoaren limiteak definitu eta grafikoa sortu
+        ArrayList<Double> kadZerr = (ArrayList<Double>) jarduera.getKadZerr().clone();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
+        double kadMax = jarduera.getKadMaxBal();
+        String yLabel = "rpm";
+        int[] kolorea = {222, 150, 77};
+        kadGraf = sortuGrafikoa(distZerr, kadZerr, xMax, 0, kadMax, jarduera.getBbKadBal(), xLabel, yLabel, kolorea);
+
+        kadPane.setVisible(true);
+        kadPane.setManaged(true);
+    }
+
+    private void hasiKadPane() {
+        kadBBKad.setText(jarduera.getBbKad());
+        kadKadMax.setText(jarduera.getKadMax());
+
+        jarriGrafikoa(kadGraf, kadGrafPane);
+    }
+
+    private void hasiPotGraf() {
+
+        //Grafikoaren limiteak definitu eta grafikoa sortu
+        ArrayList<Double> potZerr = (ArrayList<Double>) jarduera.getPotZerr().clone();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
+        double potMax = jarduera.getPotMaxBal();
+        String yLabel = "W";
+        int[] kolorea = {222, 77, 222};
+        potGraf = sortuGrafikoa(distZerr, potZerr, xMax, 0, potMax, ((TxirrJardModel) jarduera).getBbPotBal(), xLabel, yLabel, kolorea);
+
+        potPane.setVisible(true);
+        potPane.setManaged(true);
+    }
+
+    private void hasiPotPane() {
+        potBBPot.setText(jarduera.getBbPot());
+        potPotMax.setText(jarduera.getPotMax());
+
+        jarriGrafikoa(potGraf, potGrafPane);
+    }
+
+    private void hasiTenpGraf() {
+
+        //Grafikoaren limiteak definitu eta grafikoa sortu
+        ArrayList<Double> tenpZerr = jarduera.getTenpZerr();
+        String xLabel = "m";
+        double xMax = distantzia;
+        if (distantzia >= 1000) {
+            xMax = distantzia / 1000;
+            xLabel = "km";
+        }
+        double tenpMin = jarduera.getTenpMinBal();
+        tenpMin = tenpMin - (tenpMin * 0.1);
+        double tenpMax = jarduera.getTenpMaxBal();
+        String yLabel = "ºC";
+        int[] kolorea = {77, 222, 222};
+        tenpGraf = sortuGrafikoa(distZerr, tenpZerr, xMax, tenpMin, tenpMax, jarduera.getBbTenpBal(), xLabel, yLabel, kolorea);
+
+        tenpPane.setVisible(true);
+        tenpPane.setManaged(true);
+    }
+
+    private void hasiTenpPane() {
+        tenpBBTenp.setText(jarduera.getBbTenp());
+        tenpTenpMin.setText(jarduera.getTenpMin());
+        tenpTenpMax.setText(jarduera.getTenpMax());
+
+        jarriGrafikoa(tenpGraf, tenpGrafPane);
     }
 
     private void hasieratuAnalisia() {
@@ -410,11 +730,6 @@ public class JardBistaratuKud implements Initializable {
         cmb_analisia.getSelectionModel().select("Abiadura");
 
         hasieratuMapaAnalisia();
-        //TODO
-        //TODO
-        //TODO
-        //TODO
-        analisiaHasita = true;
     }
 
     private void hasieratuMapaAnalisia() {
@@ -626,17 +941,17 @@ public class JardBistaratuKud implements Initializable {
     private void analisiPotGraf() {
 
         //Grafikoaren limiteak definitu eta grafikoa sortu
-        ArrayList<Double> potZerr = (ArrayList<Double>) ((TxirrJardModel) jarduera).getPotZerr().clone();
+        ArrayList<Double> potZerr = (ArrayList<Double>) jarduera.getPotZerr().clone();
         String xLabel = "m";
         double xMax = distantzia;
         if (distantzia >= 1000) {
             xMax = distantzia / 1000;
             xLabel = "km";
         }
-        double potMax = ((TxirrJardModel) jarduera).getPotMaxBal();
+        double potMax = jarduera.getPotMaxBal();
         String yLabel = "W";
         int[] kolorea = {222, 77, 222};
-        analisiPotGraf = sortuGrafikoa(distZerr, potZerr, xMax, 0, potMax, ((TxirrJardModel) jarduera).getBbPotBal(), xLabel, yLabel, kolorea);
+        analisiPotGraf = sortuGrafikoa(distZerr, potZerr, xMax, 0, potMax, jarduera.getBbPotBal(), xLabel, yLabel, kolorea);
 
         grafMouseMovedListener(analisiPotGraf, "Potentzia");
         jarriGrafikoa(analisiPotGraf, analisiGrafPane);
@@ -702,334 +1017,6 @@ public class JardBistaratuKud implements Initializable {
         line.setEndX(bTrans.getX());
         line.setEndY(bTrans.getY());
     }
-
-    private void hasieratuEstatistikak() {
-        distZerr = (ArrayList<Double>) jarduera.getDistZerr().clone();
-        distantzia = jarduera.getDistBal();
-        if (distantzia >= 1000) {
-            distZerr.replaceAll(dist -> dist / 1000);
-        }
-
-        //Estatistiken grafikoak sortzeko hariak prestatu eta hasieratu
-        abiGrafHasita = false;
-        altGrafHasita = false;
-        bMGrafHasita = false;
-        kadGrafHasita = false;
-        potGrafHasita = false;
-        tenpGrafHasita = false;
-
-        Thread hariAbiPane = new Thread(() -> { //Beti dago abiaduraren informazioa
-            hasiAbiGraf();
-            abiGrafHasita = true;
-        });
-        hariAbiPane.start();
-
-        if (jarduera.getAltZerr() != null) { //Altitudearen informazioa badago
-            Thread hariAltPane = new Thread(() -> {
-                hasiAltGraf();
-                altGrafHasita = true;
-            });
-            hariAltPane.start();
-        } else { //Altitudearen informazioa ez badago
-            altPane.setVisible(false);
-            altPane.setManaged(false);
-            altGrafHasita = true;
-        }
-
-        if (jarduera.getBihotzMaizZerr() != null) { //Bihotz-maiztasunaren informazioa badago
-            Thread hariBMPane = new Thread(() -> {
-                hasiBMGraf();
-                bMGrafHasita = true;
-            });
-            hariBMPane.start();
-        } else { //Bihotz-maiztasunaren informazioa ez badago
-            bMPane.setVisible(false);
-            bMPane.setManaged(false);
-            bMGrafHasita = true;
-        }
-
-        if (jarduera instanceof TxirrJardModel && ((TxirrJardModel) jarduera).getKadZerr() != null) { //Kadentziaren informazioa badago
-            Thread hariKadPane = new Thread(() -> {
-                hasiKadGraf();
-                kadGrafHasita = true;
-            });
-            hariKadPane.start();
-        } else { //Kadentziaren informazioa ez badago
-            kadPane.setVisible(false);
-            kadPane.setManaged(false);
-            kadGrafHasita = true;
-        }
-
-        if (jarduera instanceof TxirrJardModel && ((TxirrJardModel) jarduera).getPotZerr() != null) { //Potentziaren informazioa badago
-            Thread hariPotPane = new Thread(() -> {
-                hasiPotGraf();
-                potGrafHasita = true;
-            });
-            hariPotPane.start();
-        } else { //Potentziaren informazioa ez badago
-            potPane.setVisible(false);
-            potPane.setManaged(false);
-            potGrafHasita = true;
-        }
-
-        if (jarduera.getTenpZerr() != null) { //Tenperaturaren informazioa badago
-            Thread hariTenpPane = new Thread(() -> {
-                hasiTenpGraf();
-                tenpGrafHasita = true;
-            });
-            hariTenpPane.start();
-        } else { //Tenperaturaren informazioa ez badago
-            tenpPane.setVisible(false);
-            tenpPane.setManaged(false);
-            tenpGrafHasita = true;
-        }
-
-        //Estatistiken panelak hasieratu (grafikoak sortzen diren bitartean)
-        laburPaneHasita = false;
-        abiPaneHasita = false;
-        altPaneHasita = false;
-        bMPaneHasita = false;
-        kadPaneHasita = false;
-        potPaneHasita = false;
-        tenpPaneHasita = false;
-
-        do {
-            try { //Hau ez badago programaren exekuzioa ez da aurera joaten
-                Thread.sleep(0);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            if (!laburPaneHasita) {
-                hasiLaburPane();
-                laburPaneHasita = true;
-            }
-
-            if (abiGrafHasita && !abiPaneHasita) {
-                hasiAbiPane();
-                abiPaneHasita = true;
-            }
-
-            if (altGrafHasita && !altPaneHasita) {
-                if (jarduera.getAltZerr() != null) {
-                    hasiAltPane();
-                }
-                altPaneHasita = true;
-            }
-
-            if (bMGrafHasita && !bMPaneHasita) {
-                if (jarduera.getBihotzMaizZerr() != null) {
-                    hasiBMPane();
-                }
-                bMPaneHasita = true;
-            }
-
-            if (kadGrafHasita && !kadPaneHasita) {
-                if (jarduera instanceof TxirrJardModel && ((TxirrJardModel) jarduera).getKadZerr() != null) {
-                    hasiKadPane();
-                }
-                kadPaneHasita = true;
-            }
-
-            if (potGrafHasita && !potPaneHasita) {
-                if (jarduera instanceof TxirrJardModel && ((TxirrJardModel) jarduera).getPotZerr() != null) {
-                    hasiPotPane();
-                }
-                potPaneHasita = true;
-            }
-
-            if (tenpGrafHasita && !tenpPaneHasita) {
-                if (jarduera.getTenpZerr() != null) {
-                    hasiTenpPane();
-                }
-                tenpPaneHasita = true;
-            }
-        } while (!laburPaneHasita || !abiPaneHasita || !altPaneHasita || !bMPaneHasita || !kadPaneHasita || !potPaneHasita || !tenpPaneHasita);
-
-        estatistikakHasita = true;
-    }
-
-    private void hasiLaburPane() {
-        laburDist.setText(jarduera.getDistantzia());
-        laburDenbMugi.setText(jarduera.getDenbMugi());
-        if (jarduera instanceof IbilJardModel || jarduera instanceof KorrJardModel) {
-            laburBBAbiTxt.setText("Batez besteko erritmoa");
-        } else {
-            laburBBAbiTxt.setText("Batez besteko abiadura");
-        }
-        laburBBAbi.setText(jarduera.getBbAbiadura());
-        laburAbiMax.setText(jarduera.getAbiaduraMax());
-        laburIrauTot.setText(jarduera.getIraupena());
-    }
-
-    private void hasiAbiGraf() {
-
-        //Grafikoaren limiteak definitu eta grafikoa sortu
-        ArrayList<Double> abiZerr = jarduera.getAbiZerr();
-        String xLabel = "m";
-        double xMax = distantzia;
-        if (distantzia >= 1000) {
-            xMax = distantzia / 1000;
-            xLabel = "km";
-        }
-        double abiMax = jarduera.getAbiMaxBal();
-        String yLabel = "km/h";
-        int[] kolorea = {70, 203, 255};
-        abiGraf = sortuGrafikoa(distZerr, abiZerr, xMax, 0, abiMax, String.valueOf(jarduera.getBbAbiBal()), xLabel, yLabel, kolorea);
-    }
-
-    private void hasiAbiPane() {
-        if (jarduera instanceof IbilJardModel || jarduera instanceof KorrJardModel) {
-            abiBBAbiTxt.setText("Batez besteko erritmoa");
-        } else {
-            abiBBAbiTxt.setText("Batez besteko abiadura");
-        }
-        abiBBAbi.setText(jarduera.getBbAbiadura());
-        abiAbiMax.setText(jarduera.getAbiaduraMax());
-
-        jarriGrafikoa(abiGraf, abiGrafPane);
-    }
-
-    private void hasiAltGraf() {
-        //Grafikoaren limiteak definitu eta grafikoa sortu
-        ArrayList<Double> altZerr = jarduera.getAltZerr();
-        String xLabel = "m";
-        double xMax = distantzia;
-        if (distantzia >= 1000) {
-            xMax = distantzia / 1000;
-            xLabel = "km";
-        }
-        double altMin = jarduera.getAltueraMinBal();
-        if (altMin > 0) {
-            altMin = 0;
-        }
-        double altMax = jarduera.getAltueraMaxBal();
-        String yLabel = "m";
-        int[] kolorea = {77, 222, 77};
-        altGraf = sortuGrafikoa(distZerr, altZerr, xMax, altMin, altMax, null, xLabel, yLabel, kolorea);
-
-        altPane.setVisible(true);
-        altPane.setManaged(true);
-    }
-
-    private void hasiAltPane() {
-        altIgoTot.setText(jarduera.getIgoeraTot());
-        altAltMin.setText(jarduera.getAltueraMin());
-        altAltMax.setText(jarduera.getAltueraMax());
-
-        jarriGrafikoa(altGraf, altGrafPane);
-    }
-
-    private void hasiBMGraf() {
-
-        //Grafikoaren limiteak definitu eta grafikoa sortu
-        ArrayList<Double> bihotzMaizZerr = (ArrayList<Double>) jarduera.getBihotzMaizZerr().clone();
-        String xLabel = "m";
-        double xMax = distantzia;
-        if (distantzia >= 1000) {
-            xMax = distantzia / 1000;
-            xLabel = "km";
-        }
-        double bihotzMaizMin = jarduera.getBihotzMaizMinBal();
-        bihotzMaizMin = bihotzMaizMin - (bihotzMaizMin * 0.1);
-        double bihotzMaizMax = jarduera.getBihotzMaizMaxBal();
-        String yLabel = "bpm";
-        int[] kolorea = {222, 88, 77};
-        bihotzMaizGraf = sortuGrafikoa(distZerr, bihotzMaizZerr, xMax, bihotzMaizMin, bihotzMaizMax, jarduera.getBbBihotzMaizBal(), xLabel, yLabel, kolorea);
-
-        bMPane.setVisible(true);
-        bMPane.setManaged(true);
-    }
-
-    private void hasiBMPane() {
-        bMBBBM.setText(jarduera.getBbBihotzMaiz());
-        bMBMMax.setText(jarduera.getBihotzMaizMax());
-
-        jarriGrafikoa(bihotzMaizGraf, bMGrafPane);
-    }
-
-    private void hasiKadGraf() {
-
-        //Grafikoaren limiteak definitu eta grafikoa sortu
-        ArrayList<Double> kadZerr = (ArrayList<Double>) ((TxirrJardModel) jarduera).getKadZerr().clone();
-        String xLabel = "m";
-        double xMax = distantzia;
-        if (distantzia >= 1000) {
-            xMax = distantzia / 1000;
-            xLabel = "km";
-        }
-        double kadMax = ((TxirrJardModel) jarduera).getKadMaxBal();
-        String yLabel = "rpm";
-        int[] kolorea = {222, 150, 77};
-        kadGraf = sortuGrafikoa(distZerr, kadZerr, xMax, 0, kadMax, ((TxirrJardModel) jarduera).getBbKadBal(), xLabel, yLabel, kolorea);
-
-        kadPane.setVisible(true);
-        kadPane.setManaged(true);
-    }
-
-    private void hasiKadPane() {
-        kadBBKad.setText(((TxirrJardModel) jarduera).getBbKad());
-        kadKadMax.setText(((TxirrJardModel) jarduera).getKadMax());
-
-        jarriGrafikoa(kadGraf, kadGrafPane);
-    }
-
-    private void hasiPotGraf() {
-
-        //Grafikoaren limiteak definitu eta grafikoa sortu
-        ArrayList<Double> potZerr = (ArrayList<Double>) ((TxirrJardModel) jarduera).getPotZerr().clone();
-        String xLabel = "m";
-        double xMax = distantzia;
-        if (distantzia >= 1000) {
-            xMax = distantzia / 1000;
-            xLabel = "km";
-        }
-        double potMax = ((TxirrJardModel) jarduera).getPotMaxBal();
-        String yLabel = "W";
-        int[] kolorea = {222, 77, 222};
-        potGraf = sortuGrafikoa(distZerr, potZerr, xMax, 0, potMax, ((TxirrJardModel) jarduera).getBbPotBal(), xLabel, yLabel, kolorea);
-
-        potPane.setVisible(true);
-        potPane.setManaged(true);
-    }
-
-    private void hasiPotPane() {
-        potBBPot.setText(((TxirrJardModel) jarduera).getBbPot());
-        potPotMax.setText(((TxirrJardModel) jarduera).getPotMax());
-
-        jarriGrafikoa(potGraf, potGrafPane);
-    }
-
-    private void hasiTenpGraf() {
-
-        //Grafikoaren limiteak definitu eta grafikoa sortu
-        ArrayList<Double> tenpZerr = jarduera.getTenpZerr();
-        String xLabel = "m";
-        double xMax = distantzia;
-        if (distantzia >= 1000) {
-            xMax = distantzia / 1000;
-            xLabel = "km";
-        }
-        double tenpMin = jarduera.getTenpMinBal();
-        tenpMin = tenpMin - (tenpMin * 0.1);
-        double tenpMax = jarduera.getTenpMaxBal();
-        String yLabel = "ºC";
-        int[] kolorea = {77, 222, 222};
-        tenpGraf = sortuGrafikoa(distZerr, tenpZerr, xMax, tenpMin, tenpMax, jarduera.getBbTenpBal(), xLabel, yLabel, kolorea);
-
-        tenpPane.setVisible(true);
-        tenpPane.setManaged(true);
-    }
-
-    private void hasiTenpPane() {
-        tenpBBTenp.setText(jarduera.getBbTenp());
-        tenpTenpMin.setText(jarduera.getTenpMin());
-        tenpTenpMax.setText(jarduera.getTenpMax());
-
-        jarriGrafikoa(tenpGraf, tenpGrafPane);
-    }
-
-    //TODO jarri hemen hasieratuAnalisia()
 
     private AreaChart<Number, Number> sortuGrafikoa(ArrayList<Double> xZerr, ArrayList<Double> yZerr, double xMax, double yMin, double yMax, String yBatezBesteko, String xLabel, String yLabel, int[] rgb) {
 
